@@ -13,3 +13,7 @@ wheels/
 .env
 CLAUDE.local.md
 .claude/settings.local.json
+
+# .vscode settings.json will be committed, not the rest
+.vscode/*
+!.vscode/settings.json
