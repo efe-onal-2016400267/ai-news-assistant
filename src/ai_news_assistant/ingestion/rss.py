@@ -2,6 +2,7 @@ import httpx
 
 USER_AGENT = "ai-news-assistant/0.1"
 
+
 def download_feed(url: str, client: httpx.Client | None = None, *, timeout: float = 15.0) -> bytes:
     """Download a feed and return the raw XML bytes."""
 
@@ -10,7 +11,7 @@ def download_feed(url: str, client: httpx.Client | None = None, *, timeout: floa
     if client is None:
         with httpx.Client() as own_client:
             return download_feed(url, own_client, timeout=timeout)
-        
+
     response = client.get(
         url,
         headers={"User-Agent": USER_AGENT},
