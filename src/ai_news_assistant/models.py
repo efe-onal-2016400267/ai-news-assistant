@@ -3,7 +3,7 @@ from pydantic import AwareDatetime, BaseModel, Field, HttpUrl
 
 
 class Article(BaseModel):
-    """ Base article class, so we can read articles without type errors. """
+    """ A news article as ingested from the source """
     id: str # Stable hash of the canonical URL
     url: HttpUrl
     title: str = Field(min_length=5)
