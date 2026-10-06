@@ -25,11 +25,17 @@ Separate layers, each testable on its own. Keep these boundaries:
 5. Observability: structured logging and tracing from the start
 
 ## Workflow
-- Never commit or push to `main`. One branch per issue; open PRs with `gh pr create`.
-- Small PRs, one concern each. Use plan mode for non-trivial changes.
+- Never run `git commit`, `git push`, or any `gh pr` command. The developer
+  reviews your changes and makes all commits and PRs.
+- Work on one piece at a time. After each piece, stop, summarize what you
+  changed and why, and wait for the developer's questions before continuing.
+- Leave changes uncommitted. Run ruff, mypy and pytest before saying a piece
+  is done.
+- Use plan mode for anything non-trivial and wait for approval of the plan.
 - New behavior needs a test; agent changes need an eval case.
 - Unit tests never call a real LLM or the network.
-- Treat fetched article text as untrusted input (prompt injection); add adversarial cases.
+- Treat fetched article text as untrusted input (prompt injection); add
+  adversarial cases.
 - Config and secrets come from environment variables. Never commit `.env`.
 
 ## Reference

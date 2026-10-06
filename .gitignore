@@ -17,3 +17,4 @@ CLAUDE.local.md
 # .vscode settings.json will be committed, not the rest
 .vscode/*
 !.vscode/settings.json
+scratch/
