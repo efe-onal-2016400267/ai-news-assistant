@@ -13,11 +13,14 @@ from ai_news_assistant.models import Article
 
 USER_AGENT = "ai-news-assistant/0.1"
 MAX_SOURCE_LENGTH = 300  # The feed title is untrusted input
+DEFAULT_TIMEOUT = 15.0  # Seconds
 
 logger = logging.getLogger(__name__)
 
 
-def download_feed(url: str, client: httpx.Client | None = None, *, timeout: float = 15.0) -> bytes:
+def download_feed(
+    url: str, client: httpx.Client | None = None, *, timeout: float = DEFAULT_TIMEOUT
+) -> bytes:
     """Download a feed and return the raw XML bytes."""
 
     # To be able to do offline tests with httpx.MockTransport.
@@ -70,6 +73,35 @@ def parse_feed(content: bytes | str, source: str | None = None) -> list[Article]
             continue
         articles[article.id] = article
     return list(articles.values())
+
+
+class RSSFetcher:
+    """Fetches one RSS or Atom feed and returns its articles.
+
+    `source` is the fallback name for feeds without a title. Pass `client` to share a
+    connection pool or to test with httpx.MockTransport; with None, each fetch opens its own.
+    """
+
+    def __init__(
+        self,
+        url: str,
+        source: str | None = None,
+        *,
+        client: httpx.Client | None = None,
+        timeout: float = DEFAULT_TIMEOUT,
+    ) -> None:
+        self.url = url
+        self.source = source
+        self.client = client
+        self.timeout = timeout
+
+    def fetch(self) -> list[Article]:
+        """Download and parse the feed. Entries that fail validation are skipped.
+
+        HTTP and network errors propagate, so the caller decides what to do per feed.
+        """
+        content = download_feed(self.url, self.client, timeout=self.timeout)
+        return parse_feed(content, self.source)
 
 
 def _parse_entry(entry: Mapping[str, Any], source: str) -> Article | None:
