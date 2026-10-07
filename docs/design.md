@@ -106,14 +106,14 @@ from typing import Protocol
 
 
 class Article(BaseModel):
-    id: str                                  # hash of the normalized URL
+    id: str  # hash of the normalized URL
     url: HttpUrl
-    title: str                               # stripped, non-empty
-    source: str                              # publisher, e.g. "The Guardian"
+    title: str  # stripped, non-empty
+    source: str  # publisher, e.g. "The Guardian"
     published_at: AwareDatetime | None = None  # timezone-aware, UTC
-    summary: str | None = None               # cleaned feed teaser
-    text: str | None = None                  # extracted full text, filled by extraction
-    tags: list[str]                          # feed category terms, cleaned, deduplicated
+    summary: str | None = None  # cleaned feed teaser
+    text: str | None = None  # extracted full text, filled by extraction
+    tags: list[str]  # feed category terms, cleaned, deduplicated
 
 
 class ArticleHit(BaseModel):
@@ -133,7 +133,7 @@ class Citation(BaseModel):
 class Answer(BaseModel):
     text: str
     citations: list[Citation]
-    grounded: bool               # False if no supporting evidence was found
+    grounded: bool  # False if no supporting evidence was found
 
 
 class Fetcher(Protocol):
@@ -153,6 +153,7 @@ class Retriever(Protocol):
 
 class LLMClient(Protocol):
     """Thin wrapper over the model provider. Faked in unit tests."""
+
     def complete(self, messages: list[dict], **kwargs) -> dict: ...
 
 
