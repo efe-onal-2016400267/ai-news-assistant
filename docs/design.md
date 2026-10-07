@@ -98,9 +98,10 @@ Feed text is parsed defensively: HTML is reduced to text, invalid entries are sk
 
 ## 5. Interfaces and data models
 
-Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`.
+Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array).
 
 ```python
+from collections.abc import Iterable
 from pydantic import AwareDatetime, BaseModel, HttpUrl
 from typing import Protocol
 
@@ -138,6 +139,11 @@ class Answer(BaseModel):
 
 class Fetcher(Protocol):
     def fetch(self) -> list[Article]: ...
+
+
+class ArticleStore(Protocol):
+    def save(self, articles: Iterable[Article]) -> int: ...  # inserts new ids, returns count
+    def get(self, article_id: str) -> Article | None: ...
 
 
 class Retriever(Protocol):

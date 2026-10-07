@@ -125,13 +125,19 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - Raw XML is optional: keep a few days for debugging or replaying a parser bug, then drop it. The database is the source of truth.
 
 ### 2. Store articles (relational DB)
-- [ ] Storage interface plus SQLite implementation; insert keyed by `Article.id` (hash of the normalized URL)
-- `INSERT ... ON CONFLICT DO NOTHING` gives exact-URL dedupe for free.
+- [x] Storage interface plus SQLite implementation; insert keyed by `Article.id` (hash of the normalized URL)
+- [x] A small ArticleStore protocol: save(articles) -> int (returns how many were new), get(id). We will use Postgres in production so the protocol is useful for that change and tests.
+- [x] A SQLiteStore that creates its table on startup, inserts with ON CONFLICT DO NOTHING keyed by Article.id, and returns Article objects.
+- [x] Tests with an in-memory database
+    - [x] Round trip should provide the same article object (same tags list, timezone aware published_at, None summary/text/date.
+    - [x] Saving the same article twice inserts once. The future ingest command will be idempotent.
+    - [x] Saving an empty list is fine, get of an unknown id returns None.
+
+### 3. Ingest Job
 - **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
 - An article with only a feed summary is already valid, so store right after fetching, before extraction.
-- SQLite is enough to start (no server, works in CI). A deployed container's disk is wiped on redeploy, so plan for a mounted volume or managed Postgres at deploy time. Keep storage behind an interface so the swap is easy.
 
-### 3. Extraction (full text)
+### 4. Extraction (full text)
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
 - trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
 - If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
@@ -139,21 +145,21 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - Check each publisher's terms and robots.txt, rate-limit requests, never scrape paywalled content.
 - Tests use saved HTML pages, not live sites.
 
-### 4. Baseline retrieval and eval harness (including chunking experiments)
+### 5. Baseline retrieval and eval harness (including chunking experiments)
 - [ ] Ingest a few hundred articles
 - [ ] Write 30-50 questions myself, each labeled with the **article IDs** that answer them (article-level labels are far cheaper than chunk-level; a chunk hit maps to its parent article)
 - [ ] Simplest possible retriever (embeddings in memory, or BM25)
 - [ ] Make chunking a parameter and compare: whole article, fixed 256/512 tokens with overlap, paragraph-based. Metrics: recall@k and MRR.
 - Chunking cannot be evaluated without retrieval, so this comes first. News articles are short, so expect the strategies to differ less than you would think; do not spend days here.
 
-### 5. Near-duplicate detection (cut or simplify if time is short)
+### 6. Near-duplicate detection (cut or simplify if time is short)
 - [ ] Runs after extraction, since teasers are too short to compare reliably
 - Approaches: MinHash with LSH (`datasketch`) on 5-word shingles is the standard fit for republished wire copy; SimHash; embedding similarity (also catches paraphrases but merges different articles on the same topic).
 - Compare only against a recent window (a few days), not the whole table.
 - Hand-label about 50 pairs (duplicate or not) and choose the threshold from them.
 - Store `duplicate_of` on the row instead of deleting, so no information is lost.
 
-### 6. Story clustering (cut or simplify if time is short)
+### 7. Story clustering (cut or simplify if time is short)
 - [ ] `stories` table (id, title, first_seen, last_updated) and a `story_id` column on articles (one story has many articles; not just per-article metadata)
 - Online approach: embed title plus lead, assign to the nearest existing story within a time window (about 48 hours) above a similarity threshold, otherwise start a new story. Alternative: periodic batch clustering (agglomerative or HDBSCAN) over recent articles.
 - Treat assignments as derived data that can be recomputed, since stories merge and split over time.
