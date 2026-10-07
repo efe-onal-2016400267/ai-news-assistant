@@ -77,6 +77,9 @@ A README that shows eval results and an architecture diagram will carry weight i
 
 ## Initial Plan
 
+> Superseded where it differs by [design.md](design.md). For example, the agent layer now uses
+> LangChain/LangGraph behind an interface instead of a hand-rolled loop first.
+
 ### Components
 
 #### Offline:
@@ -117,14 +120,14 @@ One RSS feed, extraction, store, search_news plus get_article, the agent loop wi
 Order of work after issue #5 (Article model and RSS fetcher). Each step is its own issue, branch and PR into `main`.
 
 ### 1. Finish fetching (issue #5)
-- [ ] `Fetcher` protocol in `ingestion/base.py`, `parse_feed(content, source)`, `RSSFetcher.fetch()`
-- A fetcher downloads a feed and returns typed `Article` objects (title, summary, tags, date, `text=None`). New sources only need to satisfy the protocol.
-- **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
+- [x] `Fetcher` protocol in `ingestion/base.py`, `parse_feed(content, source)`, `RSSFetcher.fetch()`
+- [x] A fetcher downloads a feed and returns typed `Article` objects (title, summary, tags, date, `text=None`). New sources only need to satisfy the protocol.
 - Raw XML is optional: keep a few days for debugging or replaying a parser bug, then drop it. The database is the source of truth.
 
 ### 2. Store articles (relational DB)
 - [ ] Storage interface plus SQLite implementation; insert keyed by `Article.id` (hash of the normalized URL)
 - `INSERT ... ON CONFLICT DO NOTHING` gives exact-URL dedupe for free.
+- **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
 - An article with only a feed summary is already valid, so store right after fetching, before extraction.
 - SQLite is enough to start (no server, works in CI). A deployed container's disk is wiped on redeploy, so plan for a mounted volume or managed Postgres at deploy time. Keep storage behind an interface so the swap is easy.
 
@@ -157,6 +160,6 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - Evaluate with a small hand-labeled set and pairwise precision and recall.
 
 ### Housekeeping
-- [ ] Update `docs/design.md`: the product is *AI* news, `Article` has `tags`, and the delivery order is now fetch, store, extract, retrieval and evals, then near-dup and clustering.
+- [x] Update `docs/design.md`: the product is *AI* news, `Article` has `tags`, and the delivery order is now fetch, store, extract, retrieval and evals, then near-dup and clustering.
 - [ ] First skills (`add-fetcher`, `add-eval-case`, `review-changes`, `draft-pr-description`) only after the same procedure has been repeated a second time.
 - [ ] Stay trunk-based: short-lived branches off `main`, one issue and one PR each. Group the work with milestones and labels (`offline`, `online`), not with long-lived branches.
