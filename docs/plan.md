@@ -77,6 +77,9 @@ A README that shows eval results and an architecture diagram will carry weight i
 
 ## Initial Plan
 
+> Superseded where it differs by [design.md](design.md). For example, the agent layer now uses
+> LangChain/LangGraph behind an interface instead of a hand-rolled loop first.
+
 ### Components
 
 #### Offline:
@@ -110,3 +113,53 @@ A README that shows eval results and an architecture diagram will carry weight i
 ### Cut for a first end-to-end slice
 
 One RSS feed, extraction, store, search_news plus get_article, the agent loop with validated citations, and a CLI. Add clustering, timelines, and source comparison once that works and has evals. Each of those then becomes one issue and one PR.
+
+
+## Next Steps (near future)
+
+Order of work after issue #5 (Article model and RSS fetcher). Each step is its own issue, branch and PR into `main`.
+
+### 1. Finish fetching (issue #5)
+- [x] `Fetcher` protocol in `ingestion/base.py`, `parse_feed(content, source)`, `RSSFetcher.fetch()`
+- [x] A fetcher downloads a feed and returns typed `Article` objects (title, summary, tags, date, `text=None`). New sources only need to satisfy the protocol.
+- Raw XML is optional: keep a few days for debugging or replaying a parser bug, then drop it. The database is the source of truth.
+
+### 2. Store articles (relational DB)
+- [ ] Storage interface plus SQLite implementation; insert keyed by `Article.id` (hash of the normalized URL)
+- `INSERT ... ON CONFLICT DO NOTHING` gives exact-URL dedupe for free.
+- **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
+- An article with only a feed summary is already valid, so store right after fetching, before extraction.
+- SQLite is enough to start (no server, works in CI). A deployed container's disk is wiped on redeploy, so plan for a mounted volume or managed Postgres at deploy time. Keep storage behind an interface so the swap is easy.
+
+### 3. Extraction (full text)
+- [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
+- trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
+- If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
+- Extraction can fail or retry without affecting ingestion.
+- Check each publisher's terms and robots.txt, rate-limit requests, never scrape paywalled content.
+- Tests use saved HTML pages, not live sites.
+
+### 4. Baseline retrieval and eval harness (including chunking experiments)
+- [ ] Ingest a few hundred articles
+- [ ] Write 30-50 questions myself, each labeled with the **article IDs** that answer them (article-level labels are far cheaper than chunk-level; a chunk hit maps to its parent article)
+- [ ] Simplest possible retriever (embeddings in memory, or BM25)
+- [ ] Make chunking a parameter and compare: whole article, fixed 256/512 tokens with overlap, paragraph-based. Metrics: recall@k and MRR.
+- Chunking cannot be evaluated without retrieval, so this comes first. News articles are short, so expect the strategies to differ less than you would think; do not spend days here.
+
+### 5. Near-duplicate detection (cut or simplify if time is short)
+- [ ] Runs after extraction, since teasers are too short to compare reliably
+- Approaches: MinHash with LSH (`datasketch`) on 5-word shingles is the standard fit for republished wire copy; SimHash; embedding similarity (also catches paraphrases but merges different articles on the same topic).
+- Compare only against a recent window (a few days), not the whole table.
+- Hand-label about 50 pairs (duplicate or not) and choose the threshold from them.
+- Store `duplicate_of` on the row instead of deleting, so no information is lost.
+
+### 6. Story clustering (cut or simplify if time is short)
+- [ ] `stories` table (id, title, first_seen, last_updated) and a `story_id` column on articles (one story has many articles; not just per-article metadata)
+- Online approach: embed title plus lead, assign to the nearest existing story within a time window (about 48 hours) above a similarity threshold, otherwise start a new story. Alternative: periodic batch clustering (agglomerative or HDBSCAN) over recent articles.
+- Treat assignments as derived data that can be recomputed, since stories merge and split over time.
+- Evaluate with a small hand-labeled set and pairwise precision and recall.
+
+### Housekeeping
+- [x] Update `docs/design.md`: the product is *AI* news, `Article` has `tags`, and the delivery order is now fetch, store, extract, retrieval and evals, then near-dup and clustering.
+- [ ] First skills (`add-fetcher`, `add-eval-case`, `review-changes`, `draft-pr-description`) only after the same procedure has been repeated a second time.
+- [ ] Stay trunk-based: short-lived branches off `main`, one issue and one PR each. Group the work with milestones and labels (`offline`, `online`), not with long-lived branches.

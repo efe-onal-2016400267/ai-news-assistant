@@ -7,7 +7,11 @@ authors = [
     { name = "efe-onal-2016400267", email = "efeonalll@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "feedparser>=6.0.14",
+    "httpx>=0.28.1",
+    "pydantic>=2.13.5",
+]
 
 [project.scripts]
 ai-news-assistant = "ai_news_assistant:main"
@@ -18,6 +22,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "ipykernel>=7.4.0",
     "mypy>=2.4.0",
     "pytest>=9.1.1",
     "ruff>=0.16.10",
@@ -31,6 +36,10 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.mypy]
 strict = true
+
+[[tool.mypy.overrides]]
+module = ["feedparser", "feedparser.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
