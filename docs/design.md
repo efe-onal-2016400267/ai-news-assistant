@@ -35,7 +35,7 @@ A scheduler (launchd or cron locally, a scheduled cloud job when deployed) runs 
 ### Offline pipeline
 | # | Component | Responsibility |
 |---|-----------|----------------|
-| 1 | Fetchers | One adapter per source behind a common `Fetcher` interface. `RSSFetcher` (one instance per feed) downloads with `httpx` and parses with `feedparser`. Returns typed `Article`s. Network and HTTP errors propagate; the `ingest` command handles them per feed. |
+| 1 | Fetchers | One adapter per source behind a common `Fetcher` interface. `RSSFetcher` (one instance per feed) downloads with `httpx` and parses with `feedparser`. Returns typed `Article`s. Network and HTTP errors, and `FeedTooLargeError`, propagate; the `ingest` command handles them per feed. |
 | 2 | Store | Relational store for articles (stories later). SQLite first, behind a small storage interface. Insert keyed by `Article.id`; existing ids are ignored, so `ingest` is idempotent. An article with only a feed summary is already valid. |
 | 3 | Extraction | A separate stage: find rows without `text`, fetch the page, extract clean text (`trafilatura`). Fall back to the feed summary if the page is paywalled or fails. Runs soon after ingestion, since pages change and disappear. Rate-limited, respects robots.txt and publisher terms. |
 | 4 | Dedupe | Exact duplicates via the normalized-URL id. Near-duplicate detection (wire stories are republished everywhere) runs after extraction; store `duplicate_of` instead of deleting. Optional if time is short. |
@@ -94,7 +94,7 @@ SQLite needs no server and works in CI. A deployed container's disk is not durab
 The live database keeps growing; metrics must not move for reasons unrelated to the retriever. Accumulate articles, export a snapshot after extraction, label questions against article ids in that snapshot, and run all retrieval and chunking experiments against it.
 
 ### D11. Feed content is untrusted input
-Feed text is parsed defensively: HTML is reduced to text, invalid entries are skipped and logged (field names and messages only, not the untrusted values), and the source name is length-capped. A response size cap for downloads is planned.
+Feed text is parsed defensively: HTML is reduced to text, invalid entries are skipped and logged (field names and messages only, not the untrusted values), and the source name is length-capped. Downloads are streamed and capped at `MAX_FEED_BYTES` (5 MB, `Content-Length` checked first, then a running byte count of the decompressed body); exceeding it raises `FeedTooLargeError`.
 
 ## 5. Interfaces and data models
 
@@ -201,4 +201,3 @@ class Agent(Protocol):
 - **Vector store:** default is Chroma; alternatives are SQLite with a vector extension, or Postgres with pgvector once the database moves.
 - **Hand-rolled loop first?** Build it for comparison with LangChain, or go straight to LangChain.
 - **Hosting target:** Azure Container Apps vs Cloud Run vs other, decided before milestone 5.
-- **Download size cap:** limit response size in `download_feed` (separate issue).

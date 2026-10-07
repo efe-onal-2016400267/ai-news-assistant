@@ -14,30 +14,59 @@ from ai_news_assistant.models import Article
 USER_AGENT = "ai-news-assistant/0.1"
 MAX_SOURCE_LENGTH = 300  # The feed title is untrusted input
 DEFAULT_TIMEOUT = 15.0  # Seconds
+MAX_FEED_BYTES = 5 * 1024 * 1024  # Real feeds are well under 1 MB
 
 logger = logging.getLogger(__name__)
 
 
+class FeedTooLargeError(Exception):
+    """The feed response is larger than the download limit."""
+
+    def __init__(self, url: str, max_bytes: int) -> None:
+        super().__init__(f"Feed {url} exceeds {max_bytes} bytes")
+        self.url = url
+        self.max_bytes = max_bytes
+
+
 def download_feed(
-    url: str, client: httpx.Client | None = None, *, timeout: float = DEFAULT_TIMEOUT
+    url: str,
+    client: httpx.Client | None = None,
+    *,
+    timeout: float = DEFAULT_TIMEOUT,
+    max_bytes: int = MAX_FEED_BYTES,
 ) -> bytes:
-    """Download a feed and return the raw XML bytes."""
+    """Download a feed and return the raw XML bytes.
+
+    Raises FeedTooLargeError when the body is larger than `max_bytes`, checking
+    Content-Length first so an oversized body is never read.
+    """
 
     # To be able to do offline tests with httpx.MockTransport.
     # Tests will call with mock transport, production will call with None as client.
     if client is None:
         with httpx.Client() as own_client:
-            return download_feed(url, own_client, timeout=timeout)
+            return download_feed(url, own_client, timeout=timeout, max_bytes=max_bytes)
 
-    response = client.get(
+    with client.stream(
+        "GET",
         url,
         headers={"User-Agent": USER_AGENT},
         timeout=timeout,
         follow_redirects=True,
-    )
+    ) as response:
+        response.raise_for_status()
+        if _content_length(response) > max_bytes:
+            raise FeedTooLargeError(url, max_bytes)
 
-    response.raise_for_status()
-    return response.content
+        # iter_bytes yields decompressed bytes, so this also caps gzip bombs.
+        chunks: list[bytes] = []
+        total = 0
+        for chunk in response.iter_bytes():
+            total += len(chunk)
+            if total > max_bytes:
+                raise FeedTooLargeError(url, max_bytes)
+            chunks.append(chunk)
+        return b"".join(chunks)
 
 
 def parse_feed(content: bytes | str, source: str | None = None) -> list[Article]:
@@ -144,6 +173,14 @@ def _source_name(feed_title: str | None, fallback: str | None) -> str | None:
     title = " ".join((feed_title or "").split())
     name = title.rpartition(" | ")[2].strip() if title else (fallback or "").strip()
     return name[:MAX_SOURCE_LENGTH] or None
+
+
+def _content_length(response: httpx.Response) -> int:
+    # The header is untrusted; a missing or invalid value leaves the byte count as the guard.
+    try:
+        return max(int(response.headers.get("Content-Length", 0)), 0)
+    except ValueError:
+        return 0
 
 
 def _clean_tags(tags: Iterable[Mapping[str, Any]]) -> list[str]:
