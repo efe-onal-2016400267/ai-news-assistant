@@ -5,18 +5,28 @@ from pathlib import Path
 import httpx
 import pytest
 
-from ai_news_assistant.ingest import FeedResult, IngestResult, ingest, run
-from ai_news_assistant.ingestion.rss import RSSFetcher, parse_feed
+from ai_news_assistant.ingest import FeedResult, IngestResult, build_fetchers, ingest, run
+from ai_news_assistant.ingestion import feeds as production_feeds
+from ai_news_assistant.ingestion.feeds import Feed
+from ai_news_assistant.ingestion.rss import parse_feed
 from ai_news_assistant.models import Article
 from ai_news_assistant.storage.sqlite import SQLiteStore
 
 FIXTURES = Path(__file__).parent / "fixtures"
 GUARDIAN_URL = "https://example.com/guardian.xml"
 TECHCRUNCH_URL = "https://example.com/techcrunch.xml"
-FEEDS = {"guardian-ai": GUARDIAN_URL, "techcrunch-ai": TECHCRUNCH_URL}
+FEEDS = {
+    "guardian-ai": Feed(GUARDIAN_URL, "The Guardian"),
+    "techcrunch-ai": Feed(TECHCRUNCH_URL, "TechCrunch"),
+}
+# Every production feed URL, plus the test URLs above, served from its fixture file.
 FIXTURE_FOR_URL = {
     GUARDIAN_URL: (FIXTURES / "guardian_ai.xml").read_bytes(),
     TECHCRUNCH_URL: (FIXTURES / "techcrunch_ai.xml").read_bytes(),
+    **{
+        feed.url: (FIXTURES / f"{name.replace('-', '_')}.xml").read_bytes()
+        for name, feed in production_feeds.FEEDS.items()
+    },
 }
 
 
@@ -170,18 +180,19 @@ def test_run_creates_db_directory_and_stores_articles(tmp_path: Path) -> None:
     assert run(FEEDS, db_path, serve_fixtures(set())) == 0
 
     with SQLiteStore(db_path) as store:
-        for content in FIXTURE_FOR_URL.values():
-            assert all(store.get(article.id) is not None for article in parse_feed(content))
+        for feed in FEEDS.values():
+            for article in parse_feed(FIXTURE_FOR_URL[feed.url]):
+                stored = store.get(article.id)
+                assert stored is not None
+                assert stored.source == feed.source
 
 
 def test_run_is_idempotent_across_store_instances(tmp_path: Path) -> None:
     db_path = tmp_path / "news.db"
     run(FEEDS, db_path, serve_fixtures(set()))
 
-    client = serve_fixtures(set())
-    fetchers = {name: RSSFetcher(url, name, client=client) for name, url in FEEDS.items()}
     with SQLiteStore(db_path) as store:
-        result = ingest(fetchers, store)
+        result = ingest(build_fetchers(FEEDS, serve_fixtures(set())), store)
 
     assert result.fetched > 0
     assert result.new == 0
@@ -189,6 +200,23 @@ def test_run_is_idempotent_across_store_instances(tmp_path: Path) -> None:
 
 def test_run_succeeds_when_one_feed_fails(tmp_path: Path) -> None:
     assert run(FEEDS, tmp_path / "news.db", serve_fixtures({GUARDIAN_URL})) == 0
+
+
+def test_every_production_feed_ingests_its_fixture(store: SQLiteStore) -> None:
+    feeds = production_feeds.FEEDS
+
+    result = ingest(build_fetchers(feeds, serve_fixtures(set())), store)
+
+    assert [feed.name for feed in result.feeds] == list(feeds)
+    for feed_result in result.feeds:
+        assert feed_result.ok, feed_result.error
+        assert feed_result.fetched > 0
+        assert feed_result.new == feed_result.fetched
+        expected_source = feeds[feed_result.name].source
+        for article in parse_feed(FIXTURE_FOR_URL[feeds[feed_result.name].url]):
+            stored = store.get(article.id)
+            assert stored is not None
+            assert stored.source == expected_source
 
 
 def test_run_fails_when_every_feed_fails(tmp_path: Path) -> None:

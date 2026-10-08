@@ -1,0 +1,1415 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>Artificial intelligence &#8211; MIT Technology Review</title>
+	<atom:link href="https://www.technologyreview.com/topic/artificial-intelligence/feed/" rel="self" type="application/rss+xml" />
+	<link>https://www.technologyreview.com</link>
+	<description></description>
+	<lastBuildDate>Thu, 08 Oct 2026 08:59:26 +0000</lastBuildDate>
+	<language>en-US</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.9.10</generator>
+
+<image>
+	<url>https://wp.technologyreview.com/wp-content/uploads/2024/09/cropped-TR-Logo-Block-Centered-R.png?w=32</url>
+	<title>Artificial intelligence &#8211; MIT Technology Review</title>
+	<link>https://www.technologyreview.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+<site xmlns="com-wordpress:feed-additions:1">172986898</site>	<item>
+		<title>AI breakthroughs in robotics won&#8217;t change your life any time soon</title>
+		<link>https://www.technologyreview.com/2026/10/08/1145923/ai-breakthroughs-in-robotics-wont-change-your-life-any-time-soon/</link>
+		
+		<dc:creator><![CDATA[Jamie Condliffe]]></dc:creator>
+		<pubDate>Thu, 08 Oct 2026 09:00:00 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[App]]></category>
+		<category><![CDATA[Intelligent Machines]]></category>
+		<category><![CDATA[sponsored]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145923</guid>
+
+					<description><![CDATA[The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and supports content about how technology and science are changing the way we live. A robot shaped like a human—white with a black head and torso—has been popping up on video feeds. Perhaps you’ve seen it dance or&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p><em>The story is a collaboration between MIT Technology Review and <a href="https://www.aventine.org/">Aventine</a>, a non-profit research foundation that creates and supports content about how technology and science are changing the way we live.</em></p>
+
+
+
+<p>A robot shaped like a human—white with a black head and torso—has been popping up on video feeds. Perhaps you’ve seen it dance or pass popcorn, put trash in a bin, vacuum, or press the button of a microwave. Or maybe you’ve watched it fall backward while handing out water bottles or struggle to iron a shirt.&nbsp;</p>
+
+
+
+<p>This would be <a href="https://www.tesla.com/AI">Tesla’s Optimus</a>, an AI-powered humanoid robot that Elon Musk, the company’s CEO, believes will be “not just Tesla’s biggest product ever, but <a href="http://www.fool.com/investing/2026/07/28/elon-musk-says-optimus-could-be-the-biggest-produc/">probably the biggest product ever</a>,” headed to work on factory floors and, later, in our homes. Eventually it <a href="https://finance.yahoo.com/technology/article/elon-musk-and-teslas-next-big-engineering-challenge-thumbs-155303952.html">“will have human and then superhuman dexterity,”</a> he told shareholders in July. Optimus robots could automate almost all human labor—from hauling sheet metal to folding laundry—for as little as $20,000 each, Musk argues. Speaking at the World Economic Forum’s annual meeting in Davos, Switzerland, in January, he predicted they could be on sale to the public by the end of 2027.</p>
+
+
+
+<p>Musk is not alone in his evangelism. Marc Andreessen, cofounder and general partner of the Silicon Valley venture capital firm Andreessen Horowitz, has <a href="https://www.reddit.com/r/singularity/comments/1l3wpqk/marc_andreessen_says_generalpurpose_robotics_is/">said</a> that robotics could become the “biggest industry in the history of the planet.” In January, Jensen Huang, CEO of Nvidia, said that humanoid robots would match human-level ability <a href="http://www.techspot.com/news/110852-jensen-huang-calling-human-like-robots-arrive-2026.html">this year</a>. According to Morgan Stanley, the number of robots that “resemble and act like humans” is likely to reach nearly <a href="https://www.morganstanley.com/insights/articles/humanoid-robot-market-5-trillion-by-2050">1 billion by 2050, creating a market worth over $5 trillion</a>.&nbsp;</p>
+
+
+<div class="wp-block-image">
+<figure class="wp-block-image alignwide size-full"><img fetchpriority="high" decoding="async" width="3000" height="1994" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/AP25364739329087_1.jpg" alt="" class="wp-image-1145957" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/AP25364739329087_1.jpg 3000w, https://wp.technologyreview.com/wp-content/uploads/2026/10/AP25364739329087_1.jpg?resize=300,199 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/AP25364739329087_1.jpg?resize=768,510 768w, https://wp.technologyreview.com/wp-content/uploads/2026/10/AP25364739329087_1.jpg?resize=1536,1021 1536w, https://wp.technologyreview.com/wp-content/uploads/2026/10/AP25364739329087_1.jpg?resize=2048,1361 2048w" sizes="(max-width: 3000px) 100vw, 3000px" /><figcaption class="wp-element-caption">Elon Musk predicts that Tesla’s Optimus humanoid could be one the world’s best-selling products. For now, it’s most often seen handing out food and drinks at Tesla events.</figcaption><div class="image-credit">SIPA VIA AP IMAGES</div>
+</figure>
+</div>
+
+
+<p>Such proclamations are in large part fueled by the idea that the same AI advances behind tools like OpenAI’s ChatGPT and Anthropic’s Claude will enable a new generation of robots to imitate human movement the way chatbots imitate human language. But many robotics researchers are skeptical, arguing that such assumptions minimize the challenges of using an intelligence built on language and images to master the infinite variability of the physical world. “None of those companies [building humanoid robots]—absolutely none of them—has any idea how to make those robots smart enough to be useful,” Yann LeCun, often referred to as one of the godfathers of AI, said at another event during the January Davos conference.&nbsp;&nbsp;</p>
+
+
+
+<p>Researchers also point out that the tendency to conflate humanoid robots made to resemble people with so-called generalist machines able to learn and perform multiple tasks is misleading. ”It’s very easy to make a robot that looks like a person,” explains Jonathan Hurst, cofounder and chief robot officer of Agility Robotics and professor of robotics at Oregon State University. “It is dramatically more difficult to make a machine that moves or behaves dynamically or physically like a person.”&nbsp;&nbsp;</p>
+
+
+
+<p>These tensions—over whether all-purpose humanoid robots are just around the corner or nowhere in sight, and whether current forms of AI are all that’s needed to perfect them—are playing out in robotics labs across the country, where the hype over timelines is obscuring painstaking but meaningful progress.</p>
+
+
+
+<p>A decade or so ago, a series of breakthroughs led to a generative AI revolution that turned the long-imagined possibility of artificial intelligence into reality. Roboticists—though they disagree on exactly when this will happen—believe that an equally transformative revolution is possible in robotics, one that will endow machines with physical intuition and fluidity that has long been out of reach. As progress in robotics inches forward, the question is whether the same methods and tools that fueled advances in AI are enough to get there, or if an entirely new path is required.</p>
+
+
+
+<h3 class="wp-block-heading">Robots meet advanced AI</h3>
+
+
+
+<p>To see one of the smartest robot brains working today, it’s worth looking at what Google DeepMind can do with a piece of equipment called ALOHA 2, short for “A Low-cost Open-source Hardware System for Bimanual Teleoperation.”&nbsp;</p>
+
+
+
+<p>Roboticists have long clashed over whether a humanlike form is necessary for generalist robots, with proponents arguing that it will help them slot into the world as it exists and detractors saying it’s not worth the trouble. ALOHA 2 reflects this second way of thinking. Not much to look at, it’s just a pair of arms, some grippers, and a couple of cameras. But despite its seeming simplicity, it is a workhorse for researchers at Google DeepMind, who use it to test their most advanced AI for robotics system, Gemini Robotics, in their various labs.</p>
+
+
+
+<p>When controlled by Gemini Robotics, ALOHA 2 becomes more of a generalist robot, in the sense that it can perform any number of tasks based on examples it’s been trained on. Ask it to pack a lunchbox and, as evidenced by a <a href="https://www.youtube.com/watch?v=m-G4-slYcGE">video of this exercise</a>, it can use two pincer grippers to delicately place a piece of white bread into a Ziploc bag, close it, place a bunch of grapes in a Tupperware container, secure the lid, and then carefully move the items into a lunchbox before zipping it up.&nbsp;</p>
+
+
+
+<p>It’s not a great lunch. But the fact that the robot can put it together represents an objective step forward from what was possible even, say, three years ago.&nbsp;</p>
+
+
+
+<p>This is in large part due to AI and its impact on what are known as robot policies, which controls how a general-purpose robot will need to assess and understand its surroundings, plan how to move within them, and then perform its task correctly.</p>
+
+
+
+
+<div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-28f84493 wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-image size-large"><img decoding="async" width="1280" height="960" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/clutter_env.webp?w=840" alt="" class="wp-image-1145958" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/clutter_env.webp 1280w, https://wp.technologyreview.com/wp-content/uploads/2026/10/clutter_env.webp?resize=300,225 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/clutter_env.webp?resize=768,576 768w" sizes="(max-width: 1280px) 100vw, 1280px" /></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" width="1280" height="960" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/kitchen_env.webp?w=840" alt="" class="wp-image-1145960" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/kitchen_env.webp 1280w, https://wp.technologyreview.com/wp-content/uploads/2026/10/kitchen_env.webp?resize=300,225 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/kitchen_env.webp?resize=768,576 768w" sizes="(max-width: 1280px) 100vw, 1280px" /></figure>
+</div>
+
+
+
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1280" height="960" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/hammer_env.webp?w=840" alt="" class="wp-image-1145959" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/hammer_env.webp 1280w, https://wp.technologyreview.com/wp-content/uploads/2026/10/hammer_env.webp?resize=300,225 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/hammer_env.webp?resize=768,576 768w" sizes="auto, (max-width: 1280px) 100vw, 1280px" /></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1280" height="960" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/plate_env.webp?w=840" alt="" class="wp-image-1145961" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/plate_env.webp 1280w, https://wp.technologyreview.com/wp-content/uploads/2026/10/plate_env.webp?resize=300,225 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/plate_env.webp?resize=768,576 768w" sizes="auto, (max-width: 1280px) 100vw, 1280px" /></figure>
+</div>
+</div>
+
+
+
+<p class="imageSet__caption">The ALOHA 2 robot isn’t much more than two mechanical arms on a bench top, but it serves as a testbed for cutting-edge AI robotics models. These animations are based on human teleoperation of the robot arms, data that is used to train Google DeepMind’s models. (Video: <a href="https://aloha-2.github.io/" data-type="link" data-id="https://aloha-2.github.io/">Google DeepMind / Stanford University / Hoku Labs</a>)<br></p>
+
+
+
+
+<p>Historically, these policies were based on rules developed by engineers who hard-coded them into the robot’s software—thousands of lines of code that would determine each millimeter of a robot’s movements in hundreds of tasks.&nbsp;What’s been happening for the last few years—and what is largely responsible for the optimism about generalist robots—is that robot policies are being handed over to advanced AI systems instead of being coded into the robot’s software. This first happened with VLMs, or vision-language models. These are similar to large language models, but they’re trained on images as well as words. Show a VLM a picture of a coffee spill and ask it to find a tool to clean up the mess, and it can identify a nearby cloth. This sort of immediate contextual understanding didn’t exist a couple of years ago when robot policies were hard-coded.&nbsp;</p>
+
+
+
+<p>Next came vision-language-action models, which enable robots to assess their environment and take action within it. The models do this by adding yet another component: motion commands. VLAs are trained on a series of images or videos related to performing a given task along with associated data about how a robot arm moves to perform it. That movement data is typically collected through teleoperation, in which a human uses remote controls to lead a robot through an action. This sort of training allows the AI to learn how to command the robot to move and operate during a given task. Place a VLA-powered robot in front of a desk and tell it to “close a laptop” or “wrap up the headphone wire,” and it will survey the scene, identify the relevant object, plan a way to execute the request, and then swing its arms into action—at least if it has seen this task accomplished before.&nbsp;</p>
+
+
+
+<p>The Gemini Robotics model is a VLA, trained on many hours of human demonstrations depicting a vast array of different actions. As a result, it can perform relatively complex tasks like picking up snow peas with kitchen tongs, doing origami, or putting together a simple lunch. It’s impressive, but there’s a glaring limitation: For now, if a robot controlled by a VLA is asked to perform a task that falls outside its training set, it’s highly likely to fail.&nbsp;</p>
+
+
+
+<p>“Thinking about the space of all tasks, a real generalist policy would be able to do everything along that spectrum,” says Edward Johns, a robotics professor at Imperial College London. Today, though, a Gemini Robotics model can do only “a few things here and a few things there.”</p>
+
+
+
+<h3 class="wp-block-heading"><strong>The search for true generality</strong></h3>
+
+
+
+<p>So how do we get robots to be able to do more things? The usual answer is probably not surprising: Train them on more data.&nbsp;&nbsp;</p>
+
+
+
+<p>More data, the thinking goes, equals more examples, and more examples equals more generality. Google DeepMind, for instance, wants to pull together “as much data as possible,” says Pannag Sanketi, a former tech lead in robotics at the company who’s currently working on <a href="https://www.linkedin.com/in/pannag-sanketi/">his own AI robotics project</a>. But where to get it? Large language models had the benefit of oceans of existing text for training. There is no corresponding pool of high-quality physical demonstrations on which to train robots. Researchers have a few ways to make up for this, but all have flaws. One is to employ large numbers of people to create and collect teleoperation data (costly and time-consuming). Another is to train VLAs on videos of people performing activities (the resulting data quality is poor). Yet another is to deploy robots in the real world and use data collected from those experiences to further refine AI models (robots aren’t safe or reliable outside labs). Sanketi thinks a “multi-prong” approach that uses data collected from all these sources is the most likely path forward.</p>
+
+
+
+<div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained">
+<p>But the belief that training data alone is the answer <a href="https://www.science.org/doi/10.1126/scirobotics.aea7897">is far from universal</a>. Agility’s Hurst describes it as “a fundamentally flawed premise.”&nbsp;</p>
+
+
+
+<p>The issue is that tasks in the real world quickly explode in complexity. If you’re trying to, say, make coffee, there are myriad variables: No two kitchens are identical; coffee machines work in different ways; different cups require different grips; coffee grounds, hot water, and milk all need to be handled differently. Even this simple task requires understanding an ever-changing menu of possibilities. Achieving generality through VLAs, Hurst argues, would require “complete data coverage of all of the things that [a robot] could ever do.” Or, in other words, an almost infinite pool of training data.&nbsp;</p>
+</div>
+
+
+
+<p>LeCun is dismissive of the whole approach. “The [AI] approaches that have been successful for language do not work for high-dimensional, continuous, noisy data”—the kind of data that is commonplace in robotics, he said in Davos. “You have to use something else.”</p>
+
+
+
+<p>The leading contender for “something else” is the so-called world model—a form of AI trained less on text than on a combination of video, three-dimensional scans, and sensor data and built to predict the outcomes of actions in the real world. The aim is to build models that possess an internal representation of reality precise enough to capture how the physical world actually operates—how objects move, collide, fall, and deform. If roboticists could train machines in simulations faithful enough to real-world physics, development would become faster, cheaper, and safer, reducing the need for real-world testing. Even more transformative, robots equipped with world models could reason about their surroundings rather than merely reacting to them, helping them anticipate the consequences of an action before taking it.</p>
+
+
+
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="Advanced dexterity with Gemini Robotics 2" width="500" height="281" src="https://www.youtube.com/embed/O9-650iHAls?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div><figcaption class="wp-element-caption">Google DeepMind’s latest AI models for robots are increasingly dextrous, if rather slow and erratic</figcaption></figure>
+
+
+
+<div class="wp-block-group is-layout-constrained wp-block-group-is-layout-constrained">
+<p>Companies like <a href="https://www.nvidia.com/en-us/ai/cosmos/">Nvidia</a> and <a href="https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/">Google</a> are working on the technology, and investor cash is pouring into high-profile startups. World Labs, cofounded by the Stanford AI researcher Fei-Fei Li, <a href="https://www.reuters.com/business/ai-pioneer-fei-fei-lis-world-labs-raises-1-billion-funding-2026-02-18/">raised $1 billion</a> in funding in February and was acquired by AMD at the end of September for $8.2 billion. AMI Labs, cofounded by LeCun (formerly Meta’s chief AI scientist), also <a href="https://amilabs.xyz/updates">raised $1 billion in March</a>. Yet by their own admission, it is still early days. Late last year Li described the field as <a href="https://drfeifei.substack.com/p/from-words-to-worlds-spatial-intelligence">“nascent,”</a> adding that “foundational approaches are still being established.” In a June Substack she described <a href="https://drfeifei.substack.com/p/a-functional-taxonomy-of-world-models">daunting challenges</a>. For now, world models are a promising area of research rather than an immediate route to general-purpose robotics, but we are beginning to see glimmers of what they could achieve.</p>
+
+
+
+<p>One such glimpse came with a small but potentially significant leap forward that took place in a San Francisco robotics lab last April.&nbsp;</p>
+</div>
+
+
+
+<h3 class="wp-block-heading"><strong>A breakthrough?</strong></h3>
+
+
+
+<p>In the heart of San Francisco’s Mission District, the startup Physical Intelligence—or PI (as in π), as it likes to be known—is focused on developing a universal brain that could, theoretically, turn any robot into a generalist. Using an everything-including-the-kitchen sink approach to training AI models for robots, the company recently observed a hint of what a robotic brain equipped with a world model could be capable of.&nbsp;</p>
+
+
+
+<p>In 2024, PI <a href="https://www.physicalintelligence.company/blog/pi0">published details</a> of its first generalist robotics system, called π0, a VLA it claimed was the “most capable and dexterous generalist robot policy to date.” The model was initially trained on a 10,000-hour proprietary collection of human demonstrations gathered through teleoperation as well as several open-source robot datasets. A version released in spring 2025, <a href="https://www.physicalintelligence.company/blog/pi05">π0.5</a>, was trained on a wider variety of datasets, including labeled images from the web, lending it more versatility. A fall 2025 update, <a href="https://www.pi.website/blog/pistar06">π0.6</a>, added reinforcement learning to the model.&nbsp;&nbsp;</p>
+
+
+
+<p>Each update yielded important improvements to the model’s performance, increasing its menu of abilities from slowly folding laundry to putting things away in new environments to completing tasks like folding boxes with a higher success rate. Then, in April 2026, <a href="https://www.pi.website/blog/pi07">π0.7</a> seemed to catapult PI into new territory. This version makes use of a less powerful world model that generates images of steps necessary to perform a task. As the robot undertakes the job, this “lightweight” model feeds it snapshots of what to do next.&nbsp;</p>
+
+
+
+
+<div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-28f84493 wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow"><div class="wp-block-image">
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="3000" height="2000" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-493.jpg" alt="" class="wp-image-1145967" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-493.jpg 3000w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-493.jpg?resize=300,200 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-493.jpg?resize=768,512 768w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-493.jpg?resize=1536,1024 1536w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-493.jpg?resize=2048,1365 2048w" sizes="auto, (max-width: 3000px) 100vw, 3000px" /><figcaption class="wp-element-caption">How do you teach a robot to use a knife? At the startup Physical Intelligence, it begins with designing the right AI architecture, which includes components dedicated to language, vision and motion. This will help it relate commands — “hey robot, chop my vegetables!” — to appropriate actions.</figcaption><div class="image-credit">WINNI WINTERMEYER</div>
+</figure>
+</div></div>
+
+
+
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow"><div class="wp-block-image">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="3000" height="2000" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-050.jpg?w=840" alt="" class="wp-image-1145968" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-050.jpg 3000w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-050.jpg?resize=300,200 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-050.jpg?resize=768,512 768w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-050.jpg?resize=1536,1024 1536w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-050.jpg?resize=2048,1365 2048w" sizes="auto, (max-width: 3000px) 100vw, 3000px" /><figcaption class="wp-element-caption">Data to train the AI can come from many sources, but one of the most important is human demonstrations. An employee at the startup controls a robot arm through teleoperation, exposing the AI to the task of slicing a zucchini.</figcaption><div class="image-credit">WINNI WINTERMEYER</div>
+</figure>
+</div></div>
+</div>
+
+
+
+<p class="imageSet__caption"></p>
+
+
+
+
+
+<div class="wp-block-columns is-layout-flex wp-container-core-columns-is-layout-28f84493 wp-block-columns-is-layout-flex">
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow"><div class="wp-block-image">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="3000" height="2000" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-328.jpg?w=840" alt="A researcher points out a detail from a training video to his colleague on a laptop screen" class="wp-image-1145970" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-328.jpg 3000w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-328.jpg?resize=300,200 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-328.jpg?resize=768,512 768w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-328.jpg?resize=1536,1024 1536w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-328.jpg?resize=2048,1365 2048w" sizes="auto, (max-width: 3000px) 100vw, 3000px" /><figcaption class="wp-element-caption">Researchers train the AI model on hundred of examples of human demonstrations, as well images from the web and first-person video. </figcaption><div class="image-credit">WINNI WINTERMEYER</div>
+</figure>
+</div></div>
+
+
+
+<div class="wp-block-column is-layout-flow wp-block-column-is-layout-flow"><div class="wp-block-image">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="3000" height="2000" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-261.jpg?w=840" alt="Robot grippers cutting a yellow squash with a kitchen knife" class="wp-image-1145969" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-261.jpg 3000w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-261.jpg?resize=300,200 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-261.jpg?resize=768,512 768w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-261.jpg?resize=1536,1024 1536w, https://wp.technologyreview.com/wp-content/uploads/2026/10/PhysicalIntelligence-261.jpg?resize=2048,1365 2048w" sizes="auto, (max-width: 3000px) 100vw, 3000px" /><figcaption class="wp-element-caption">Once the AI is trained, the team presents it a task it has not seen before, such as chopping this summer squash. When a robot hasn’t seen the exact task before — it may wonder if that’s a yellow zucchini, or an unusual banana — it can mess up. But any failures can be used to help refine the model.</figcaption><div class="image-credit">WINNI WINTERMEYER</div>
+</figure>
+</div></div>
+</div>
+
+
+
+<p class="imageSet__caption"></p>
+
+
+
+
+<p>The company claims that the model exhibits the first signs of compositional generalization, a term for AI systems’ ability to perform skills they’ve never been exposed to by recombining ones learned in their training data. One test involved asking a model to “load a sweet potato into the air fryer”—a task it had never previously encountered. In a demonstration video, the machine futzes around a little, makes a few false starts, and eventually manages a reasonable effort, though it doesn’t finish the task completely. </p>
+
+
+
+<p>Sergey Levine, a professor at the University of California, Berkeley, and a cofounder of PI, is excited by the potential: “It’s actually the first time that we’ve convincingly seen that kind of compositional generalization, where we can basically ask the model to do tasks that we did not specifically collect data for and train it to do, and it’ll actually make a passable attempt.”&nbsp;</p>
+
+
+
+<p>The success led the team to wonder how the model was able to achieve such a feat. After some digging, they found snippets of relevant labeled teleoperation data lurking in the training material, including two examples of a human controller using the robot to push an air fryer basket into the fryer. Those shreds of data might have been enough to enable π0.7 to almost air-fry a sweet potato.</p>
+
+
+
+<p>For now, it remains unclear just how impressive π0.7’s abilities to generalize are. Still, given how fleeting the model’s exposure to air fryers had been, it offers a glimpse into how far cutting-edge research can currently take robots.&nbsp;</p>
+
+
+
+<h3 class="wp-block-heading"><strong>“70% success is like it doesn’t work”</strong></h3>
+
+
+
+<p>You might be sensing a disconnect between the halting baby steps robots are making in labs—“Look! It put a sweet potato into an air fryer!”—and the dazzling, lifelike nimbleness on view during many demonstrations and videos, where robots are seen doing everything from <a href="https://www.theguardian.com/world/2026/feb/18/china-dancing-humanoid-robots-festival-show">dancing on a stage</a> to courteously <a href="https://www.businessinsider.com/tesla-optimus-robots-bartending-controlled-by-humans-2024-10">serving drinks</a>. Such demos often don’t clearly reveal a key fact: In many instances, humans are controlling the robot or have carefully scripted its actions. (The robot that appeared onstage with Nvidia CEO Jensen Huang in March 2025, for example, seemingly responding to his instructions and following him around, was <a href="https://www.theinformation.com/articles/behind-robots-human-operator-toils">remote-controlled</a> by what its makers called “a puppeteer behind the scenes.”)&nbsp;</p>
+
+
+
+<p>For now, fully autonomous motion planning so that a robot knows where it should go—especially in new, chaotic environments like a construction site or a unfamiliar home—remains a largely unsolved challenge. A bigger challenge still—albeit one that is often related—lies in getting robots to tackle larger, more ambiguous jobs that include multiple tasks and require decisions about how and in what order they’re done. This would be the difference between a robot that can put a plate into a microwave and one that can successfully respond to the prompt “Make dinner” by exploring the refrigerator, chopping ingredients, and firing up the stove. Google DeepMind’s best attempts at something like this—which involved asking its robot to survey a kitchen and pack all the ingredients for a mushroom risotto into a basket—have so far resulted in <a href="https://arxiv.org/pdf/2510.03342">failure.</a></p>
+
+
+
+<p>Adding to the challenge, a practical robot must essentially get it right every time. With VLAs, “people are very excited when their result goes from 50% success to 70% success,” says Marc Raibert, founder of Boston Dynamics. “But 70% success is like it doesn’t work, right?”</p>
+
+
+<div class="wp-block-image">
+<figure class="wp-block-image alignwide size-full"><img loading="lazy" decoding="async" width="900" height="506" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/Humanoid-collage.webp" alt="split screen of nine clips with different robots attempting tasks; some are teleoperated and a few have collided with objects or fallen." class="wp-image-1145995" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/Humanoid-collage.webp 900w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Humanoid-collage.webp?resize=300,169 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Humanoid-collage.webp?resize=768,432 768w" sizes="auto, (max-width: 900px) 100vw, 900px" /><figcaption class="wp-element-caption">Demonstrations often make robots look useful, but the machines still mess up far too often to be used reliably in homes and factories.</figcaption><div class="image-credit">AP IMAGES, SHUTTERSTOCK, 1X, AGILITY ROBOTICS, GOOGLE DEEPMIND</div>
+</figure>
+</div>
+
+
+<p>The few humanoids that are being tested in real-life settings are undertaking extremely limited tasks in tightly controlled environments. They’re far from generalists. Agility has hundreds of robots deployed across trials in facilities owned by GXO Logistics, Amazon, and Schaeffler, according to the company. But for now, Hurst says, the robots are targeting simple tasks such as moving bins and totes around. Even then, he adds, it took years to develop robots safe enough for logistics firms to even contemplate using them. For his part, Elon Musk claimed in May 2025 that “<a href="https://www.businessinsider.com/what-elon-musk-said-about-robotics-robotaxi-optimus-media-blitz-2025-5">thousands</a>” of his Optimus robots would be working at Tesla factories by the end of the year, but in January of this year he said that the company had only “some of the Tesla Optimus robots doing simple tasks in the factory.”</p>
+
+
+
+<p>While humanoids are starting to venture onto the factory floor, making the jump to households will be even more difficult. Right now, should you so desire, you can preorder the <a href="https://www.1x.tech/neo">1X Neo home robot</a>, expected to be ready for delivery sometime later this year. Yours for $20,000, it promises to take on “the boring and mundane tasks around the house”—putting away dishes, answering the door, tidying the living room—“so you can focus on what matters to you.” The idea is for this five-foot-six-inch robot to one day perform all those tasks autonomously, but for now a remote human operator is needed for it to do most things. (Yes, a person would need permission to peer into your home through the robot’s cameras.) Asked how long it will be until fully autonomous robots are ready for domestic work, Hurst said, “If I had to pick a number, I’d say it’s 10 years before robots are … actually doing useful things in people’s homes.”</p>
+
+
+
+<p>When that happens, the robots might well be Chinese, as China is well ahead of the West in terms of production. Nearly <a href="https://restofworld.org/charts/2026/JP73G-humanoid-robot-shipments-2025">90%</a> of the roughly 15,000 humanoid robots shipped in 2025 were made by Chinese companies, according to the market intelligence company Omdia and the Chinese robotics firm Unitree. One model produced by Unitree, which shipped more humanoid robots than any other company last year, <a href="https://www.scmp.com/tech/tech-trends/article/3319637/chinas-unitree-debuts-us5900-humanoid-robot-race-make-cheaper-products">costs less than $6,000</a>. Such an affordable price could go a long way toward making robots more attractive to consumers, though the company <a href="https://eu.36kr.com/en/p/3353252936479360">expects</a> its machines to be used in industrial applications first. (If you’re wondering who is buying all these Chinese robots, by the way,<a href="https://apnews.com/article/china-humanoid-robots-ai-demand-7d542b5ee92caa9d79efa28de89afbbe"> the AP recently reported</a> that orders come predominantly from corporate and academic labs and state-owned enterprises.)</p>
+
+
+
+<h3 class="wp-block-heading"><strong>We’ve been here before&nbsp;</strong></h3>
+
+
+
+<p>The dream of building a humanoid robot runs deep: As far back as 1495, Leonardo da Vinci sketched out designs for a mechanical knight, controlled by cables and pulleys. Through the 20th century, machines of sci-fi fever dreams have come and gone.&nbsp;</p>
+
+
+<div class="wp-block-image">
+<figure class="wp-block-image alignwide size-full"><img loading="lazy" decoding="async" width="797" height="797" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/GettyImages-515354160.jpg" alt="Jeanne Dowling reaches up to light a cigarette for Elektro, a seven foot robot built by Westinghouse." class="wp-image-1145971" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/GettyImages-515354160.jpg 797w, https://wp.technologyreview.com/wp-content/uploads/2026/10/GettyImages-515354160.jpg?resize=150,150 150w, https://wp.technologyreview.com/wp-content/uploads/2026/10/GettyImages-515354160.jpg?resize=300,300 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/GettyImages-515354160.jpg?resize=768,768 768w" sizes="auto, (max-width: 797px) 100vw, 797px" /><figcaption class="wp-element-caption">Westinghouse’s Elektro was a sensation at the 1939 World Fair.  </figcaption><div class="image-credit">GETTY IMAGES</div>
+</figure>
+</div>
+
+
+<p>Westinghouse’s seven-foot-tall box on legs, Elektro, hit the New York World’s Fair in 1939, <a href="https://www.youtube.com/watch?v=cFyDEEwGTQk">smoking a cigarette</a>. WABOT-1, built by Waseda University in Japan in 1973, was the first full-scale, programmable humanoid robot. Honda’s ASIMO, unveiled in 2000, was probably the first such machine to prove at all competent—it could, at least to some degree, climb steps, recognize faces, and autonomously move through spaces. But the robot was discontinued in 2018, unable to advance far enough beyond what it could do in demonstrations to be useful.&nbsp;</p>
+
+
+
+<p>All, at the time, were impressive—even jaw-dropping—feats of engineering. But none were ready to navigate the real world. Today’s robots, even with the transformative power of advanced AI, still face the same existential challenge.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145923</post-id>	</item>
+		<item>
+		<title>Building a safer path to autonomous industrial AI</title>
+		<link>https://www.technologyreview.com/2026/10/08/1144020/building-a-safer-path-to-autonomous-industrial-ai/</link>
+		
+		<dc:creator><![CDATA[MIT Technology Review Insights]]></dc:creator>
+		<pubDate>Thu, 08 Oct 2026 08:17:32 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[sponsored]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1144020</guid>
+
+					<description><![CDATA[Industrial AI is entering a new phase. After decades of predictive analytics and other specialized applications, advances in foundation models, physical AI, and agentic AI are making it possible to automate more complex tasks across industrial environments. But unlike AI that operates purely in the digital world, industrial AI can interact directly with physical systems,&#8230;]]></description>
+										<content:encoded><![CDATA[
+<iframe loading="lazy" height="200px" width="100%" frameborder="no" scrolling="no" seamless src="https://player.simplecast.com/09f3a0b4-3597-4942-b176-c20f6f2328a0?dark=false"></iframe>
+
+
+
+<p>Industrial AI is entering a new phase. After decades of predictive analytics and other specialized applications, advances in foundation models, physical AI, and agentic AI are making it possible to automate more complex tasks across industrial environments. But unlike AI that operates purely in the digital world, industrial AI can interact directly with physical systems, where an unexpected decision can have consequences for safety, reliability, and critical infrastructure.</p>
+
+
+
+<p>That makes responsible deployment central to the next wave of industrial automation. “How do we leverage these technologies while maintaining safety, while maintaining reliable operations, while still being able to deliver on the promises of the new capabilities?” asks Arti Garg, chief technologist at AVEVA. The challenge is particularly acute as newer AI systems become more capable but also harder to predict and explain.</p>
+
+
+
+<p>One foundation for making that transition work is data. Industrial systems often contain information across telemetry, service logs, engineering documents, and other disparate sources. Newer technologies can help connect and correlate that information more quickly, giving operators real-time support when diagnosing problems. AI-powered robots could take that a step further by gathering information in hazardous environments without requiring workers to enter them.</p>
+
+
+
+<p>But greater autonomy also requires new approaches to governance. AVEVA’s framework for responsible AI emphasizes security, efficiency, and human safety and oversight. Garg argues that AI should augment rather than replace people in critical decision loops, with guardrails determining where automated systems can act and where human supervisors remain responsible.</p>
+
+
+
+<p>Sustainability is another part of that equation. AI can help manage complex power systems as renewable generation grows, while organizations also need better ways to understand AI’s own environmental footprint. Garg is involved in an IEEE working group developing a standard methodology for measuring that impact across electricity, energy, resources, water, and carbon.</p>
+
+
+
+<p>The next phase could bring industrial AI further into the physical world, from autonomous robots and drones to AI-assisted coding that allows domain experts to build new applications. But realizing that potential will require more than deploying new technology, says Garg. Organizations will need to rethink business processes, establish appropriate safeguards, and give experienced workers new ways to apply their expertise, creating a model of automation that is not only more autonomous, but safer, more efficient, and more sustainable.</p>
+
+
+
+<p>“Autonomous systems, whether they&#8217;re robots or drones, are really going to change the way that we work in plants, in power systems, on mining sites,” says Garg. &#8220;In a way, that will make these types of operations more efficient, much safer for the human beings involved and more productive.”</p>
+
+
+
+<p><em>This episode of Business Lab is produced in partnership with AVEVA.</em></p>
+
+
+
+<p><strong>Full Transcript</strong></p>
+
+
+
+<p><em>Megan Tatum:</em> From MIT Technology Review, I&#8217;m Megan Tatum, and this is Business Lab, the show that helps business leaders make sense of new technologies coming out of the lab and into the marketplace.</p>
+
+
+
+<p>Industrial AI may not be new, but it is developing at a breakneck pace. From modern predictive analytics that can preempt equipment failures, to autonomous robots tasked with inspecting high risk machinery, emerging applications have the potential to transform operational efficiencies. But often used in high consequence environments with minimal margin for error, industrial AI deployed without clarity, security, or accountability could also have catastrophic consequences for critical infrastructure over time. As industries rush to embrace the latest technologies, the goal should always be responsible AI designed to support, rather than replace that all important human judgment.<br><br>Two words for you: sustainable automation.</p>
+
+
+
+<p>My guest today is Arti Garg, chief technologist at AVEVA.</p>
+
+
+
+<p>This podcast is produced in partnership with AVEVA.</p>
+
+
+
+<p>Welcome, Arti.</p>
+
+
+
+<p><em>Arti Garg:</em> Thank you, Megan. It&#8217;s great to be here.</p>
+
+
+
+<p><em>Megan:</em> Thank you so much for joining us. And just to start, if we could set some context for our discussion, can you share a bit about the current state of industrial AI and what AVEVA is working on at the moment as well?</p>
+
+
+
+<p><em>Arti: </em>Yeah, more than happy to. And I want to go back to what you already stated, which is that in some ways, industrial AI is not new. It&#8217;s something that, even here at AVEVA, we&#8217;ve been working on for more than 20 years, really thinking about how AI can enhance applications in the industrial sector.</p>
+
+
+
+<p>But what has changed quite substantially in maybe the last few years is the type of AI. We&#8217;ve really moved to these general purpose foundation models, which enable a lot more people to leverage advanced AI technologies. In addition to that, in just the last couple of years, there&#8217;s been an explosion in what&#8217;s known as physical AI and the types of AI that can really accelerate the capabilities of robotics and autonomous systems. And also agentic AI, which also allows for automation at more of the software level.</p>
+
+
+
+<p>And what we&#8217;re seeing is that while in the past there has been some hesitancy to adopt models that don&#8217;t totally have predictable outcomes, there&#8217;s been a rapid acceleration in adoption of AI even in the industrial sector. One study suggests maybe that&#8217;s almost a 78% increase over the past just two years within the industrial sector. So yes, that&#8217;s an inflection point, but it&#8217;s almost like a step function if you think about it with respect to AI adoption.</p>
+
+
+
+<p>And what we&#8217;re really thinking about now at AVEVA is, how do we think about this? How do we think about incorporating these new and very powerful AI technologies in environments where customers have mission-critical operations, human safety is a significant factor? Those are some of the primary concerns that our customers have when they think about adopting any new technology. We&#8217;re doing that in narrow where these newer types of AI aren&#8217;t necessarily predictable, in terms of how they behave. That&#8217;s one of the areas we&#8217;re really thinking about is, how do we leverage these technologies while maintaining safety, while maintaining reliable operations, while still being able to deliver on the promises of the new capabilities?</p>
+
+
+
+<p><em>Megan: </em>There&#8217;s so many things to consider at once, isn&#8217;t it? And you outlined there some of the huge developments we&#8217;ve seen in this space in recent years. What makes this such a pivotal moment for industrial AI specifically? What has changed to make some of those perhaps more out there hypotheticals much more plausible?</p>
+
+
+
+<p><em>Arti:</em> Well, I think one of the big things, one of the big challenges within industrial AI, and this is something that as AVEVA, it&#8217;s in our blood, it&#8217;s in our core DNA, is that to really leverage any kind of digital technology in the industrial space, one of the first important things you often need to do is gather and correlate data from disparate systems, so that maybe I have telemetry coming off of a pump or a mixer, and I want to be able to correlate that with service logs so I know maybe the last time that someone had done some maintenance on that pump or mixer. And maybe I also want to be able to correlate that with the original design documentation and some of the original documentation on how to maintain that, so that if something is happening, I can do a better job diagnosing what&#8217;s going wrong and how to address it. This has always been a core challenge in the industrial space.</p>
+
+
+
+<p>I think that what&#8217;s happening now is that with newer technologies, even things like graph databases and being able to leverage AI to really match disparate data sets much faster, we&#8217;re able to get to the point where if something goes wrong, instead of an operator maybe needing to spend a little bit of time doing this research to really understand how do these different components fit together of information, they may have just an iPad with an AI that can very quickly go and fetch that information, correlate it and help in real time, almost, diagnose what is happening.</p>
+
+
+
+<p>Even a little bit more out there, but not as out there as you might think is, I still describe this with a human operator with potentially a mobile tablet, but imagine now I can also have a robot moving through that environment also gathering data and either with onboard computation or a quick connection to an operator who doesn&#8217;t necessarily now have to go out into a dangerous, potentially somewhat hazardous space, be able to gather data and enable that very quick diagnostic as well. And I think that&#8217;s really what&#8217;s exciting right now and what all of these new technologies that I&#8217;ve talked about are helping to enable.</p>
+
+
+
+<p>And I think then from our perspective, trying to really leverage all of those means that we have to think a lot now about our governance approach to this. How do we leverage AI in a way that keeps it contained, if you will?</p>
+
+
+
+<p><em>Megan: </em>Yeah, absolutely. And on that governance point, how does AVEVA define responsible AI and what do you see as the primary benefits?</p>
+
+
+
+<p><em>Arti: </em>Yeah, so I think for us, we think about a triple mandate around responsible AI, and that means that it&#8217;s secure, it&#8217;s efficient, and that includes environmentally efficient, and then it really preserves human safety and human oversight above all. And for us, that&#8217;s what some of our core pillars of responsible AI include. And for us, that means we think about internally as we build tools, a multi-layered governance approach where we&#8217;ve got both for how we use AI as a company and then how we deploy AI into our products. We&#8217;ve got a similar framework that we leverage across both, a kind of joint governance model, both around how we&#8217;re leveraging AI and also how we&#8217;re infusing AI into our products to allow our customers to leverage AI in their operations.</p>
+
+
+
+<p>But I would say one of the core foundational principles underneath all of these is that human beings still remain centered in how we think about how AI is leveraged. And so human judgment, human responsibility, human ethics are still core to how we think about where AI can add benefits, and we think about it more as augmenting rather than replacing human beings in critical decision loops, if you will.</p>
+
+
+
+<p><em>Megan: </em>Right, which is such an important distinction, isn&#8217;t it? And in terms of the next phase of development, there&#8217;s growing sentiment that agentic AI will soon allow these industrial systems to operate much more autonomously. I wonder, what makes the risks in industrial settings different from AI risk in a purely digital context? And I suppose on the flip side, what are the benefits and opportunities of that same software defined automation?</p>
+
+
+
+<p><em>Arti:</em> I think we can start with the risks and then go to the benefits. I think ultimately, I would say the biggest risk in the industrial setting is that we are interacting with real physical systems, often physical systems that are very capable of delivering important outcomes that keep our world running, whether that&#8217;s delivering power, whether that&#8217;s mining for natural resources. But usually. Those physical systems are also operating in hazardous environments, the equipment itself is capable of also having human safety implications. Anytime you&#8217;re interfacing software with a physical system that can have real world consequences, you have to be extra careful. And we&#8217;ve always had that, again, we&#8217;ve had that in our DNA at AVEVA from the beginning, being mindful of that end user and that end application, which is not just something on a computer screen.</p>
+
+
+
+<p>Even as we&#8217;ve deployed AI over the past few decades into our systems, we&#8217;ve typically leaned toward really trying to pick the best fit model, really understand that model&#8217;s behavior if we&#8217;re going to use, for example, we have a proprietary anomaly detection model that works in a lot of operational environments. Now, as we&#8217;re thinking about some of these newer AI capabilities, which by design are hard to understand how they behave, they&#8217;re not fundamentally explainable in the way we&#8217;ve thought about even AI or statistical models in the past, and actually their behavior can change over time as they learn and get tuned to new capabilities. That&#8217;s really the potential risk of automating a physical system based on capabilities that can evolve over time is one of the things that we have to be really mindful of and really thoughtful around, where are we willing to put some of that increased automation into practice?</p>
+
+
+
+<p>But at the same time, I think there&#8217;s a real opportunity there, because I glossed over this idea that, okay, well, models evolve, but so do human beings, and sometimes that&#8217;s a good thing. We talk about humans having expertise and they gain understanding over their careers of how a system works. If we can actually leverage the ability of some of these newer AI capabilities, these sort of reasoning models often have underlying agentic capabilities, to learn and gather experience faster, and potentially even more importantly or more valuably, take experience that&#8217;s learned at one site and apply it to another site, then that&#8217;s a real opportunity to take what we already know works for human beings, which is that sometimes you just have to learn by doing and be able to apply that and scale that through AI. That&#8217;s where I see potentially a real opportunity in this space.</p>
+
+
+
+<p>One of the things that we&#8217;re really aware of in the industrial sector is just the way that our workforce is changing. I think that almost half, not quite half, of the industrial workforce is set to retire in the next five years, and that&#8217;s a lot of expertise and experience that means that we&#8217;re going to lose in the sector. If there&#8217;s ways to make sure that we can capture that in ways that are actionable, in ways that can also help a newer generation of workers that are used to experience things in a different way, apply that expertise, apply that knowledge, then I think that&#8217;s a huge opportunity within the industrial space.</p>
+
+
+
+<p><em>Megan:</em> Yeah, absolutely. Clearly, some huge opportunities there particularly against the backdrop of other market and workforce changes as you&#8217;ve outlined there. I suppose building on that, what is the potential for these autonomous industrial AI systems when built and deployed responsibly to facilitate even faster, more sustainable industrial processes?</p>
+
+
+
+<p><em>Arti: </em>I think there&#8217;s a couple different ways to think about this. One is, what are the demands of potentially more environmentally sustainable processes? I&#8217;ll use one example of something that my team has been working on in partnership with Idaho National Laboratory here in the U.S. as part of their testing for AI grid resilience project.</p>
+
+
+
+<p>One of the challenges in the electric grid as we&#8217;re moving toward a future where we have a lot more intermittent renewable power generation sources, often distributed rooftop solar for example, is it&#8217;s becoming much more challenging to manage the grid both from really understanding where electric capacity is coming in, electric load is pulling off of the grid. In addition to that, being able to maintain just power quality because instead of having one spinning asset delivering the frequency of electricity that&#8217;s going across the grid, you&#8217;ve got a lot of smaller systems. AI is actually quite critical for being able to manage that grid of the future. And this is one of the things that we&#8217;ve been working in partnership is, how can we do that? How can we help grid operators better understand what&#8217;s happening across their system, identify where things might be behaving anomalously so they can detect that early and then remediate for it?</p>
+
+
+
+<p>At the same time though, I always talk about that&#8217;s an example of where AI can potentially help us accelerate the transition to a lower carbon energy future. At the same time, I think there&#8217;s a lot of conversation around the sustainability of AI itself. What are the power requirements? What are the resource requirements needed to run AI? And before I get into how do we think about that at AVEVA, because it is definitely something we think about and I think a lot of actors in the space are thinking about, I want to point out, is one of the challenges is that there&#8217;s really no agreed upon method to measure the environmental impact of AI. You see a lot of these stories, like one query on some kind of chat interface is X amount of gallons of water or this amount of electricity use. But the truth is that community-wide, there&#8217;s no agreed upon standard.</p>
+
+
+
+<p>One of the things that I&#8217;m involved with is a standards working group that was launched by the IEEE two years ago, a little over two years ago. I&#8217;m the chair of that working group, it&#8217;s called the P7100 Standards Working Group on measuring the environmental impact of AI. And one of the things we&#8217;re trying to do is really identify all the different areas over which we want to think about environmental sustainability associated with AI, and then having one standard methodology that works and that can be adopted both from a reporting perspective and potentially also from an oversight or regulatory perspective. That becomes really important for any sort of real understanding of how AI impacts the environment is just we have to know, what does it use? We want to look holistically at that. Our standards cover electricity and energy consumption, it covers resource usage, it covers water consumption, and it also covers carbon.</p>
+
+
+
+<p>But all of that said, I think it&#8217;s important for us to understand the footprint of AI, but I think it&#8217;s also important for us to simultaneously recognize that a bigger model uses more compute and more compute probably leverages more resources. The more that we can be intentional and pick the right size model for the right application, the more we can already start down that path of being more environmentally efficient in the AI that we run. One of the potentially nice side effects of that is the more purpose-built a model, the less likely it is to misbehave in unpredictable ways, if you choose correctly your architecture. There&#8217;s some sort of ancillary benefits that go beyond environmental sustainability.</p>
+
+
+
+<p><em>Megan:</em> Fascinating. It&#8217;s really, really interesting to hear some of the work going on behind the scenes there, because I think we&#8217;ll all have heard some of the statistics around the environmental impact, as you say. So, it&#8217;s great to understand some of the work going on there to really clarify that.</p>
+
+
+
+<p>And we&#8217;ve talked a little bit about AI augmenting humans earlier. As systems gain greater autonomy, how should organizations think about that balance between closed loop automation, human in the loop accountability? What guardrails need to be in place? And how are governments and cross-border actors approaching those concerns as well?</p>
+
+
+
+<p><em>Arti: </em>There&#8217;s a lot packed into that question, so I&#8217;ll try to answer it somewhat one by one. First, starting with that sort of balance between closed loop and human in the loop, automation and accountability. One of the things that we talk about in the industrial sector is from human operator to human supervisor of systems, of industrial systems. And if I&#8217;m honest about that, we&#8217;re still trying to figure that out. When a human&#8217;s in a loop in an automated system, you&#8217;re really thinking about a system may process all the data and then make a recommendation.</p>
+
+
+
+<p>We&#8217;ve got a solution that we&#8217;ve been working on more jointly with a few different customers where we&#8217;re able to take in a lot of their operational data, also some simulations of how their systems work, and be able to provide, say, recommendations around, you should now operate at this set point instead of that set point based on some of the other conditions that are changing in your plant. There&#8217;s a lot of interest in moving from having that be a recommended set point to have an automation that can automatically adjust the set point. And we&#8217;ve actually had some successful real-world pilots around that as well.</p>
+
+
+
+<p>But when you get into that, obviously it makes people very nervous if you&#8217;re changing set points on industrial equipment. That&#8217;s where you maybe continue to have some guardrails around like, you can&#8217;t go outside of a certain band, for example, of operations, or we only allow the automation in certain areas. That&#8217;s where the human supervisor, the same way a human supervisor might give employees a lot of bandwidth or a lot of flexibility to make decisions around certain things, around other things, they&#8217;re hard and fast, like this is the deadline or this is the sort of production target. It&#8217;s like that. So thinking about, how do you put the appropriate guardrails?</p>
+
+
+
+<p>The challenge is, AIs are not human beings, and so the guardrails look different, and I think that&#8217;s one of the things that there&#8217;s still to think about. That question of, what guardrails should be put in place? I think that it&#8217;s going to be probably dependent a little bit on the application, but over time I think we&#8217;re all going to learn, and so being really upfront and thoughtful about how we do this I think is important.</p>
+
+
+
+<p>But the opportunity though, potentially, is really great. I&#8217;ve already mentioned that AI can be very useful in synthesizing a lot of information and bringing to the forefront, this is what matters. That&#8217;s something that we do want to create some space to experiment around, but what&#8217;s then important is making sure that a human being understands the risk.</p>
+
+
+
+<p>I&#8217;ll give a little bit of a personal story because it might be illustrative. This weekend, I bought a little toy robot and decided I wanted to program it to do some stuff, and I found AI very, very helpful to get me started to read all the documentation. Putting the robot together was straightforward, they had nice instructions, but there&#8217;s a pretty heavy software developer kit that&#8217;s already there, but going through and reading all that documentation can take a while. AI was super helpful to help me surface, this is the function that does this, to help me get started. But occasionally, it made really bad recommendations on the best way to troubleshoot something.</p>
+
+
+
+<p>That&#8217;s where I think having the human being in the loop, being able to say, &#8220;I know that it&#8217;s not going to be the best software architect or the best troubleshooter,&#8221; is really helpful because I had the opportunity to leverage AI for what it&#8217;s good for, synthesizing and surfacing a lot of information, but being able to say, &#8220;I don&#8217;t think that&#8217;s the most efficient first step. Let&#8217;s try something else.&#8221; That&#8217;s where it&#8217;s a really different way of working, but it&#8217;s something that I think as humans get more comfortable with the power and limitations of AI, you can start to teach people how to work with it, and it&#8217;s very different from how you would work with other digital tools.</p>
+
+
+
+<p>One of the things that is important when it comes to AI is recognizing just the breadth of things that it touches and the breadth of impacts that it&#8217;s going to have, whether it&#8217;s on the environment, as we&#8217;ve discussed, whether it&#8217;s on productivity as sort of implicit in this entire discussion, whether it&#8217;s on labor force, whether it&#8217;s on just how economies work. From my eye, and I&#8217;m by no means a policy expert in this area, but from my eye, what I&#8217;m seeing is that different governments are prioritizing different aspects of that from how they&#8217;re thinking about regulatory and other kind of governance approaches.</p>
+
+
+
+<p><em>Megan: </em>We&#8217;re absolutely seeing some really vastly different approaches to this, aren&#8217;t we, around the world? I wondered to illustrate some of this, if you could share perhaps some case studies you&#8217;ve seen, maybe talking us through what lessons they could hold for other organizations perhaps a little earlier in their own AI journeys.</p>
+
+
+
+<p><em>Arti:</em> I think a lot of the key areas where we&#8217;re seeing very clear benefits of adopting AI in the industrial sector, the core to all of them is actually getting the data right and getting the right foundation of data so that you can build AI on top of it.</p>
+
+
+
+<p>One of our customers, SCG Chemicals, which is a petrochemical company in Thailand, they had this vision of producing a reliability platform for their operations that was as AI-driven as possible. But a core part of that was actually getting the data right, being able to have all of their information in the right place, leveraging some of AVEVA&#8217;s tools to do that. Bringing together operational data and also engineering data. And then putting on top of that AI capabilities, in this case, one of our capabilities called AVEVA Predictive Analytics that deploys some proprietary models to do things like detect anomalies, so that they could really much earlier identify potential operational risks. And instead of having unplanned downtime, translate that to planned downtime. When you translate unplanned downtime to planned downtime, you can get a huge improvement in plant reliability.</p>
+
+
+
+<p>At this point they&#8217;re targeting something like 99% plant reliability and a very, very high return on investment from the platform that they put in place. Again, in early pilot days, it was almost a 9x ROI, and so that&#8217;s really quite impressive. But what I want to emphasize is that it&#8217;s kind of a multi-layered problem to get it right.</p>
+
+
+
+<p><em>Megan:</em> Those are some really striking results, though. I mean, for industrial leaders who perhaps are still hesitant to explore AI, I wonder, what do you think is the cost of taking a more wait and see approach?</p>
+
+
+
+<p><em>Arti: </em>I think, again, this is an area where the industrial sector has a little bit of a different calculus to apply to this type of problem. In general, I think you would hear most business experts say that you can&#8217;t afford to take a wait and see approach to AI because it is so transformative across every sector of society and economy, and certainly in the industrial space, we&#8217;re not immune to that. But I do think that some of the challenges that I&#8217;ve outlined today also puts leaders in the industrial space into a mindset of sometimes potentially being a fast follower rather than the first adopter of newer technologies, just because the risk is so high.</p>
+
+
+
+<p>But that being said, I think one of the challenges is that the risks that we&#8217;ve covered today around infusing systems that don&#8217;t always behave predictably with physical systems is that I don&#8217;t know that there&#8217;s a lot of other sectors that are going to be solving those problems. That&#8217;s where what I&#8217;m seeing is actually a lot of interest and excitement in trying new things and willingness to do that because there&#8217;s a recognition that applied correctly and applied with the right guardrails and safeguards in place, these technologies really have truly transformative potential from a resource usage standpoint, from a human safety standpoint, from a productivity standpoint.</p>
+
+
+
+<p>I think the calculus has shifted a little bit in the sector to we want to actually try these things out. But then it becomes more, how do we try these things out in environments that we can make a little bit more sandboxed or safe to test out what some of the unique challenges we&#8217;re going to face in the industrial sector are?</p>
+
+
+
+<p><em>Megan: </em>Yeah, absolutely. It&#8217;s just hard to ignore the potential nowadays, isn&#8217;t it? And just to close with a slightly future forward look, I suppose, what are you most enthusiastic about in terms of the long-term potential of responsible autonomous industrial AI systems?</p>
+
+
+
+<p><em>Arti: </em>Yeah. Well, I think that there&#8217;s a couple of different trajectories. One of the things that I think within the next 18 months for sure, we&#8217;re going to see an increase of people with deep domain expertise who maybe didn&#8217;t grow up with a software background, be able to adopt AI assisted coding techniques to really be able to build the things that they weren&#8217;t able to build before.<br><br>That&#8217;s really exciting in my career, which way back when I was actually an industrial data scientist, I would say I always felt the most energized and that I learned the most talking to the people that were on the front lines of operations, having to monitor a lot of different equipment and understanding how it all worked together. They really have a lot of expertise, and being able to put in their hands the ability to very quickly develop new applications is I think going to really lead to a lot of new ideas that many of us in the industrial software space maybe wouldn&#8217;t even have thought about and really understood how to put. I think that&#8217;s really exciting.</p>
+
+
+
+<p>I think then looking beyond that, I was a little bit of a, not to say a robotic skeptic, because clearly robotics and autonomous systems are going to be important, especially given the types of environments, whether they&#8217;re hazardous or remote, that industrial equipment operates in. But I just actually think things are moving a lot faster than I had anticipated. I&#8217;m really interested to see how these physical embodiments of AI systems start to really transform, again, how we think about operations.</p>
+
+
+
+<p>One of the things about any new technology in any environment is that to really gain value from it, you have to change the way you do things. I would say for close to 10 years now, I&#8217;ve been giving talks on AI adoption and I always say the biggest barrier to AI adoption is not anything to do with the technology. It&#8217;s not even to do with the data, although data are often the biggest sticking point, it&#8217;s really to do with, are you going to change your business processes to be able to work with the way this technology is good or not good at things?</p>
+
+
+
+<p>Autonomous systems, whether they&#8217;re robots or drones, are really going to change the way that we work in plants, in power systems, on mining sites. And I think that will make these types of operations more efficient, much safer for the human beings involved and more productive. So, I&#8217;m quite excited about that.</p>
+
+
+
+<p>I don&#8217;t know entirely what direction it will go, but one of the things that I think about a lot is that if you go back to <em>I, Robot</em> and Isaac Asimov&#8217;s book, the premise of those was that robotics would be the first broadly adopted AI, not computer-based systems. We went in the other direction and I think it&#8217;s really interesting to now see all of this converging.</p>
+
+
+
+<p><em>Megan: </em>Yeah, absolutely. See robotics catches up a bit. So many exciting things on the horizon, that&#8217;s for sure. Thank you so much, for your time.</p>
+
+
+
+<p>That was Arti Garg, chief technologist at AVEVA, whom I spoke with from Brighton in England.</p>
+
+
+
+<p>That&#8217;s it for this episode of Business Lab. I&#8217;m your host, Megan Tatum. I&#8217;m a contributing editor at Insights, the custom publishing division of MIT Technology Review. We were founded in 1899 at the Massachusetts Institute of Technology, and you can find us in print, on the web, and at events each year around the world. For more information about us and the show, please check out our website at technologyreview.com.</p>
+
+
+
+<p>This show is available wherever you get your podcasts. And if you enjoyed us, we hope you&#8217;ll take a moment to rate and review us. Business Lab is a production of MIT Technology Review, and this episode was produced by Giro Studios. Thank you so much for listening. Goodbye.</p>
+
+
+
+<p>Learn more at <a href="https://www.aveva.com?utm_source=mit&amp;utm_medium=audio&amp;utm_campaign=brand&amp;utm_term=global&amp;utm_adgroup=prospecting&amp;utm_content=mit-audio-cta">aveva.com</a>.</p>
+
+
+
+<p><em>This content was produced by Insights, MIT Technology Review’s custom content arm, not its editorial staff. It was researched and written by humans, with any AI tools that may have been used limited to production processes under human oversight.</em></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1144020</post-id>	</item>
+		<item>
+		<title>Connecting AI agents to enterprise knowledge</title>
+		<link>https://www.technologyreview.com/2026/10/05/1145580/connecting-ai-agents-to-enterprise-knowledge/</link>
+		
+		<dc:creator><![CDATA[MIT Technology Review Insights]]></dc:creator>
+		<pubDate>Mon, 05 Oct 2026 15:47:52 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[sponsored]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145580</guid>
+
+					<description><![CDATA[For all the data that AI systems continually amass and analyze, enterprise AI agents often suffer from a curious shortcoming: a lack of knowledge. More than data, knowledge is the understanding of what the data means in the context of individual organizations. AI agents need this understanding to reason about situations, make decisions, and ultimately&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p>For all the data that AI systems continually amass and analyze, enterprise AI agents often suffer from a curious shortcoming: a lack of knowledge. More than data, knowledge is the understanding of what the data means in the context of individual organizations. AI agents need this understanding to reason about situations, make decisions, and ultimately take actions. Without sufficient knowledge, agents are prone to making flawed and unreliable decisions. </p>
+
+
+
+<p>A lack of knowledge, our research finds, is a major reason agentic AI use cases never make it to production. Competitive pressure is making it urgent to address this. Organizations need to deploy and scale more of their agentic projects to capture the efficiency gains AI promises. Falling short risks wasting the investment already sunk into these projects, and it cedes ground to rivals already putting their agents to work more effectively.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><a href="https://neo4j.com/whitepapers/mit-knowledge-layer/" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="1240" height="1594" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Report-2026-cover.png" alt="" class="wp-image-1145582" style="aspect-ratio:0.7779240887319664;width:443px;height:auto" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Report-2026-cover.png 1240w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Report-2026-cover.png?resize=233,300 233w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Report-2026-cover.png?resize=768,987 768w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Report-2026-cover.png?resize=1195,1536 1195w" sizes="auto, (max-width: 1240px) 100vw, 1240px" /></a></figure>
+
+
+
+<div class="wp-block-buttons is-content-justification-left is-layout-flex wp-container-core-buttons-is-layout-fc4fd283 wp-block-buttons-is-layout-flex">
+<div class="wp-block-button has-custom-width wp-block-button__width-auto is-style-fill is-style-fill--1"><a class="wp-block-button__link has-mittr-white-color has-text-color has-background has-custom-font-size wp-element-button" href="https://neo4j.com/whitepapers/mit-knowledge-layer/" style="border-radius:4px;background-color:#ff8e5a;font-size:16px" target="_blank" rel="noreferrer noopener">DOWNLOAD THE REPORT</a></div>
+</div>
+
+
+
+<p>The purpose of this report, which is based on a survey of 300 data, AI, and other technology executives, is threefold. First, it seeks to gauge organizations’ agentic knowledge capabilities (i.e., their ability to give AI agents a full contextual understanding of the data they ingest) across semantic knowledge, episodic memory, and procedural knowledge. </p>
+
+
+
+<p>Second, the report probes the challenges organizations face in improving access to knowledge and ultimately to getting more agent use cases into production. Third, it explores the measures organizations are taking to overcome these challenges. </p>
+
+
+
+<figure class="wp-block-image size-full"><a href="https://neo4j.com/whitepapers/mit-knowledge-layer/" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="1200" height="660" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Social-Card-3.png" alt="" class="wp-image-1145585" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Social-Card-3.png 1200w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Social-Card-3.png?resize=300,165 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/Neo4j-Social-Card-3.png?resize=768,422 768w" sizes="auto, (max-width: 1200px) 100vw, 1200px" /></a></figure>
+
+
+
+<p>The key findings include the following: </p>
+
+
+
+<p><strong>Data and knowledge weaknesses consistently stall AI agent progress.</strong> On average, only around a third (34%) of organizations’ agentic AI projects make it into production. Even high-tech firms struggle with this. Legacy data systems, security and privacy concerns, and a lack of knowledge and context are the key points of failure. </p>
+
+
+
+<p><strong>Strong knowledge capabilities correlate with agent success.</strong> A small group of production leaders (organizations where on average 61% of agentic projects advance beyond pilot) have stronger knowledge capabilities than the rest, especially when it comes to semantics. This advantage tracks closely with their higher production rate. </p>
+
+
+
+<p><strong>Fragmented data hugely complicates knowledge access. </strong>Data fragmentation (the inadequate sharing of data across systems) was most commonly cited as a top challenge to expanding agents’ access to knowledge (cited by 55%). Production leaders, by contrast, are more likely to see security and privacy concerns as a major concern (cited by 72% of this group).</p>
+
+
+
+<p><strong>Most firms aim to strengthen the link between data and agents.</strong> Among steps that can yield higher quality agent decisions, executives expect the biggest impact to come from strengthening the structural foundation between the organization’s data and its AI agents. The experts we interviewed see a knowledge layer as a prime way to achieve this.</p>
+
+
+
+<p><strong>Investment priorities to boost knowledge range from pipelines to knowledge graphs. </strong>To expand agent access to knowledge, organizations will prioritize investments in retrieval technologies, like ingestion pipelines, AI-ready APIs, and retrieval-augmented generation (RAG); in AI evaluation agents; and in knowledge graphs.</p>
+
+
+
+<p><strong><span style="text-decoration: underline;"><a href="https://neo4j.com/whitepapers/mit-knowledge-layer/" target="_blank" rel="noreferrer noopener">Download the report</a></span></strong></p>
+
+
+
+<p><em>This content was produced by Insights, MIT Technology Review’s custom content arm, not its editorial staff. It was researched and written by humans, with any AI tools that may have been used limited to production processes under human oversight.</em></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145580</post-id>	</item>
+		<item>
+		<title>Bringing predictive analytics to the agentic AI era </title>
+		<link>https://www.technologyreview.com/2026/10/05/1143813/bringing-predictive-analytics-to-the-agentic-ai-era/</link>
+		
+		<dc:creator><![CDATA[MIT Technology Review Insights]]></dc:creator>
+		<pubDate>Mon, 05 Oct 2026 13:29:32 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[sponsored]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1143813</guid>
+
+					<description><![CDATA[In 2026, the question for enterprise AI is no longer whether predictive models can outperform statistical forecasts—that argument is settled. The big question now is how to enable predictive systems to act on their own conclusions without drifting from business intent. The frontier has moved from prediction to autonomous decision making, and the gap between&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p>In 2026, the question for enterprise AI is no longer whether predictive models can outperform statistical forecasts—that argument is settled. The big question now is how to enable predictive systems to act on their own conclusions without drifting from business intent. The frontier has moved from prediction to autonomous decision making, and the gap between leaders and laggards is widening accordingly.</p>
+
+
+
+<p>“Enterprises are done with a backward-looking point of view; they want to be more forward-thinking,” says Vishal Gupta, partner at research firm Everest Group.</p>
+
+
+
+<figure class="wp-block-image size-large is-resized"><a href="https://www.tp.com/en-us/insights-list/white-papers/mit-technology-review-insights-bringing-predictive-analytics-to-the-agentic-ai-era/?utm_source=partner&amp;utm_medium=blog_article&amp;utm_campaign=GMT_MITTR_PredictiveAnalytics_26_10&amp;utm_term=website_traffic&amp;utm_content=white_paper" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" height="2000" width="1555" src="https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png?w=840" alt="" class="wp-image-1143815" style="aspect-ratio:0.7776765178145206;width:519px;height:auto" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png 2480w, https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png?resize=233,300 233w, https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png?resize=768,988 768w, https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png?resize=1555,2000 1555w, https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png?resize=1195,1536 1195w, https://wp.technologyreview.com/wp-content/uploads/2026/09/MIT_TP_CoverPredictiveAnalyticsV9_9926.png?resize=1593,2048 1593w" sizes="auto, (max-width: 1555px) 100vw, 1555px" /></a></figure>
+
+
+
+<div class="wp-block-buttons is-content-justification-left is-layout-flex wp-container-core-buttons-is-layout-fc4fd283 wp-block-buttons-is-layout-flex">
+<div class="wp-block-button has-custom-width wp-block-button__width-auto is-style-fill is-style-fill--2"><a class="wp-block-button__link has-mittr-white-color has-text-color has-background has-custom-font-size wp-element-button" href="https://www.tp.com/en-us/insights-list/white-papers/mit-technology-review-insights-bringing-predictive-analytics-to-the-agentic-ai-era/?utm_source=partner&amp;utm_medium=blog_article&amp;utm_campaign=GMT_MITTR_PredictiveAnalytics_26_10&amp;utm_term=website_traffic&amp;utm_content=white_paper" style="border-radius:4px;background-color:#f98220;font-size:16px" target="_blank" rel="noreferrer noopener">DOWNLOAD THE REPORT</a></div>
+</div>
+
+
+
+<p>Intelligent analytics, powered by technologies like deep learning and generative AI, are making this possible. Real-time training allows AI to evolve continuously instead of waiting for quarterly refreshes. In addition, the data that newer predictive engines rely upon has expanded to encompass not just neat, numerical records but also messy, unstructured sources of insight-rich interactions. As a result, AI-powered analytics are moving enterprises from passive hindsight to pragmatic foresight. </p>
+
+
+
+<figure class="wp-block-image size-full"><a href="https://www.tp.com/en-us/insights-list/white-papers/mit-technology-review-insights-bringing-predictive-analytics-to-the-agentic-ai-era/?utm_source=partner&amp;utm_medium=blog_article&amp;utm_campaign=GMT_MITTR_PredictiveAnalytics_26_10&amp;utm_term=website_traffic&amp;utm_content=white_paper" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="1200" height="675" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/MITTR2026_TP3_SocialsV3_DannyKQuote.png" alt="" class="wp-image-1145596" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/MITTR2026_TP3_SocialsV3_DannyKQuote.png 1200w, https://wp.technologyreview.com/wp-content/uploads/2026/10/MITTR2026_TP3_SocialsV3_DannyKQuote.png?resize=300,169 300w, https://wp.technologyreview.com/wp-content/uploads/2026/10/MITTR2026_TP3_SocialsV3_DannyKQuote.png?resize=768,432 768w" sizes="auto, (max-width: 1200px) 100vw, 1200px" /></a></figure>
+
+
+
+<p>AI takes predictive analytics—a broad discipline that includes predictive modeling, data prep, analysis workflows, interpretation of results, and decision-making applications—to new heights. “In many ways I think the word ‘analytics’ is giving way to AI,” says Gupta. “Everything is becoming AI.”</p>
+
+
+
+<p><strong><span style="text-decoration: underline;"><a href="https://www.tp.com/en-us/insights-list/white-papers/mit-technology-review-insights-bringing-predictive-analytics-to-the-agentic-ai-era/?utm_source=partner&amp;utm_medium=blog_article&amp;utm_campaign=GMT_MITTR_PredictiveAnalytics_26_10&amp;utm_term=website_traffic&amp;utm_content=white_paper" target="_blank" rel="noreferrer noopener">Download the report</a></span></strong></p>
+
+
+
+<p><em>This content was produced by Insights, MIT Technology Review’s custom content arm, not its editorial staff. It was researched and written by humans, with any AI tools that may have been used limited to production processes under human oversight.</em></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1143813</post-id>	</item>
+		<item>
+		<title>People really hate AI, so why can’t they get enough?</title>
+		<link>https://www.technologyreview.com/2026/10/05/1145682/people-really-hate-ai-so-why-cant-they-get-enough/</link>
+		
+		<dc:creator><![CDATA[Will Douglas Heaven]]></dc:creator>
+		<pubDate>Mon, 05 Oct 2026 08:00:00 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[App]]></category>
+		<category><![CDATA[Summary]]></category>
+		<category><![CDATA[The Algorithm]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145682</guid>
+
+					<description><![CDATA[Over the summer I talked to the CEO of Springboards, a startup building an LLM that’s designed to come up with a wider variety of responses than its mainstream rivals do. At the start of the call, he said something that’s been stuck in my head since: “We often say that we’re a self-loathing AI&#8230;]]></description>
+										<content:encoded><![CDATA[<div data-chronoton-summary="&lt;ul&gt;&lt;br&gt;&lt;li&gt;&lt;strong&gt;People hate AI and can&#039;t stop using it:&lt;/strong&gt; More US adults expect AI to hurt them than help them—yet ChatGPT just hit a billion monthly users. The Venn diagram of AI skeptics and AI users is rapidly becoming a circle.&lt;/li&gt;&lt;br&gt;&lt;li&gt;&lt;strong&gt;It&#039;s not the tech, it&#039;s the push:&lt;/strong&gt; The real frustration isn&#039;t artificial intelligence itself—it&#039;s the relentless corporate drive to inject it everywhere, while promising the biggest social upheaval in generations.&lt;/li&gt;&lt;br&gt;&lt;li&gt;&lt;strong&gt;This time might actually be different:&lt;/strong&gt; Unlike social media&#039;s walled gardens, AI still offers genuine consumer choice and real regulatory momentum—all 50 US states have passed or proposed AI laws.&lt;/li&gt;&lt;br&gt;&lt;/ul&gt;" data-chronoton-post-id="1145682" data-chronoton-expand-collapse="1" data-chronoton-analytics-enabled="1"></div>
+
+
+<p>Over the summer I talked to the CEO of Springboards, a startup building an LLM that’s designed to come up with a<a href="https://www.technologyreview.com/2026/07/01/1140003/llms-are-stuck-in-a-groupthink-rut-this-startup-is-trying-to-get-them-out/"> wider variety of responses</a> than its mainstream rivals do. At the start of the call, he said something that’s been stuck in my head since: “We often say that we’re a self-loathing AI company. We don’t know if we really like what we’re doing.”</p>
+
+
+
+<p>“I guess that makes me a self-loathing AI journalist,” I replied. It was a joke! I love my job. But I do not love many of the things the technology I write about has become: <a href="https://www.technologyreview.com/2025/12/15/1129174/the-great-ai-hype-correction-of-2025/">warped by hype</a>,<a href="https://www.technologyreview.com/2025/10/30/1127057/agi-conspiracy-theory-artifcial-general-intelligence/"> steered by zealots</a>, <a href="https://www.technologyreview.com/2026/04/21/1135921/ai-malaise-artificial-intelligence-public-sentiment/">inescapable</a>.</p>
+
+
+
+<p>The CEO of Springboards and I are far from alone. Around the world, a love/hate attitude toward AI is very much the vibe right now.</p>
+
+
+
+<p>On the one hand, public feelings are souring fast. According to the <a href="https://www.pewresearch.org/internet/2026/06/17/americans-and-ai-2026-chatbots-smart-devices-and-views-on-impact/">Pew Research</a> Center, more adults in the US think AI will have a negative impact on them personally, and on society in general, than expect a positive one. The pessimism is strongest among the young.</p>
+
+
+
+<p>More than half of people worldwide say that AI products and services make them nervous, according to a <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report">report from Stanford University</a>. In a Gallup poll in May, 71% of US adults said they would oppose construction of a new AI data center in their area, far more than the 53% who said they would oppose a new nuclear power plant. And in an NBC poll in March, AI was less popular than ICE.</p>
+
+
+
+<p>Yet the number of people using AI is still skyrocketing. ChatGPT hit a billion monthly users in May, according to the market analysis firm Sensor Tower. Google DeepMind’s Gemini is close behind, logging 950 million users in July.</p>
+
+
+
+
+
+<p>According to Pew, half of US adults now <a href="https://www.pewresearch.org/internet/2026/06/17/americans-and-ai-2026-chatbots-smart-devices-and-views-on-impact/">say they use a chatbot</a>, more than twice the number who said they did in 2023. One in four people say they do so every day. And it’s a global habit: More than a third of adults across all 38 OECD countries (a group of the world’s wealthiest democracies) <a href="https://www.oecd.org/en/about/news/announcements/2026/01/ai-use-by-individuals-surges-across-the-oecd-as-adoption-by-firms-continues-to-expand.html">report having used generative AI tools in the last three months</a>.</p>
+
+
+
+<p>All these surveys paint a picture of two contradictory truths: A lot of people really do not like AI and a lot of people cannot get enough of it. What’s going on?</p>
+
+
+
+<p>It’s possible that these are two distinct groups, but I doubt it. The numbers don’t add up unless the Venn diagram is on its way to being a circle.</p>
+
+
+
+<p>It’s also possible that the more people use AI, the more negative their opinions about it will be. There’s at least a <a href="https://hai.stanford.edu/ai-index/2025-ai-index-report">correlation to back this up</a>: The Global North, where adoption is highest, skews pessimistic. In the Global South, where adoption levels are lower, people are more optimistic.</p>
+
+
+
+<p>But here’s what I really think is going on: When people say they hate AI it’s not the technology they dislike but, rather, the relentless drive of the companies behind it to push the tech upon us in <a href="https://www.technologyreview.com/2025/05/21/1117251/by-putting-ai-into-everything-google-wants-to-make-it-invisible/">as many ways as possible</a>. They’re telling us to brace for the biggest social and economic upheaval in generations. How do they expect people to feel?</p>
+
+
+
+<p>In many ways, we’ve been here before. We saw a similar dynamic play out with social media over the last 20 years. Billions flocked to Facebook and Twitter despite mounting techlash against the companies that ran those services. Ditto for Google search.</p>
+
+
+
+<p>With social media there wasn’t much anyone could do. Quitting a platform meant losing all your content and connections, giving you the choice to suck it up or start over. But with AI there’s still a chance for people to have some sway. There’s certainly more political appetite for regulation this time around. All 50 US states have either passed or proposed <a href="https://www.ailawsbystate.com/trends">laws governing the development and deployment of AI</a>, creating a patchwork of more than 2,100 bills across the country—a tenfold increase in three years. </p>
+
+
+
+<p>And with a number of top-class open-source alternatives to Google and OpenAI and Anthropic already on the market, there’s also (for now, at least) the potential for more consumer choice and the market pressure that goes with it.&nbsp;</p>
+
+
+
+<p>I don’t want to be naïve. Trillion-dollar companies are hard to move. But what comes next is not as inevitable as those companies often imply. When I asked the Springboards CEO why his firm was developing a new model if he didn’t really like AI, he told me there was no walking back from LLMs—but you could still make them do something different.&nbsp;</p>
+
+
+
+<p>Here’s hoping we see a lot more of something different: Clarity about what AI can and cannot do and, crucially, a technology that&#8217;s not sold as if it’s about to take over the world.</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145682</post-id>	</item>
+		<item>
+		<title>EmTech Future 2026: When AI Meets Everything</title>
+		<link>https://www.technologyreview.com/2026/10/05/1145413/emtech-future-2026-when-ai-meets-everything/</link>
+		
+		<dc:creator><![CDATA[MIT Technology Review]]></dc:creator>
+		<pubDate>Mon, 05 Oct 2026 04:00:00 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145413</guid>
+
+					<description><![CDATA[Yossi Matias, Vice President &#38; Head of Google Research, explores how AI is beginning to reshape biology, infrastructure, manufacturing, and science, and why its greatest impact may come when it intersects with other fields.&#160; Step inside the newsroom with our MIT Technology Review editors for sharp analysis and unpublished insights from the team that researches&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p></p>
+
+
+
+<p>Yossi Matias, Vice President &amp; Head of Google Research, explores how AI is beginning to reshape biology, infrastructure, manufacturing, and science, and why its greatest impact may come when it intersects with other fields.&nbsp;</p>
+
+
+
+<figure class="wp-block-embed is-type-video is-provider-vimeo wp-block-embed-vimeo wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="When AI Meets Everything" src="https://player.vimeo.com/video/1231715751?h=a22615dfc6&amp;dnt=1&amp;app_id=122963" width="500" height="281" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div></figure>
+
+
+
+<p>Step inside the newsroom with our MIT Technology Review editors for sharp analysis and unpublished insights from the team that researches and reports on emerging tech daily.&nbsp;</p>
+
+
+
+<figure class="wp-block-embed is-type-video is-provider-vimeo wp-block-embed-vimeo wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<iframe loading="lazy" title="MIT Technology Review Insiders Panel" src="https://player.vimeo.com/video/1231722664?h=ac651ca975&amp;dnt=1&amp;app_id=122963" width="500" height="281" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div></figure>
+
+
+
+<p></p>
+
+
+
+<h2 class="wp-block-heading"><strong>There’s much more to discover</strong>&nbsp;</h2>
+
+
+
+<p>These are just&nbsp;two&nbsp;sessions from&nbsp;<strong>EmTech&nbsp;Future 2026</strong>.</p>
+
+
+
+<p>Across three days,&nbsp;EmTech&nbsp;Future explored some of the most important questions shaping technology right now: how AI is&nbsp;impacting industries, where quantum is heading, what new energy systems could make possible, how robotics are evolving, and what&nbsp;challenges and&nbsp;opportunities&nbsp;arise&nbsp;when these technologies start to converge.&nbsp;&nbsp;</p>
+
+
+
+<p><strong>Hear the ideas, insights, and perspectives you missed at&nbsp;EmTech&nbsp;Future&nbsp;2026.</strong>&nbsp;</p>
+
+
+
+<p>The full&nbsp;program&nbsp;is now available on demand, giving you access to&nbsp;all&nbsp;the conversations and sessions from the event, including:&nbsp;</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Qua</strong><strong>ntum in context</strong>&nbsp;Hartmut Neven,&nbsp;founder and lead at&nbsp;Google Quantum AI, explores&nbsp;how quantum is advancing alongside other frontiers&nbsp;and why its significance may lie not only in what it can do on its own, but in how it begins to interact with the systems around it.&nbsp;</li>
+</ul>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Energy Systems for the&nbsp;Future</strong>&nbsp;Evelyn&nbsp;Wang, VP for&nbsp;energy &amp;&nbsp;climate at MIT, explores how energy, computing, infrastructure, and climate technologies are increasingly interconnected, and what these converging systems could mean for the future of industry and society.&nbsp;</li>
+</ul>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Rethinking our relationship with AI</strong>&nbsp;–Cory Doctorow, bestselling author and award-winning writer, explores how AI is changing the way we work and think.&nbsp;</li>
+</ul>
+
+
+
+<p>As an&nbsp;MIT Technology Review subscriber,&nbsp;you’ll&nbsp;get a&nbsp;<strong>20% discount</strong>,&nbsp;meaning you can access the full&nbsp;EmTech&nbsp;Future 2026 program&nbsp;for just $596.&nbsp;</p>
+
+
+
+<div class="wp-block-buttons is-content-justification-left is-layout-flex wp-container-core-buttons-is-layout-fc4fd283 wp-block-buttons-is-layout-flex">
+<div class="wp-block-button has-custom-width wp-block-button__width-auto is-style-fill is-style-fill--3"><a class="wp-block-button__link has-mittr-black-color has-text-color has-background has-custom-font-size wp-element-button" href="https://ter.li/ETF26_On-Demand_WEB" style="border-radius:4px;background-color:#ff4433;font-size:16px">ACCESS FULL PROGRAM</a></div>
+</div>
+
+
+
+<figure class="wp-block-image size-full"><a href="https://ter.li/ETF26_On-Demand_WEB"><img loading="lazy" decoding="async" width="700" height="220" src="https://wp.technologyreview.com/wp-content/uploads/2026/10/EFT_On-Demad_WEB.png" alt="" class="wp-image-1145622" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/10/EFT_On-Demad_WEB.png 700w, https://wp.technologyreview.com/wp-content/uploads/2026/10/EFT_On-Demad_WEB.png?resize=300,94 300w" sizes="auto, (max-width: 700px) 100vw, 700px" /></a></figure>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145413</post-id>	</item>
+		<item>
+		<title>Redefining enterprise intelligence with autonomous AI</title>
+		<link>https://www.technologyreview.com/2026/10/02/1143774/redefining-enterprise-intelligence-with-autonomous-ai/</link>
+		
+		<dc:creator><![CDATA[MIT Technology Review Insights]]></dc:creator>
+		<pubDate>Fri, 02 Oct 2026 15:49:04 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[sponsored]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1143774</guid>
+
+					<description><![CDATA[Enterprise AI is no longer a future ambition. It is in full operational flight. Model capabilities are advancing faster than most organizations can absorb, while the cost of performance continues to fall. Globally, AI investment is set to reach $2.5 trillion in 2026, up 44% from the previous year. For many enterprises, this investment has&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p>Enterprise AI is no longer a future ambition. It is in full operational flight. Model capabilities are advancing faster than most organizations can absorb, while the cost of performance continues to fall. Globally, AI investment is set to reach $2.5 trillion in 2026, up 44% from the previous year.</p>
+
+
+
+<p>For many enterprises, this investment has produced fragmentation. Intelligence can accumulate in silos so that sales agents are unaware of open support tickets, for instance, or marketing systems are personalizing content without visibility into what finance already knows about a customer. Each function may perform well in isolation, but the enterprise as a whole learns little and has less information to act upon.</p>
+
+
+
+<figure class="wp-block-image size-full is-resized"><a href="https://technologyreview.tradepub.com/free/w_defa11857/prgm.cgi" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="1240" height="1557" src="https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Report-2026-UPDATE-cover.png" alt="" class="wp-image-1143777" style="aspect-ratio:0.7964090484867339;width:432px;height:auto" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Report-2026-UPDATE-cover.png 1240w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Report-2026-UPDATE-cover.png?resize=239,300 239w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Report-2026-UPDATE-cover.png?resize=768,964 768w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Report-2026-UPDATE-cover.png?resize=1223,1536 1223w" sizes="auto, (max-width: 1240px) 100vw, 1240px" /></a></figure>
+
+
+
+<div class="wp-block-buttons is-content-justification-left is-layout-flex wp-container-core-buttons-is-layout-fc4fd283 wp-block-buttons-is-layout-flex">
+<div class="wp-block-button has-custom-width wp-block-button__width-auto is-style-fill is-style-fill--4"><a class="wp-block-button__link has-mittr-white-color has-text-color has-background has-custom-font-size wp-element-button" href="https://technologyreview.tradepub.com/free/w_defa11857/prgm.cgi" style="border-radius:4px;background-color:#592988;font-size:16px" target="_blank" rel="noreferrer noopener">DOWNLOAD THE REPORT</a></div>
+</div>
+
+
+
+<p>The shift from AI as a tool to AI as an operating model—what we call the “agentic shift” in this report—demands something more fundamental than better models or faster infrastructure. It requires connecting people, processes, and data in real time, along with the governance and control to act on that intelligence reliably.</p>
+
+
+
+<p>This means rethinking both architecture and operating models simultaneously. First, rebuilding data infrastructure for accessibility rather than volume. Second, replacing fixed tech stacks with composable architectures that can evolve as models and tools change. And, lastly, resolving questions of AI sovereignty, including where intelligence runs, who controls it, and how it operates across organizational and jurisdictional boundaries.</p>
+
+
+
+<figure class="wp-block-image size-full"><a href="https://technologyreview.tradepub.com/free/w_defa11857/prgm.cgi" target="_blank" rel=" noreferrer noopener"><img loading="lazy" decoding="async" width="1200" height="660" src="https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Social-Card-2-1.png" alt="" class="wp-image-1143779" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Social-Card-2-1.png 1200w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Social-Card-2-1.png?resize=300,165 300w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Uniphore-Social-Card-2-1.png?resize=768,422 768w" sizes="auto, (max-width: 1200px) 100vw, 1200px" /></a></figure>
+
+
+
+<p>Key findings include the following:</p>
+
+
+
+<p><strong>Enterprise AI’s scaling problem is structural. </strong>Process-first companies are pulling ahead. Global AI spending is rising sharply and model capabilities are advancing faster than most organizations can integrate them. Yet the majority of enterprises are still not growing revenue through AI or fundamentally rethinking how they operate. The companies generating sustained returns share a common discipline. They treat process redesign as the work that precedes model selection, building for how the technology will evolve rather than retrofitting roles and workflows after deployment. For them, the agentic shift begins with the operating model.</p>
+
+
+
+<p><strong>Data readiness, not data abundance, is what makes AI compoundable. </strong>Most enterprises discover too late that having data and having AI-ready data are very different things. A sovereign, composable foundation—one that queries and prepares data where it resides, without migration or centralization—can convert raw data estates into intelligence that AI agents can act upon. As data residency laws, multicloud environments, and structural complexity make centralization increasingly impractical, sovereign control over where models run and data lives is what keeps that adaptability intact.</p>
+
+
+
+<p><strong><span style="text-decoration: underline;"><a href="https://technologyreview.tradepub.com/free/w_defa11857/prgm.cgi" target="_blank" rel="noreferrer noopener">Download the report.</a></span></strong></p>
+
+
+
+<p><em>This content was produced by Insights, MIT Technology Review’s custom content arm, not its editorial staff. It was researched and written by humans, with any AI tools that may have been used limited to production processes under human oversight.</em><br><br><br><br><br></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1143774</post-id>	</item>
+		<item>
+		<title>Don’t be fooled—LLMs don’t reason</title>
+		<link>https://www.technologyreview.com/2026/10/02/1145639/dont-be-fooled-llms-dont-reason/</link>
+		
+		<dc:creator><![CDATA[Thore Graepel]]></dc:creator>
+		<pubDate>Fri, 02 Oct 2026 08:00:00 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[App]]></category>
+		<category><![CDATA[Opinion]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145639</guid>
+
+					<description><![CDATA[On an afternoon in Seoul in March 2016, I watched a program I helped build put a stone on the fifth line of a Go board in what looked like a gift to its human opponent. Move 37 in game two of the five-game match looked so absurd that some commentators thought it was a&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p>On an afternoon in Seoul in March 2016, I watched a program I helped build put a stone on the fifth line of a Go board in what looked like a gift to its human opponent. Move 37 in game two of the five-game match looked so absurd that some commentators thought it was a programming glitch. </p>
+
+
+
+<p>It wasn’t. AlphaGo won the game, ultimately triumphing 4-1 over Lee Sedol, one of the greatest professional Go players of all time. “I thought AlphaGo was based on probability calculation and that it was merely a machine,” Lee <a href="https://vialogue.wordpress.com/2018/02/16/alphago-reflections-and-quotes/">said afterwards</a>. “But when I saw this move, I changed my mind. Surely, AlphaGo is creative.” </p>
+
+
+
+<p>When Deep Blue defeated then reigning world chess champion Garry Kasparov in 1997, it did so by looking six to eight moves ahead per player and evaluating 200 million chess positions per second, using rules hard-coded by humans. Go is a vastly more complex game. A stone’s worth depends on how distant groups and territory unfold over dozens of moves. Computing even a fraction of the possible outcomes would take a supercomputer billions of years. To win, AlphaGo had to sense who was ahead at a glance and even invent moves no human had thought to play.</p>
+
+
+
+
+
+<p>That is why many accounts of AlphaGo’s match against Lee portray move 37 as a flash of pure machine intuition. But that is a misunderstanding. It was actually AlphaGo’s powers of reasoning that made this creative choice—and these are powers that today’s AI lacks. If we want future AI systems to produce trustworthy results and really novel insights in fields like science and medicine, we need to equip them with genuine reasoning capabilities of this kind.</p>
+
+
+
+<p>AlphaGo is made up of two systems. The first, its policy network, was trained to guess what move a strong human would play. This “intuitive” part regarded move 37 as nothing special—a play that had a roughly one in 10,000 chance of being made by an expert human player. What made AlphaGo choose it was the program’s search machinery, which looked beyond immediate plausibility and weighed the future consequences of proposed moves. It explicitly constructed and searched a game tree with thousands of branches, each representing a different possible future.&nbsp;</p>
+
+
+
+<p>A well-known theory in the behavioral sciences, <a href="https://www.penguin.co.uk/books/56314/thinking-fast-and-slow-by-kahneman-daniel/9780141033570">popularized</a> by Daniel Kahneman, distinguishes between two modes of human thought: System 1 is fast, gut-level, effortless; system 2, slow, step-by-step, and deliberative. AlphaGo offered a striking machine analogue of that split. Its networks supplied the hunches—this move looks promising, this position looks won—and its search supplied the deliberation, testing those hunches against the moves and countermoves that would follow. As in human cognition, neither half works alone. Intuition alone would never have opted for move 37, and brute-force search would have struggled to sieve through all the many possible moves.</p>
+
+
+
+<p>This is strikingly different from the way today’s AI models work. A large language model picks the next token, over and over. That amounts to system 1 in action—fast, associative, and surprisingly good pattern completion across almost every subject people write about.</p>
+
+
+
+
+
+<p>Not long after ChatGPT debuted, the field realized that language fluency alone falls short of true usefulness. The apparent solution was to make models that deliberate: Instead of answering immediately, they can now generate intermediate steps that decompose a problem, carry forward partial results, and influence subsequent reasoning—a process known as chain of thought. </p>
+
+
+
+<p>The gains have proved real, above all in mathematics and coding. But unlike AlphaGo’s search, this does not introduce a genuinely separate reasoning mechanism: The intermediate reasoning is still produced by the same next-token prediction process, iterated for longer before the model commits to an answer.</p>
+
+
+
+<p>Three shortcomings prevent what chatbots do from qualifying as reasoning (in a way that a scientist might recognize). First, these models typically maintain no explicit, persistent, and inspectable epistemic state. There is no open ledger that lays out the hypotheses a model is considering, the confidence it has in various explanations, the evidence it’s weighing, and the unresolved questions it’s holding onto—all things that should be systematically revised as new information arrives. </p>
+
+
+
+<p>Second, they lack a clean separation between what the system knows and how it manipulates that knowledge. Knowledge and reasoning are inextricably interwoven in the weights of the neural network—there is no independent, explicitly represented set of beliefs. Third, while the chains of thought chatbots produce look like deliberation, research has demonstrated that the bots often <a href="https://arxiv.org/abs/2608.09867">concoct</a> <a href="https://arxiv.org/abs/2510.27338">them</a> after the fact, reaching an answer by one route but reporting another.</p>
+
+
+
+
+
+<p>This is a problem because in the high-stakes applications we all care about, such as medicine, engineering, and scientific research, it matters not only what a system concludes but also how it arrives at its conclusion. When mistakes happen—for example, in medical diagnosis and treatment—we need to be able to pinpoint what went wrong: Was the system’s reasoning at fault, did it draw on invalid evidence, or did it make incorrect assumptions?&nbsp;</p>
+
+
+
+<p>This is why I recently left my position at Google DeepMind. I believe we need a fresh approach to machine reasoning—one that draws on AlphaGo’s architecture. AlphaGo maintains a record of what it knows about a given position: the game tree. This data structure contains all the variations, the possible futures, that AlphaGo has considered, each move and position being annotated with judgments made by its neural networks. As its reasoning progresses, AlphaGo updates the game tree and eventually synthesizes the information in it to decide which move to make.&nbsp;</p>
+
+
+
+<p>Similarly, for general reasoning a system should maintain an epistemic state that represents what the system holds as settled, what it doubts, what it has ruled out, which questions stay open. Reasoning can then be understood as a sequence of moves that change the epistemic state to advance knowledge and reduce uncertainty: deducing consequences, breaking problems into parts, and—crucially—deciding what question to ask, calculation to perform, or experiment to run next.</p>
+
+
+
+<p>Of course, open-world reasoning is harder than playing a board game such as Go or chess. In the real world the current state of affairs is only partially known, the set of available actions is large and variable, and the consequences of actions are stochastic or unknown.&nbsp;</p>
+
+
+
+
+
+<p>But recent advances in LLMs and other neural models now give us the capability to take on such general reasoning problems. For example, LLMs can suggest ways of tackling a problem on the basis of what is known and what resources are available. They can interact with tools via APIs or code and help assess whether a claim is supported by available evidence. </p>
+
+
+
+<p>Most important, to keep the system honest, an independent part of the system must evaluate each move by how much it actually resolves uncertainty, updating beliefs only when the change is backed by evidence. Once these rules are enforced, the model can accumulate certified knowledge and improve its reasoning policy by learning from past reasoning experiences. You can think of such a system as the scientific method on steroids, with the purpose of producing knowledge that can withstand scrutiny.</p>
+
+
+
+<p>I do not think we reach trustworthy machine intelligence by making system 1 bigger. Scale sharpens intuition, but it does not make intuition more deliberative. Move 37 mattered because a machine held a position, weighed the possible futures, and chose the move its artificial instincts would likely have rejected. </p>
+
+
+
+<p>Society needs such creative moves in drug discovery, materials, climate, diagnosis—fields where the board looks nothing like a Go board and nobody hands us the rules. We will get such insights only from systems that reason—systems whose conclusions arise from an auditable sequence of evidence, inference, and belief revision rather than from a convincing story told after the fact. </p>
+
+
+
+<p><em>Thore Graepel is chair of machine learning at University College London. He was a core member of the AlphaGo team at DeepMind and works to ensure that AI benefits human flourishing.</em></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145639</post-id>	</item>
+		<item>
+		<title>“We’re not going to shoot ourselves in the foot” over hack fallout, says OpenAI’s chief research officer</title>
+		<link>https://www.technologyreview.com/2026/09/30/1145339/were-not-going-to-shoot-ourselves-in-the-foot-over-hugging-face-says-openais-chief-research-officer/</link>
+		
+		<dc:creator><![CDATA[Will Douglas Heaven]]></dc:creator>
+		<pubDate>Wed, 30 Sep 2026 10:40:30 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[App]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145339</guid>
+
+					<description><![CDATA[Two months after the bombshell news that a swarm of its agents had broken their containment and hacked into the computers of the AI company Hugging Face, OpenAI is still putting out fires. A steady drip of disclosures about other hacks in the weeks since has kept OpenAI in the spotlight and raised serious questions&#8230;]]></description>
+										<content:encoded><![CDATA[<div data-chronoton-summary="&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Still putting out fires:&lt;/strong&gt; Two months after OpenAI&#039;s agents hacked Hugging Face, new incidents keep surfacing—including a breach of Australia&#039;s national health system that wasn&#039;t disclosed for 84 days. OpenAI has since paused model training until it can put stronger safeguards in place.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The monitors weren&#039;t on:&lt;/strong&gt; OpenAI&#039;s chief research officer Mark Chen admits the company wasn&#039;t watching its models during training—only after deployment. That gap let early warning signs, like agents casually reaching out on Slack for help, go from amusing quirks to serious security failures.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A calculated slowdown, not a retreat:&lt;/strong&gt; Chen says OpenAI has shifted 5–10% of its computing power toward safety and monitoring, but insists it won&#039;t fall so far behind competitors that it loses influence over industry norms—calling that &quot;a horrible strategy.&quot;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A darker forecast ahead:&lt;/strong&gt; Chen dropped his optimism when asked about open-source models, warning that within six to twelve months, the world could see deliberately misaligned agents—built to attack infrastructure—beyond the reach of any regulation.&lt;/li&gt;
+&lt;/ul&gt;" data-chronoton-post-id="1145339" data-chronoton-expand-collapse="1" data-chronoton-analytics-enabled="1"></div>
+
+
+<p>Two months after the bombshell news that a swarm of its agents had broken their containment and <a href="https://www.technologyreview.com/2026/08/26/1143013/the-inside-story-on-why-openai-agents-hacked-hugging-face/">hacked into the computers of the AI company Hugging Face</a>, OpenAI is still putting out fires. A steady drip of disclosures about other hacks in the weeks since has kept OpenAI in the spotlight and raised serious questions about the safety of its technology.</p>
+
+
+
+<p>Last week brought news of another hack, this time into Australia’s national health-care system. The Australian government says that OpenAI did not notify it of the breach until 84 days after it happened.</p>
+
+
+
+<p>But OpenAI insists it is not on the back foot. “I do kind of reject the premise that OpenAI is a company with visible impacts in the world and therefore OpenAI is not training safe and aligned models,” says Mark Chen, the company’s chief research officer.</p>
+
+
+
+<p>Chen oversees OpenAI’s research teams. The recent agent hacks were accidents that happened during the testing of experimental models on his watch. In a lot of ways, the buck stops with him.&nbsp;</p>
+
+
+
+<p>I sat down with Chen in London last Friday to talk about the fallout from the hacks, what his company is doing about it, and why he thinks things are not as bad as they seem.</p>
+
+
+
+<p>Later that same day, OpenAI put out a report detailing <a href="https://alignment.openai.com/misalignment-reports/an-agent-used-dns-to-reach-an-external-chatbot/">yet another incident</a>—the first since the company says it took measures to prevent them—in which its agents once again broke out and accessed the public internet when they were not meant to. </p>
+
+
+
+<p>Over the weekend, OpenAI announced that it had paused the training of its latest models. A company spokesperson says: “We will resume only when we’re confident we have additional safeguards and alignments in place. We are working on these now. This is not the first time we’ve paused to take such measures, nor do we expect it to be the last as AI capabilities continue to advance.” OpenAI also says that it is now reviewing logs of agent activity dating back to January 2026 to understand what happened in these hacks.</p>
+
+
+
+<p>The way Chen sees it, the Hugging Face incident triggered a welcome course correction for the industry. And he wants you to know that OpenAI is setting an example he hopes other companies will follow. “If you disappeared OpenAI, that would be bad for the world,” he says.</p>
+
+
+
+<h3 class="wp-block-heading"><strong>Out of control</strong></h3>
+
+
+
+<p>Chen claims that the drumbeat of new cases in which OpenAI has lost control of its models reflects a deliberate choice on the company’s part. </p>
+
+
+
+<p>“When it comes to the broader sphere of effects of the Hugging Face incident, this is something that we have been aware of and we’re figuring out the process of disclosure,” he says. “We want to make sure we do in-depth investigations before we just put details out there in the open.”</p>
+
+
+
+<p>The trouble with this approach is that it gives the impression OpenAI has an ongoing problem that it is failing to fix.</p>
+
+
+
+<p>But Chen insists that OpenAI is on it. He says the multiple cases (that we know of so far) in which his company’s agents broke containment and behaved in unexpected and undesirable ways were all part of the same cluster of activity in May and June that led to the Hugging Face hack. In short, you can blame the same few models running under the same flawed testing procedures—models and procedures that OpenAI has since dropped, Chen says.&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
+
+
+<p>“It’s not like, you know, Hugging Face happened and we patched that and then something else happened and we patched that,” he adds. “We’re just kind of making sure that we responsibly disclose the full waterfall of what happened.”</p>
+
+
+
+<p>At least that was the case before Friday’s announcement that OpenAI’s agents had been caught accessing the internet on September 20, weeks after the company claims to have set up new safeguards. In its defense, OpenAI says the activity was flagged 15 minutes after it started (it took the company more than a week to notice the Hugging Face hack) and that this shows the new systems it has put in place to spot such activity are working. </p>
+
+
+
+<h3 class="wp-block-heading"><strong>What’s changed</strong></h3>
+
+
+
+<p>I want to understand what’s changed inside OpenAI in the aftermath of this summer’s hacks that makes Chen confident his team is now back in control.</p>
+
+
+
+<p>“Hugging Face felt like a very serious thing,” he says. “There are so many novel behaviors right there. There were multiple agents collaborating on a message board; they found their way out of OpenAI’s infrastructure. We’ve taken it very seriously. We don’t want this kind of thing to ever happen again.”</p>
+
+
+
+<p>The realization for OpenAI, says Chen, was that models need to be watched while they are still being trained, not only once they are deployed: “From that moment on, we have treated the process of training as something that’s not secure,” he says.</p>
+
+
+
+<p>OpenAI, like other top AI firms, has systems in place to monitor the behavior of its models. It uses specialized LLMs to monitor its consumer models, <a href="https://www.technologyreview.com/2026/01/12/1129782/ai-large-language-models-biology-alien-autopsy/">keeping tabs on their chains of thought</a>—the scratchpads they use to plan ahead and note down partial results. In theory, if a watcher LLM spots signs of undesirable activity in a model’s chain of thought, it will get flagged to a human.  </p>
+
+
+
+<p>Typically, models were monitored in this way only once they were deployed. Chen says that OpenAI has now started monitoring all its training runs as well.</p>
+
+
+
+<p>“We didn’t have the monitors on in training before. It wasn’t industry practice,” he says. “Now every single thing is put through monitors.” Human reviewers can then assess whether or not flagged agents are behaving as they should: “It’s all triage.”</p>
+
+
+
+<p>Chen says that in the last couple of months OpenAI has shifted between 5% and 10% of its vast computing resources away from training new models and toward safety work, especially monitoring.</p>
+
+
+
+<p>OpenAI has also fixed some of the processes within the organization itself, establishing clearer lines of communication and quicker handoffs between its research and security teams, he says.</p>
+
+
+
+<p>All of which sounds sensible. But given how hard OpenAI sells the capabilities of its technology, why weren’t these systems and procedures in place already? Why did the company not see the hacks coming?</p>
+
+
+
+<p>“Even just three or four months ago, when we looked at the behavior of these agents during training, the things that were happening were kind of amusing,” says Chen. “For instance, an agent might, you know, reach out to someone on Slack for help with a task.”</p>
+
+
+
+<p>The signs were there, but they were misread. Cute behavior—like asking someone for help—that was rewarded during training <a href="https://www.technologyreview.com/2026/08/03/1141009/heres-why-ai-agents-lie-and-cheat-to-reach-their-goals/">reinforced a tendency to seek out shortcuts</a>, a type of behavior that became far more consequential down the line. “I think the big update for us was how quickly that kind of behavior can lead to an impact with a footprint as big as the Hugging Face incident,” says Chen.</p>
+
+
+
+<p>According to new reporting by the <em>New York Times</em> yesterday, <a href="https://www.nytimes.com/2026/09/29/technology/openai-warnings-security.html?emc=edit_na_20260929&amp;nl=breaking-news&amp;segment_id=227252">OpenAI employees warned executives</a>, including the firm’s president, Greg Brockman, months before the Hugging Face hack that its models were not being monitored properly during training.&nbsp;</p>
+
+
+
+<p>An OpenAI spokesperson says: “As frontier models have become more capable, we continue to evolve our security practices, but recognize a need to move faster. We know we have more work to do, and we’ve recently slowed development and held back models that don’t meet our safety bar. We continue to make significant changes to strengthen security in our research and testing environments, train models to not just complete tasks but do so responsibly, and use real-time monitoring to respond faster to misaligned behavior.”&nbsp;</p>
+
+
+
+<h3 class="wp-block-heading"><strong>Race vs. pace</strong></h3>
+
+
+
+<p>OpenAI’s rivals have taken note. Spurred by the fallout from the incident, the major AI labs—including Anthropic, Google DeepMind, and SpaceXAI—have all called for the pace of development to slow down. But how does that square with fierce international competition and trillion-dollar IPOs?</p>
+
+
+
+<p>“We’re not going to shoot ourselves in the foot and take ourselves far off the frontier—that’s just a horrible strategy,” he says. “I think it’s really about setting a norm. The more that we can set that norm, it’ll be safer for the industry as a whole.”</p>
+
+
+
+<p>Coordination across US companies will be hard enough. Establishing global norms is harder still, especially given concerns around AI’s impact on national security. If a global race continues, what then? And what about open-source models from outfits beyond the reach of US regulations?</p>
+
+
+
+<p>Chen dropped his upbeat manner for the first time in our conversation: “I do think we have to prepare for a world where, say, six months to a year out, we have open-source models with the capability of the agents behind the Hugging Face incident, but which are deliberately misaligned to go attack infrastructure or create harm in the world.”&nbsp;</p>
+
+
+
+<p>What that world needs most, says Chen, is OpenAI. “If you entertain for a moment that OpenAI is one of the companies that cares most about alignment—and I believe this to be true; it can be debated, but I really do think it’s true—then if you disappear OpenAI, that would be bad for the world.”</p>
+
+
+
+<h3 class="wp-block-heading"><strong>Existential risks</strong></h3>
+
+
+
+<p>What about the more extreme claims made by some of his Silicon Valley peers that AI could kill us all—and that companies like OpenAI and Anthropic are not doing enough to stop it?&nbsp;&nbsp;&nbsp;&nbsp;</p>
+
+
+
+<p>“Researchers are a heterogeneous group of people, you know, with beliefs across the spectrum,” he says.</p>
+
+
+
+<p>“Personally, I don’t think we have to be resigned to there being some probability that we’re all going to be existentially at risk. We have agency over this. We are not going to go and deploy models if they truly have that kind of probability of causing a risk to humanity. At a frontier lab, you have the ability to work on alignment to the point that you do not feel like you’re incurring more than epsilon risk to the world in deploying your models.” </p>
+
+
+
+<p>(In discussions about levels of risk, the Greek letter epsilon is often used as a mathematical placeholder for an acceptable threshold. Chen doesn’t say what his epsilon would be.)</p>
+
+
+
+<p>When tech leaders are asked to justify the downsides of AI, their go-to talking point is that the upsides—from helping cure diseases to coming up with cleaner sources of energy—far outweigh the immediate costs. Short-term pains, long-term gains.</p>
+
+
+
+<p>But as the downsides pile up, does that case get harder to make? Is there a point where Chen would feel less as if he’s building something amazing and more as if he’s simply minimizing harm—fighting fires rather than forging a better future?</p>
+
+
+
+<p>The capabilities of these models are already evident, he says: “It is time to start delivering the benefits of AI to humanity. It’s time to start working on deep problems in drug discovery, on materials, on scientific applications that will actually change people’s lives.”&nbsp;</p>
+
+
+
+<p>“Yes, there is a bit of risk that we are incurring, but we see all these benefits,” he adds. “I think we should make that less of an abstract thing. If people can really see the upside, I think they’ll believe in it.”</p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145339</post-id>	</item>
+		<item>
+		<title>Making AI an asset, not an expense</title>
+		<link>https://www.technologyreview.com/2026/09/29/1145186/making-ai-an-asset-not-an-expense/</link>
+		
+		<dc:creator><![CDATA[Cheri Williams]]></dc:creator>
+		<pubDate>Tue, 29 Sep 2026 10:43:45 +0000</pubDate>
+				<category><![CDATA[Artificial intelligence]]></category>
+		<category><![CDATA[sponsored]]></category>
+		<guid isPermaLink="false">https://www.technologyreview.com/?p=1145186</guid>
+
+					<description><![CDATA[When customers talk about AI costs, the conversation usually starts with token prices and ends with access to the latest, most capable model in the cloud. Do they always need that level of capability? Not necessarily. But that is often where the conversation goes. As AI moves from experimentation to production, model choice is only&#8230;]]></description>
+										<content:encoded><![CDATA[
+<p>When customers talk about AI costs, the conversation usually starts with token prices and ends with access to the latest, most capable model in the cloud. Do they always need that level of capability? Not necessarily. But that is often where the conversation goes.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1200" height="675" src="https://wp.technologyreview.com/wp-content/uploads/2026/09/Cheri-blog.jpg?w=840" alt="" class="wp-image-1145189" srcset="https://wp.technologyreview.com/wp-content/uploads/2026/09/Cheri-blog.jpg 1200w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Cheri-blog.jpg?resize=300,169 300w, https://wp.technologyreview.com/wp-content/uploads/2026/09/Cheri-blog.jpg?resize=768,432 768w" sizes="auto, (max-width: 1200px) 100vw, 1200px" /></figure>
+
+
+
+<p>As AI moves from experimentation to production, model choice is only part of the equation. When demand becomes steady and business-critical, a consumption-only approach can turn AI spending into a variable monthly line item that is difficult to forecast as usage, workloads, and model requirements change.</p>
+
+
+
+<p>At that point, the question is no longer simply which model to consume, or which provider offers the lowest token price: It is how to run AI economically, predictably, and at sustained scale.</p>
+
+
+
+<p>AI is moving from isolated pilots into production portfolios: assistants, retrieval-and-knowledge systems, and agentic applications. Customer-service, IT, research, and business-process agents can execute multi-step workflows across enterprise systems, creating recurring demand across models, data, and tools.</p>
+
+
+
+<p>This is already starting to happen. Deloitte’s 2026 <em><a href="https://www.deloitte.com/us/en/what-we-do/capabilities/applied-artificial-intelligence/content/state-of-ai-in-the-enterprise.html" target="_blank" rel="noreferrer noopener">State of AI in the Enterprise</a></em> reflects what many leaders are seeing: worker access to AI rose 5% in 2025, and the share of companies with at least 40% of their AI projects in production is expected to double within six months.</p>
+
+
+
+<p>When AI becomes a portfolio of always-on workloads, not a collection of experiments, the economics change. Consumption pricing gives teams flexibility and limits commitment. But when usage becomes steady, predictable, and large enough to keep capacity productive, leaders need to ask a different question: Does it still make economic sense to buy AI one request at a time, or is it time to invest in capacity they can optimize and control?</p>
+
+
+
+<p>This is not an abstract cloud-versus-on-premises debate. It is a workload-by-workload business decision. Over the next 12 to 18 months, how much AI demand can the company reasonably expect? How consistently will that capacity be used? When multiple workloads share infrastructure, the enterprise can spread fixed costs across more productive use—improving the economics of ownership.</p>
+
+
+
+<h3 class="wp-block-heading">The question is how much you run</h3>
+
+
+
+<p>Ownership is not automatically the lower-cost answer. It only makes sense when an enterprise can keep capacity productive.</p>
+
+
+
+<p>Every organization has a crossover point, the level of sustained use at which owning capacity can become more economical than buying it one request at a time. There is no universal number. It depends on the models being used, the balance of input and output tokens, performance requirements, system design, energy costs, and the operating model required to support it.</p>
+
+
+
+<p>A retrieval-heavy knowledge system can have a very different cost profile from a simple assistant because it may process far more context for every interaction. Agentic workflows can be different again: a single business task may involve repeated reasoning, retrieval, model calls, and tool use. That is why generic cost benchmarks are not enough. Enterprises need to model their actual workloads, understand expected demand, and size capacity accordingly.</p>
+
+
+
+<p>At the right utilization level, the benefit is not only lower effective cost, but also greater predictability: the ability to manage AI capacity as a strategic infrastructure investment rather than watch a monthly spend line fluctuate with model use and workload demand.</p>
+
+
+
+<h3 class="wp-block-heading"><strong>Ownership only works when it is put to work</strong></h3>
+
+
+
+<p>The capital decision is only half the equation. Even when the economics support ownership, capacity creates value only when the business gets workloads into production quickly and keeps them running.</p>
+
+
+
+<p>That takes more than installing infrastructure. It takes an operating model that connects the technology to adoption and business outcomes: bringing users and workloads on board, governing how AI is used, reviewing utilization, and continually identifying the next high-value use case.</p>
+
+
+
+<p>The goal is to create value early, then build on it. That means measuring use, identifying underutilized capacity, and bringing additional high-value workloads onto the platform over time. Without that discipline, the business may never realize the economic value that justified the investment. With it, AI capacity becomes a productive asset the business can optimize, expand, and use to create measurable value.</p>
+
+
+
+<h3 class="wp-block-heading"><strong>Three questions to ask</strong></h3>
+
+
+
+<p>Before committing capital, leaders should ask three questions:</p>
+
+
+
+<ol class="wp-block-list">
+<li>Is demand becoming steady, predictable, and large enough to justify dedicated capacity?</li>
+
+
+
+<li>At what level of usage does ownership make economic sense?</li>
+
+
+
+<li>Can we keep that capacity productive through adoption, governance, and continued use-case expansion?</li>
+</ol>
+
+
+
+<h3 class="wp-block-heading">Make the shift deliberately</h3>
+
+
+
+<p>As AI moves into production, the organizations that create the most value will look beyond token prices and the latest model. They will know when recurring demand calls for a different economic model—and they will have the operating discipline to make that capacity productive.</p>
+
+
+
+<p>That is when AI stops being an expense and becomes an asset.</p>
+
+
+
+<p><em>This content was produced by HPE. It was not written by MIT Technology Review’s editorial staff.</em></p>
+
+
+
+<p></p>
+]]></content:encoded>
+					
+		
+		
+		<post-id xmlns="com-wordpress:feed-additions:1">1145186</post-id>	</item>
+	</channel>
+</rss>

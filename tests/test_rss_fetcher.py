@@ -55,16 +55,23 @@ def test_fetch_passes_timeout() -> None:
     assert requests[0].extensions["timeout"] == httpx.Timeout(3.0).as_dict()
 
 
-def test_fetch_uses_source_fallback() -> None:
+def test_fetch_uses_configured_source_over_feed_title() -> None:
+    articles = RSSFetcher(FEED_URL, "Configured", client=make_client(serve(GUARDIAN))).fetch()
+
+    assert articles
+    assert all(article.source == "Configured" for article in articles)
+
+
+def test_fetch_uses_configured_source_without_feed_title() -> None:
     feed = (
         b'<rss version="2.0"><channel>'
         b"<item><title>A headline</title><link>https://example.com/a</link></item>"
         b"</channel></rss>"
     )
 
-    articles = RSSFetcher(FEED_URL, "Fallback", client=make_client(serve(feed))).fetch()
+    articles = RSSFetcher(FEED_URL, "Configured", client=make_client(serve(feed))).fetch()
 
-    assert [article.source for article in articles] == ["Fallback"]
+    assert [article.source for article in articles] == ["Configured"]
 
 
 def test_fetch_raises_on_server_error() -> None:

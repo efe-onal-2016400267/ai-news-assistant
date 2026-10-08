@@ -8,7 +8,7 @@ from pathlib import Path
 import httpx
 
 from ai_news_assistant.ingestion.base import Fetcher
-from ai_news_assistant.ingestion.feeds import FEEDS
+from ai_news_assistant.ingestion.feeds import FEEDS, Feed
 from ai_news_assistant.ingestion.rss import RSSFetcher
 from ai_news_assistant.storage.base import ArticleStore
 from ai_news_assistant.storage.sqlite import SQLiteStore
@@ -88,13 +88,20 @@ def ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult
     return result
 
 
-def run(feeds: Mapping[str, str], db_path: Path, client: httpx.Client | None = None) -> int:
-    """Ingest `feeds` (name -> URL) into the SQLite database at `db_path`.
+def build_fetchers(
+    feeds: Mapping[str, Feed], client: httpx.Client | None = None
+) -> dict[str, Fetcher]:
+    """One `RSSFetcher` per feed, keyed by feed name."""
+    return {name: RSSFetcher(feed.url, feed.source, client=client) for name, feed in feeds.items()}
+
+
+def run(feeds: Mapping[str, Feed], db_path: Path, client: httpx.Client | None = None) -> int:
+    """Ingest `feeds` (name -> feed) into the SQLite database at `db_path`.
 
     Returns the exit code: 1 if no feed succeeded, otherwise 0.
     """
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    fetchers = {name: RSSFetcher(url, name, client=client) for name, url in feeds.items()}
+    fetchers = build_fetchers(feeds, client)
     with SQLiteStore(db_path) as store:
         result = ingest(fetchers, store)
     return 1 if result.all_failed else 0
