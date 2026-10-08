@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[OpenAI News]]></title>
+        <description><![CDATA[The OpenAI blog]]></description>
+        <link>https://openai.com/news</link>
+        <image>
+            <url>https://openai.com/apple-icon.png</url>
+            <title>OpenAI News</title>
+            <link>https://openai.com/news</link>
+        </image>
+        <generator>OpenAI</generator>
+        <lastBuildDate>Thu, 08 Oct 2026 11:26:15 GMT</lastBuildDate>
+        <atom:link href="https://openai.com/news/rss.xml" rel="self" type="application/rss+xml"/>
+        <language><![CDATA[en-US]]></language>
+        <item>
+            <title><![CDATA[Helping teens learn, plan, and shape the future of AI]]></title>
+            <description><![CDATA[College Planner is coming to ChatGPT for Teens to help students manage college applications, alongside new flashcards, quizzes, and a teen AI council.]]></description>
+            <link>https://openai.com/index/teens-learn-and-plan</link>
+            <guid isPermaLink="true">https://openai.com/index/teens-learn-and-plan</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Wed, 07 Oct 2026 12:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Radisson Hotel Group brings hotel discovery into ChatGPT]]></title>
+            <description><![CDATA[Radisson partnered with Accenture to build a ChatGPT plugin using OpenAI technology, helping travelers find, compare, and book hotels while planning their trips.]]></description>
+            <link>https://openai.com/index/radisson</link>
+            <guid isPermaLink="true">https://openai.com/index/radisson</guid>
+            <pubDate>Wed, 07 Oct 2026 07:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[GPT-6 and Intelligent UI for everyone]]></title>
+            <description><![CDATA[GPT‑6 is rolling out globally in ChatGPT with Intelligent UI, delivering faster responses with visuals and interactive experiences you can explore and use directly.]]></description>
+            <link>https://openai.com/index/gpt-6-for-everyone</link>
+            <guid isPermaLink="true">https://openai.com/index/gpt-6-for-everyone</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[How Jump Trading is scaling quant research with ChatGPT]]></title>
+            <description><![CDATA[Jump Trading uses OpenAI to expand quantitative research. See how longer-running AI workflows combine multiple data sources with human review.]]></description>
+            <link>https://openai.com/index/jump-trading</link>
+            <guid isPermaLink="true">https://openai.com/index/jump-trading</guid>
+            <pubDate>Tue, 06 Oct 2026 12:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Sharing AI progress in mathematics]]></title>
+            <description><![CDATA[OpenAI publishes new results on open problems in mathematics from an internal frontier model and shares Lean proof formalizations and research details on GitHub.]]></description>
+            <link>https://openai.com/index/sharing-ai-progress-in-mathematics</link>
+            <guid isPermaLink="true">https://openai.com/index/sharing-ai-progress-in-mathematics</guid>
+            <category><![CDATA[Research]]></category>
+            <pubDate>Tue, 06 Oct 2026 12:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Advancing computer use with Ironclad]]></title>
+            <description><![CDATA[Learn how OpenAI and Ironclad are training and evaluating AI agents on complex contracting workflows to advance computer use for professional work.]]></description>
+            <link>https://openai.com/index/advancing-computer-use-with-ironclad</link>
+            <guid isPermaLink="true">https://openai.com/index/advancing-computer-use-with-ironclad</guid>
+            <category><![CDATA[Publication]]></category>
+            <pubDate>Tue, 06 Oct 2026 10:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Atlassian and OpenAI expand partnership to turn enterprise knowledge into action]]></title>
+            <description><![CDATA[Atlassian and OpenAI are expanding their partnership to connect frontier models with enterprise knowledge and help teams plan, build, and deliver work.]]></description>
+            <link>https://openai.com/index/atlassian-partnership</link>
+            <guid isPermaLink="true">https://openai.com/index/atlassian-partnership</guid>
+            <category><![CDATA[Company]]></category>
+            <pubDate>Tue, 06 Oct 2026 16:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Our approach to EU text provenance rules]]></title>
+            <description><![CDATA[How OpenAI is approaching text watermarking under EU rules. Learn where watermarks apply, how detection works, and why access starts with researchers.]]></description>
+            <link>https://openai.com/index/eu-text-provenance</link>
+            <guid isPermaLink="true">https://openai.com/index/eu-text-provenance</guid>
+            <category><![CDATA[Safety]]></category>
+            <pubDate>Mon, 05 Oct 2026 15:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Building advertising for the way people use AI]]></title>
+            <description><![CDATA[OpenAI introduces a new visual ad format in ChatGPT and expands measurement tools, attribution partnerships, and brand suitability for advertisers.]]></description>
+            <link>https://openai.com/index/new-chatgpt-ads-format-and-measurement</link>
+            <guid isPermaLink="true">https://openai.com/index/new-chatgpt-ads-format-and-measurement</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Mon, 05 Oct 2026 10:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[A model guide for the GPT-6 family]]></title>
+            <description><![CDATA[Learn how startups can choose GPT-6 models, tune reasoning effort, improve prompts and skills, coordinate tools, and prepare workflows for production.]]></description>
+            <link>https://openai.com/index/practical-guide-building-gpt-6</link>
+            <guid isPermaLink="true">https://openai.com/index/practical-guide-building-gpt-6</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Fri, 02 Oct 2026 16:15:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Chatham scales its capital markets expertise with OpenAI]]></title>
+            <description><![CDATA[Chatham Financial uses Codex and GPT-5.6 to build technology and redesign workflows, cutting trade validation from 30 minutes to under 4.]]></description>
+            <link>https://openai.com/index/chatham-financial</link>
+            <guid isPermaLink="true">https://openai.com/index/chatham-financial</guid>
+            <pubDate>Fri, 02 Oct 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The eternal complement]]></title>
+            <description><![CDATA[Advanced AI may matter most for the routine work behind breakthrough ideas. Explore why execution could shape the next economy and the pace of progress.]]></description>
+            <link>https://openai.com/index/the-eternal-complement</link>
+            <guid isPermaLink="true">https://openai.com/index/the-eternal-complement</guid>
+            <category><![CDATA[Intelligence Age]]></category>
+            <pubDate>Thu, 01 Oct 2026 17:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[How Albertsons Companies is reimagining retail from the inside out]]></title>
+            <description><![CDATA[Albertsons Cos. is using ChatGPT Enterprise and the OpenAI API to help teams work faster and make grocery shopping easier for millions of customers.]]></description>
+            <link>https://openai.com/index/albertsons-reimagining-retail</link>
+            <guid isPermaLink="true">https://openai.com/index/albertsons-reimagining-retail</guid>
+            <category><![CDATA[Company]]></category>
+            <pubDate>Thu, 01 Oct 2026 16:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[The Den frees up 10-15 hours a week to grow with ChatGPT Work]]></title>
+            <description><![CDATA[As it opens a new location, the social club prepares grant applications in 2 hours instead of 3 days and liquor-license materials in 3 hours instead of 4 days.]]></description>
+            <link>https://openai.com/index/the-den-family-social</link>
+            <guid isPermaLink="true">https://openai.com/index/the-den-family-social</guid>
+            <pubDate>Thu, 01 Oct 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Disrupting a coordinated model-distillation campaign]]></title>
+            <description><![CDATA[Learn how OpenAI disrupted a campaign to extract protected model reasoning and is strengthening defenses against adversarial distillation.]]></description>
+            <link>https://openai.com/index/disrupting-a-coordinated-model-distillation-campaign</link>
+            <guid isPermaLink="true">https://openai.com/index/disrupting-a-coordinated-model-distillation-campaign</guid>
+            <category><![CDATA[Security]]></category>
+            <pubDate>Wed, 30 Sep 2026 10:30:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Helping small businesses put AI to work]]></title>
+            <description><![CDATA[OpenAI is partnering with America’s SBDC to expand hands-on AI training and local support for small businesses, alongside a new report on how small teams are using AI.]]></description>
+            <link>https://openai.com/index/helping-small-businesses-put-ai-to-work</link>
+            <guid isPermaLink="true">https://openai.com/index/helping-small-businesses-put-ai-to-work</guid>
+            <category><![CDATA[Global Affairs]]></category>
+            <pubDate>Wed, 30 Sep 2026 10:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Introducing GPT-6.1 Sol]]></title>
+            <description><![CDATA[Meet GPT-6.1 Sol: near-Astra intelligence for coding, computer use, and professional work at one-fifth of Astra’s standard API input and output token prices.]]></description>
+            <link>https://openai.com/index/introducing-gpt-6-1-sol</link>
+            <guid isPermaLink="true">https://openai.com/index/introducing-gpt-6-1-sol</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Tue, 29 Sep 2026 17:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[DevDay 2026 Recap]]></title>
+            <description><![CDATA[Explore more than 20 announcements from OpenAI DevDay 2026, including GPT-6 Astra, ChatGPT, Codex, APIs, security, and new tools for builders.]]></description>
+            <link>https://openai.com/index/devday-2026-recap</link>
+            <guid isPermaLink="true">https://openai.com/index/devday-2026-recap</guid>
+            <category><![CDATA[Company]]></category>
+            <pubDate>Tue, 29 Sep 2026 10:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Introducing GPT-6.1 Sol]]></title>
+            <description><![CDATA[Meet GPT-6.1 Sol: near-Astra intelligence for coding, computer use, and professional work at one-fifth of Astra’s standard API input and output token prices.]]></description>
+            <link>https://openai.com/index/introducing-gpt-6-1-sol</link>
+            <guid isPermaLink="true">https://openai.com/index/introducing-gpt-6-1-sol</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Tue, 29 Sep 2026 10:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Introducing dots]]></title>
+            <description><![CDATA[Dots by OpenAI are proactive assistants that can keep working across complex projects and everyday tasks. Learn how dots help you stay in control while work moves forward.]]></description>
+            <link>https://openai.com/index/introducing-dots</link>
+            <guid isPermaLink="true">https://openai.com/index/introducing-dots</guid>
+            <category><![CDATA[Product]]></category>
+            <pubDate>Tue, 29 Sep 2026 00:00:00 GMT</pubDate>
+        </item>
+</channel>
+</rss>

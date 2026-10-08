@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?><feed
+	xmlns="http://www.w3.org/2005/Atom"
+	xmlns:thr="http://purl.org/syndication/thread/1.0"
+	xml:lang="en-US"
+	>
+	<title type="text">AI | The Verge</title>
+	<subtitle type="text">The Verge is about technology and how it makes us feel. Founded in 2011, we offer our audience everything from breaking news to reviews to award-winning features and investigations, on our site, in video, and in podcasts.</subtitle>
+
+	<updated>2026-10-07T22:15:22+00:00</updated>
+
+	<link rel="alternate" type="text/html" href="https://www.theverge.com/ai-artificial-intelligence" />
+	<id>https://www.theverge.com/rss/ai-artificial-intelligence/index.xml</id>
+	<link rel="self" type="application/atom+xml" href="https://www.theverge.com/rss/ai-artificial-intelligence/index.xml" />
+
+	<icon>https://platform.theverge.com/wp-content/uploads/sites/2/2025/01/verge-rss-large_80b47e.png?w=150&amp;h=150&amp;crop=1</icon>
+		<entry>
+			
+			<author>
+				<name>Emma Roth</name>
+			</author>
+			
+			<title type="html"><![CDATA[ChatGPT&#8217;s &#8216;Intelligent UI&#8217; update fills its responses with pictures, charts, and buttons]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/ai-artificial-intelligence/1007276/openai-chatgpt-intelligent-ui-gpt-6" />
+			<id>https://www.theverge.com/?p=1007276</id>
+			<updated>2026-10-07T15:10:42-04:00</updated>
+			<published>2026-10-07T15:10:42-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Apps" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="OpenAI" /><category scheme="https://www.theverge.com" term="Tech" />
+							<summary type="html"><![CDATA[OpenAI is launching a new Intelligent UI feature in ChatGPT that allows the chatbot to answer your questions with interactive visuals. The update, which is rolling out to all users alongside GPT-6, gives ChatGPT the ability to combine a text response with diagrams, charts, forms, tappable buttons, and more. In a blog post explaining the [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="" data-caption="" data-portal-copyright="Image: OpenAI" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/Intelligent-UI.png?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">OpenAI is launching a new Intelligent UI feature in ChatGPT that allows the chatbot to answer your questions with interactive visuals. The <a href="https://openai.com/index/gpt-6-for-everyone/">update, which is rolling out to all users</a> alongside GPT-6, gives ChatGPT the ability to combine a text response with diagrams, charts, forms, tappable buttons, and more.</p>
+<p class="wp-block-paragraph">In <a href="https://openai.com/index/gpt-6-for-everyone/">a blog post explaining the change</a>, OpenAI says it trained GPT-6 when to generate interactive visuals over text, as well as how to format them in its response. An example shared by OpenAI shows how ChatGPT might show a diagram of a seven-speed bicycle if you ask about its design, complete with interactive buttons that highlight differe …</p>
+<p><a href="https://www.theverge.com/ai-artificial-intelligence/1007276/openai-chatgpt-intelligent-ui-gpt-6">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Verge Staff</name>
+			</author>
+			
+			<title type="html"><![CDATA[Everything announced at Microsoft&#8217;s Surface Laptop Ultra event]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/tech/1007147/microsoft-surface-laptop-ultra-windows-event-everything-announced" />
+			<id>https://www.theverge.com/?post_type=vm_stream&#038;p=1007147</id>
+			<updated>2026-10-07T18:15:22-04:00</updated>
+			<published>2026-10-07T14:42:22-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Gadgets" /><category scheme="https://www.theverge.com" term="Laptops" /><category scheme="https://www.theverge.com" term="Microsoft" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="Tech" /><category scheme="https://www.theverge.com" term="Windows" />
+							<summary type="html"><![CDATA[Microsoft just wrapped up a big Windows and Surface-focused keynote in San Francisco. The biggest announcement was arguably the release details about the Surface Laptop Ultra, its new laptop that&#8217;s powered by Nvidia&#8217;s RTX Spark Arm-based chip. The machine will start at $2,599 for a configuration with an 8-core CPU, 24GB of RAM, and 512GB [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="A photo of Windows and Surface chief Pavan Davuluri announcing the Surface Laptop Ultra and RTX Spark Dev Box prices." data-caption="" data-portal-copyright="Photo by Sean Hollister / The Verge" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/lc-img-639ce71c-4af9-43a1-b5a1-34b6d8db35cc.jpeg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">Microsoft just wrapped up a big Windows and Surface-focused keynote in San Francisco.</p>
+
+<p class="wp-block-paragraph">The biggest announcement was arguably the release details about <a href="https://www.theverge.com/news/1006378/microsoft-surface-laptop-ultra-pricing-release-date">the Surface Laptop Ultra</a>, its new laptop that&#8217;s powered by Nvidia&#8217;s RTX Spark Arm-based chip. The machine will start at $2,599 for a configuration with an 8-core CPU, 24GB of RAM, and 512GB of storage, and it will be released on October 16th. The laptop also has <a href="https://www.theverge.com/news/1006445/microsofts-surface-laptop-ultra-has-built-in-magnetic-usb-c-charging">built-in magnetic USB-C charging</a> instead of the proprietary Surface Connect magnetic charging port. <em>The Verge</em>&#8216;s Tom Warren published <a href="https://www.theverge.com/tech/1006356/microsoft-surface-laptop-ultra-behind-the-scenes">a deep dive all about the new laptop</a>. Microsoft <a href="https://www.theverge.com/tech/1006915/microsoft-surface-rtx-spark-dev-box-preorder">also announced</a> that the Surface RTX Spark Dev Box, a mini PC for developers, is available for preorder for $5,999 ahead of shipping in November.</p>
+
+<p class="wp-block-paragraph">In addition, Microsoft shared details about <a href="https://www.theverge.com/tech/1007113/microsoft-windows-copilot-ai-control-search-hybrid-intelligence">some updates coming to Windows</a>, including &#8220;Hybrid Intelligence&#8221; features that lets Copilot use files on your Windows PC to take actions and a new search experience that lets you do quick actions from the search bar.</p>
+
+<p class="wp-block-paragraph">You can catch up with all of our coverage from the event right here.</p>
+<ul>
+					<li>
+				<a href="https://www.theverge.com/tech/1007454/fs-in-the-chat">Fs in the chat.</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/gadgets/1007040/nvidias-powerful-rtx-spark-laptops-can-cost-up-to-7000">The first Nvidia RTX Spark laptops cost up to $7,000</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/tech/1007113/microsoft-windows-copilot-ai-control-search-hybrid-intelligence">Microsoft is giving Copilot more control over Windows and your files</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/news/1006378/microsoft-surface-laptop-ultra-pricing-release-date">The Surface Laptop Ultra finally has a release date — and a starting price of $2,599</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/tech/1006915/microsoft-surface-rtx-spark-dev-box-preorder">Surface RTX Spark Dev Box is available for preorder for $5,999</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/news/1006445/microsofts-surface-laptop-ultra-has-built-in-magnetic-usb-c-charging">Microsoft’s Surface Laptop Ultra has built-in magnetic USB-C charging</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/tech/1007079/muse-is-coming-to-windows">Muse is coming to Windows.</a>
+			</li>
+					<li>
+				<a href="https://www.theverge.com/news/1006303/microsoft-windows-surface-event-live-blog-surface-laptop-ultra-rtx-spark">Windows and Surface live blog: On the ground at Microsoft’s event</a>
+			</li>
+			</ul>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Jay Peters</name>
+			</author>
+			
+			<title type="html"><![CDATA[Microsoft is giving Copilot more control over Windows and your files]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/tech/1007113/microsoft-windows-copilot-ai-control-search-hybrid-intelligence" />
+			<id>https://www.theverge.com/?p=1007113</id>
+			<updated>2026-10-07T16:26:53-04:00</updated>
+			<published>2026-10-07T14:01:20-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Microsoft" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="Tech" />
+							<summary type="html"><![CDATA[At today's Windows and Surface event, Microsoft showed off an upgrade to its Copilot AI system that will give it access to local files on your PC and the ability to take actions across the OS. It's part of an idea Microsoft is calling "Hybrid Intelligence," where apps and tools rely on a mix of [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="" data-caption="" data-portal-copyright="" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/lcimg-e4e44609-0bf6-40b2-8c24-2e8c3ce7cee8.jpeg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">At today's Windows and Surface event, Microsoft showed off an upgrade to its Copilot AI system that will give it access to local files on your PC and the ability to take actions across the OS. It's part of an idea Microsoft is calling "Hybrid Intelligence," where apps and tools rely on a mix of local and cloud AI models to accomplish tasks efficiently.</p>
+<p class="wp-block-paragraph">To show off how Hybrid Intelligence works, Jacob Andreou, Microsoft's EVP of Copilot, walked through a video demo onstage asking <a href="https://www.theverge.com/news/1000532/microsoft-copilot-super-app-chat-coding-autopilot">Microsoft's Autopilot tool</a> to help with filing taxes. Andreou told the AI agent that he got an email from his accountant and asked Autopilot to get her what she nee …</p>
+<p><a href="https://www.theverge.com/tech/1007113/microsoft-windows-copilot-ai-control-search-hybrid-intelligence">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Stevie Bonifield</name>
+			</author>
+			
+			<title type="html"><![CDATA[Surface RTX Spark Dev Box is available for preorder for $5,999]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/tech/1006915/microsoft-surface-rtx-spark-dev-box-preorder" />
+			<id>https://www.theverge.com/?p=1006915</id>
+			<updated>2026-10-07T15:30:04-04:00</updated>
+			<published>2026-10-07T13:46:44-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Microsoft" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="Tech" />
+							<summary type="html"><![CDATA[Microsoft's Nvidia-powered Surface RTX Spark Dev Box is available for preorder now and is slated to ship in November for just about $6,000. It's pricier than the DGX Spark mini PC Nvidia launched last year, but PC prices have been climbing due to shortages of RAM and other components. The Dev Box's flat, 3D-printed anodized [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="A Microsoft Surface RTX Spark Dev Box on a desk by a monitor" data-caption="" data-portal-copyright="Image: Microsoft" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/microsoft-surface-rtx-spark-dev-box-promo-1.png?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">Microsoft's Nvidia-powered <a href="https://www.theverge.com/tech/940589/nvidia-rtx-spark-n1-n1x-laptop-desktop-pc-cpu-gpu-ai-release-date">Surface RTX Spark Dev Box</a> is available for preorder now and is slated to ship in November for just about $6,000. It's pricier than the <a href="https://www.theverge.com/news/798775/nvidia-spark-personal-ai-supercomputer">DGX Spark mini PC</a> Nvidia launched last year, but PC prices have been climbing due to <a href="https://www.theverge.com/news/839353/pc-ram-shortage-pricing-spike-news">shortages of RAM and other components</a>.</p>
+<p class="wp-block-paragraph">The Dev Box's flat, 3D-printed anodized aluminum chassis doubles as a heatsink and resembles the top vents on an Xbox Series X. It was introduced alongside the new <a href="https://www.theverge.com/tech/940584/microsoft-surface-laptop-ultra-nvidia-rtx-spark-pictures">Surface Laptop Ultra</a> and runs on <a href="https://www.theverge.com/tech/940589/nvidia-rtx-spark-n1-n1x-laptop-desktop-pc-cpu-gpu-ai-release-date">Nvidia's Arm-based RTX Spark</a> platform and 128GB of unified memory. With that much memory, along with a 100-watt thermal envelope and Nvidia's Tensor cores, you could …</p>
+<p><a href="https://www.theverge.com/tech/1006915/microsoft-surface-rtx-spark-dev-box-preorder">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Jay Peters</name>
+			</author>
+			
+			<title type="html"><![CDATA[ChatGPT is getting college planning tools]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/ai-artificial-intelligence/1005194/openai-chatgpt-teens-college-planner-notecards" />
+			<id>https://www.theverge.com/?p=1005194</id>
+			<updated>2026-10-07T03:27:03-04:00</updated>
+			<published>2026-10-07T12:00:00-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="OpenAI" />
+							<summary type="html"><![CDATA[OpenAI is bringing new tools to ChatGPT for Teens, a mode for teens introduced in August with safeguards and break reminders, to help users with the college application process. "College Planner brings together application requirements, deadlines, tasks, and financial-aid steps for schools on a student's list in one plan," OpenAI says. "Students applying to several [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="" data-caption="A preview of OpenAI’s College Planner. | Image: OpenAI" data-portal-copyright="Image: OpenAI" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/College-planner_updated.png?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+	A preview of OpenAI’s College Planner. | Image: OpenAI	</figcaption>
+</figure>
+<p class="wp-block-paragraph">OpenAI is bringing new tools to ChatGPT for Teens, a mode for teens introduced <a href="https://www.theverge.com/ai-artificial-intelligence/981333/openai-chatgpt-teen-mode">in August</a> with safeguards and break reminders, to <a href="https://openai.com/index/teens-learn-and-plan">help users with the college application process</a>. </p>
+<p class="wp-block-paragraph">"College Planner brings together application requirements, deadlines, tasks, and financial-aid steps for schools on a student's list in one plan," OpenAI says. "Students applying to several colleges can return to it to update their progress, use the timeline to plan ahead and see what's left to do. They can also ask ChatGPT questions along the way, from what a requirement means to how to get started."</p>
+<p class="wp-block-paragraph">The new College Planner feature will arrive "soon," according t …</p>
+<p><a href="https://www.theverge.com/ai-artificial-intelligence/1005194/openai-chatgpt-teens-college-planner-notecards">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Andrew Liszewski</name>
+			</author>
+			
+			<title type="html"><![CDATA[Muse launches on the iPad]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/tech/1006813/muse-ai-agent-ios-app-ipad-support" />
+			<id>https://www.theverge.com/?p=1006813</id>
+			<updated>2026-10-07T16:57:02-04:00</updated>
+			<published>2026-10-07T11:37:23-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Meta" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="Tech" />
+							<summary type="html"><![CDATA[After launching nearly a month ago and spending several weeks as the top free app in Apple's App Store, the latest update to Meta's Muse iOS app introduces native support for the iPad. A Mac version of Meta's agentic AI tool (designed to compete with OpenClaw, ChatGPT's Dots, and Grok Bot) was released about a [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="The Meta Muse character leaning against an iPad running the app." data-caption="" data-portal-copyright="Image: Meta" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/musetop.jpg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">After <a href="https://www.theverge.com/ai-artificial-intelligence/991216/meta-bets-on-ai-agent-muse-to-catch-up-in-ai-race">launching nearly a month ago</a> and spending several weeks as the top free app in Apple's App Store, the latest update to Meta's Muse iOS app introduces native support for the iPad. A <a href="https://www.theverge.com/tech/997332/metas-muse-ai-agent-now-has-a-mac-app">Mac version of Meta's agentic AI tool</a> (designed to compete with OpenClaw, ChatGPT's Dots, and Grok Bot) was released about a week after the original mobile version debuted expanding its usefulness to desktop tasks like organizing files. The new iPad version should function similar to Muse on iPhones, but better take advantage of the extra screen real estate and <a href="https://www.theverge.com/apple/679420/apple-ipados-wwdc-2025">iPadOS' better multitasking capabilities</a>.</p>
+<p class="wp-block-paragraph">The newly added iPad support is limited to just a one l …</p>
+<p><a href="https://www.theverge.com/tech/1006813/muse-ai-agent-ios-app-ipad-support">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Emma Roth</name>
+			</author>
+			
+			<title type="html"><![CDATA[Google invests millions in Mark Zuckerberg’s efforts to create a ‘virtual cell’]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/tech/1006766/google-meta-biohub-investment-virtual-cell" />
+			<id>https://www.theverge.com/?p=1006766</id>
+			<updated>2026-10-07T12:42:25-04:00</updated>
+			<published>2026-10-07T10:40:52-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Google" /><category scheme="https://www.theverge.com" term="Health" /><category scheme="https://www.theverge.com" term="Meta" /><category scheme="https://www.theverge.com" term="Science" /><category scheme="https://www.theverge.com" term="Tech" />
+							<summary type="html"><![CDATA[Google DeepMind, Meta, and AI drug discovery startup Isomorphic Labs are jointly investing $300 million into an initiative to create a "virtual cell" that researchers can use to combat disease, as reported earlier by Reuters. The project is led by Biohub, a nonprofit biomedical research organization founded by Mark Zuckerberg and his wife, Priscilla Chan. [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="A photo of Mark Zuckerberg and Priscilla Chan" data-caption="" data-portal-copyright="Photo by Angela Weiss/AFP via Getty Images" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/gettyimages-2243532165.jpg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">Google DeepMind, Meta, and AI drug discovery startup Isomorphic Labs <a href="https://biohub.org/news/virtual-biology-initiative-expansion/">are jointly investing $300 million</a> into an initiative to create a "virtual cell" that researchers can use to combat disease, as <a href="https://www.reuters.com/business/healthcare-pharmaceuticals/us-government-google-join-zuckerberg-backed-biohub-18-billion-push-ai-biology-2026-10-07/">reported earlier by <em>Reuters</em></a>. The project is led by Biohub, a nonprofit biomedical research organization founded by Mark Zuckerberg and his wife, Priscilla Chan. It comes as part of a $1.8 billion <a href="https://biohub.org/news/virtual-biology-initiative-expansion/">"Virtual Biology" initiative</a> to build AI datasets that could allow researchers to "ask, predict, and answer biological questions digitally."</p>
+<p class="wp-block-paragraph"><a href="https://www.theverge.com/2016/9/21/13003174/chan-zuckerberg-initiative-commits-to-investing-3-billion-to-cure">Founded in 2016</a>, Biohub aims to prevent and cure diseases <a href="https://www.theverge.com/2023/9/19/23880277/chan-zuckerberg-foundation-funds-ai-gpu-medical-research">through the creation of a "high-accuracy predictive mode …</a></p>
+<p><a href="https://www.theverge.com/tech/1006766/google-meta-biohub-investment-virtual-cell">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Mia Sato</name>
+			</author>
+			
+			<title type="html"><![CDATA[AI could upend food delivery]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/ai-artificial-intelligence/1005726/doordash-ai-agentic-food-delivery-bites" />
+			<id>https://www.theverge.com/?p=1005726</id>
+			<updated>2026-10-06T13:54:19-04:00</updated>
+			<published>2026-10-07T08:00:00-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="Business" /><category scheme="https://www.theverge.com" term="Food" /><category scheme="https://www.theverge.com" term="Online Shopping" /><category scheme="https://www.theverge.com" term="Science" /><category scheme="https://www.theverge.com" term="Tech" />
+							<summary type="html"><![CDATA[DoorDash, the leading food delivery app, processed 970 million orders in its second quarter this year and generated $4.5 billion in revenue. A 10-person startup called Bites is a blip in comparison: It has just around 300 restaurants signed up in the Bay Area, where it's operating as a pre-seed startup. But this summer, Bites [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="" data-caption="" data-portal-copyright="" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/268795_Can_AI_reform_overpriced_food_delivery__CVirginia2.jpg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">DoorDash, the leading food delivery app, processed 970 million orders in its second quarter this year and generated $4.5 billion in revenue. A 10-person startup called Bites is a blip in comparison: It has just around 300 restaurants signed up in the Bay Area, where it's operating as a pre-seed startup. But this summer, Bites caught DoorDash's attention.</p>
+<p class="wp-block-paragraph">In August, a slew of restaurants in the Bay Area received a strange email from DoorDash, warning businesses that they may be listed without their consent on Bites.  </p>
+<p class="wp-block-paragraph">The form letter, copies of which were seen by <em>The Verge</em>, said that DoorDash had heard from "several partners" that were adde …</p>
+<p><a href="https://www.theverge.com/ai-artificial-intelligence/1005726/doordash-ai-agentic-food-delivery-bites">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Jay Peters</name>
+			</author>
+			
+			<title type="html"><![CDATA[ChatGPT for Teens is an ‘unacceptable risk,’ says Common Sense Media]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/ai-artificial-intelligence/1006355/openai-chatgpt-for-teens-common-sense-media" />
+			<id>https://www.theverge.com/?p=1006355</id>
+			<updated>2026-10-06T20:07:59-04:00</updated>
+			<published>2026-10-07T05:00:00-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="News" /><category scheme="https://www.theverge.com" term="OpenAI" />
+							<summary type="html"><![CDATA[Common Sense Media, a nonprofit that offers reviews of apps, services, and entertainment with a focus on youth safety, today said that OpenAI's ChatGPT for Teens is an "unacceptable risk." ChatGPT for Teens, introduced in August, has guardrails for teens and is designed to help students learn, but Common Sense Media says that the teen [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="Vector illustration of the Chat GPT logo." data-caption="" data-portal-copyright="Image: The Verge" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25461999/STK155_OPEN_AI_CVirginia_A.jpg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">Common Sense Media, a nonprofit that offers reviews of apps, services, and entertainment with a focus on youth safety, today said that OpenAI's ChatGPT for Teens is an "unacceptable risk."</p>
+<p class="wp-block-paragraph">ChatGPT for Teens, <a href="https://www.theverge.com/ai-artificial-intelligence/981333/openai-chatgpt-teen-mode">introduced in August</a>, has guardrails for teens and is designed to help students learn, but Common Sense Media says that the teen protections offered by the feature "fall short of what the company promised." Common Sense Media's assessment found that ChatGPT "doesn't send alerts to parents when it should," doesn't offer "the right help in crisis situations," and "still does kids' homework," <a href="https://www.commonsensemedia.org/press-releases/chatgpt-for-teens-poses-unacceptable-risk-to-kids-common-sense-media-finds">according to a press release</a>.</p>
+<p class="wp-block-paragraph">"ChatGPT for Tee …</p>
+<p><a href="https://www.theverge.com/ai-artificial-intelligence/1006355/openai-chatgpt-for-teens-common-sense-media">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+			<entry>
+			
+			<author>
+				<name>Robert Hart</name>
+			</author>
+			
+			<title type="html"><![CDATA[OpenAI drops another batch of mathematical breakthroughs]]></title>
+			<link rel="alternate" type="text/html" href="https://www.theverge.com/ai-artificial-intelligence/1005004/openai-math-release-github" />
+			<id>https://www.theverge.com/?p=1005004</id>
+			<updated>2026-10-06T19:26:38-04:00</updated>
+			<published>2026-10-06T19:26:38-04:00</published>
+			<category scheme="https://www.theverge.com" term="AI" /><category scheme="https://www.theverge.com" term="OpenAI" />
+							<summary type="html"><![CDATA[OpenAI has revealed solutions to a number of long-standing mathematics problems produced by an unreleased frontier model in a batch of 722 manuscripts, covering 372 result families that group related papers. It extends a run of breakthroughs that have both impressed and unsettled parts of the mathematical community while raising questions about research ethics and [&#8230;]]]></summary>
+			
+							<content type="html">
+											<![CDATA[
+
+						
+<figure>
+
+<img alt="Sam Altman speaking in front of OpenAI logo" data-caption="" data-portal-copyright="Image: Getty Images" data-has-syndication-rights="1" src="https://platform.theverge.com/wp-content/uploads/sites/2/2026/10/gettyimages-2297765991.jpg?quality=90&#038;strip=all&#038;crop=0,0,100,100" />
+	<figcaption>
+		</figcaption>
+</figure>
+<p class="wp-block-paragraph">OpenAI has <a href="https://openai.com/index/sharing-ai-progress-in-mathematics/">revealed solutions</a> to a number of long-standing mathematics problems produced by an unreleased frontier model in <a href="https://github.com/openai/math">a batch of 722 manuscripts, covering 372 result families</a> that group related papers. It extends a run of breakthroughs that have both impressed and unsettled parts of the mathematical community while raising questions about research ethics and academic conduct. According to AGMAI, the <a href="https://www.theverge.com/ai-artificial-intelligence/999167/openai-elite-mathematicians-panel" target="_blank" rel="noopener">newly formed independent advisory group of elite mathematicians</a> put together to work on communicating the results responsibly, the release includes solutions to "hundreds" of open questions.</p>
+<p class="wp-block-paragraph">The results have been expected for weeks, althou …</p>
+<p><a href="https://www.theverge.com/ai-artificial-intelligence/1005004/openai-math-release-github">Read the full story at The Verge.</a></p>
+						]]>
+									</content>
+			
+					</entry>
+	</feed>

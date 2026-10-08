@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:media="http://search.yahoo.com/mrss/" >
+    <channel>
+        <title>AI - Ars Technica</title>
+        <atom:link href="https://arstechnica.com/ai/feed/" rel="self" type="application/rss+xml" />
+        <link>https://arstechnica.com</link>
+        <description>Serving the Technologist since 1998. News, reviews, and analysis.</description>
+        <lastBuildDate>Thu, 08 Oct 2026 00:00:24 +0000</lastBuildDate>
+        <language>en-US</language>
+        <sy:updatePeriod>
+            hourly        </sy:updatePeriod>
+        <sy:updateFrequency>
+            1        </sy:updateFrequency>
+        
+<image>
+	<url>https://cdn.arstechnica.net/wp-content/uploads/2016/10/cropped-ars-logo-512_480-60x60.png</url>
+	<title>AI - Ars Technica</title>
+	<link>https://arstechnica.com</link>
+	<width>32</width>
+	<height>32</height>
+</image> 
+            <item>
+                <title>Nvidia&#039;s big bet on physical AI aims for safer robotaxis, humanoid robots</title>
+                <link>https://arstechnica.com/ai/2026/10/nvidias-big-bet-on-physical-ai-aims-for-safer-robotaxis-humanoid-robots/</link>
+                                    <comments>https://arstechnica.com/ai/2026/10/nvidias-big-bet-on-physical-ai-aims-for-safer-robotaxis-humanoid-robots/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Jeremy Hsu]]>
+                </dc:creator>
+                <pubDate>Thu, 08 Oct 2026 11:15:33 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Agility Robotics]]></category>
+		<category><![CDATA[boston dynamics]]></category>
+		<category><![CDATA[humanoid robots]]></category>
+		<category><![CDATA[Industrial robots]]></category>
+		<category><![CDATA[NVIDIA]]></category>
+		<category><![CDATA[NVIDIA Halos]]></category>
+		<category><![CDATA[Robotics]]></category>
+		<category><![CDATA[robots]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/ai/2026/10/nvidias-big-bet-on-physical-ai-aims-for-safer-robotaxis-humanoid-robots/</guid>
+
+                                    <description>
+                        <![CDATA[Full-stack safety solution for physical AI is being used by robotics companies.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Investors bullish on AI data centers may be fueling Nvidia’s multi-trillion-dollar market capitalization, but the AI chipmaker has also bet billions of dollars on physical AI technologies such as robotics and self-driving cars. Part of that gambit has involved Nvidia developing a full-stack safety system that companies can build upon to reduce the risk of their machines harming nearby people.</p>
+<p>Nvidia's Halos system <a href="https://blogs.nvidia.com/blog/halos-safety-system-autonomous-vehicles/">launched in 2025</a> with hardware and software tools to help developers implement guardrails in self-driving cars and other autonomous vehicles. Then the company expanded its safety architecture to more physical AI technologies by announcing <a href="https://nvidianews.nvidia.com/news/nvidia-announces-halos-for-robotics-the-industrys-first-full-stack-safety-system-for-physical-ai">Nvidia Halos for Robotics</a> in June 2026—with the goal of enabling safe deployments of autonomous mobile robots in warehouses, humanoid robots walking around inside a factory, or even surgical robots.</p>
+<p>“Now the AI models are getting capable, the robot hardware is getting capable, and a thing we thought is going to be the next bottleneck is safety,” <a href="https://www.linkedin.com/in/amit-goel-759146a/">Amit Goel</a>, head of robotics ecosystem and edge computing at Nvidia, told Ars. “So that's why we launched our Halos for Robotics to unlock the capability of these systems.”</p><p><a href="https://arstechnica.com/ai/2026/10/nvidias-big-bet-on-physical-ai-aims-for-safer-robotaxis-humanoid-robots/">Read full article</a></p>
+<p><a href="https://arstechnica.com/ai/2026/10/nvidias-big-bet-on-physical-ai-aims-for-safer-robotaxis-humanoid-robots/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>2</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/Agility_Digit5_human-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/Agility_Digit5_human-500x500.jpg" width="500" height="500" />
+<media:credit>Agility Robotics</media:credit><media:text>Agility Robotics' Digit humanoid robot uses Nvidia's Halos system to help safely work around people.</media:text></media:content>
+            </item>
+                    <item>
+                <title>Microsoft event debuts new AI-friendly hardware and Windows changes</title>
+                <link>https://arstechnica.com/gadgets/2026/10/microsoft-event-debuts-new-ai-friendly-hardware-and-windows-changes/</link>
+                                    <comments>https://arstechnica.com/gadgets/2026/10/microsoft-event-debuts-new-ai-friendly-hardware-and-windows-changes/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Nick Indge]]>
+                </dc:creator>
+                <pubDate>Thu, 08 Oct 2026 00:00:24 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Tech]]></category>
+		<category><![CDATA[hybrid intelligence]]></category>
+		<category><![CDATA[microsoft rtx spark dev box]]></category>
+		<category><![CDATA[microsoft surface laptop ultra]]></category>
+		<category><![CDATA[Microsoft Windows]]></category>
+		<category><![CDATA[MXC]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/gadgets/2026/10/microsoft-event-debuts-new-ai-friendly-hardware-and-windows-changes/</guid>
+
+                                    <description>
+                        <![CDATA[Get ready for more AI in your Windows and more AI on the desktop.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>In its first live event in two years, Microsoft today announced its newest Surface laptop, outlined a host of changes coming to Windows 11, and shared a vision of how local-AI and agentic workflows could reshape personal computing for those in the dev community as well as home enthusiasts.</p>
+<h2>Surface Laptop Ultra</h2>
+<p><a href="https://arstechnica.com/gadgets/2026/06/microsoft-surface-laptop-ultra-will-be-among-the-first-nvidia-rtx-spark-arm-pcs/">Originally teased in May 2026</a>, the new Surface Laptop Ultra will be Microsoft's first offering to take advantage of the new Nvidia RTX Spark SoC (system on a chip). The device has a starting price of $2,599, and comes in various SoC and memory configurations, with either a 5120-core or 6144-core Blackwell GPU and up to 128GB of LPDDR5x unified memory. It will begin shipping on October 16 and is available for <a href="https://www.microsoft.com/en-us/surface/devices/surface-laptop-ultra">pre-order</a> now.</p>
+<p>While the new Ultra is clearly focused on the developer crowd, graphical performance was highlighted during the presentation to show off just how capable the laptop can be. By leaning on unified memory allocation rather than the physical VRAM limits of a traditional GPU, the laptop can assign its resources to handle modern gaming tasks as well as local AI development and deployment. The new <a href="https://store.steampowered.com/app/3010850/Gears_of_War_EDay/"><em>Gears of War: E-Day</em></a> was shown running on the system, meaning that even without a traditional gaming GPU, AAA titles are on the table.</p><p><a href="https://arstechnica.com/gadgets/2026/10/microsoft-event-debuts-new-ai-friendly-hardware-and-windows-changes/">Read full article</a></p>
+<p><a href="https://arstechnica.com/gadgets/2026/10/microsoft-event-debuts-new-ai-friendly-hardware-and-windows-changes/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>83</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/Surface-Laptop-Ultra-Opened-1152x648.png" type="image/png" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/Surface-Laptop-Ultra-Opened-500x500.png" width="500" height="500" />
+<media:credit>Microsoft</media:credit><media:text>The Surface Laptop Ultra</media:text></media:content>
+            </item>
+                    <item>
+                <title>“Software is over”: Bold AI developer takes aim at Adobe with open source clones</title>
+                <link>https://arstechnica.com/ai/2026/10/software-is-over-bold-ai-developer-takes-aim-at-adobe-with-open-source-clones/</link>
+                                    <comments>https://arstechnica.com/ai/2026/10/software-is-over-bold-ai-developer-takes-aim-at-adobe-with-open-source-clones/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Kyle Orland]]>
+                </dc:creator>
+                <pubDate>Wed, 07 Oct 2026 21:56:42 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Adobe]]></category>
+		<category><![CDATA[Anthropic]]></category>
+		<category><![CDATA[clause]]></category>
+		<category><![CDATA[open source]]></category>
+		<category><![CDATA[Opus]]></category>
+		<category><![CDATA[Photoshop]]></category>
+		<category><![CDATA[Reverse-engineering]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/ai/2026/10/software-is-over-bold-ai-developer-takes-aim-at-adobe-with-open-source-clones/</guid>
+
+                                    <description>
+                        <![CDATA[Opus-built Creative Cloud alternatives are ambitious, free, and nowhere near finished.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>For a while, those hoping to <a href="https://arstechnica.com/civis/threads/is-adobe-really-this-bad.1471693/">avoid the difficulty and expense of dealing with Adobe's Creative Suite</a> have been able to use <a href="https://github.com/KenneyNL/Adobe-Alternatives">several free and/or open-source alternatives</a> that replicate some or all of those capabilities. Now, one developer is using AI-powered reverse engineering to mimic the look, feel, and functionality of Adobe's well-known software with what he hopes will soon be perfect fidelity.</p>
+<p><a href="https://github.com/storytold/artcraft">Artcraft</a> got its start <a href="https://web.archive.org/web/20250315000000*/https://getartcraft.com/">last year</a> as a "controllable AI for artists" that allows for precise post-generation editing of AI-crafted images and videos. Over the weekend, though, the brand <a href="https://web.archive.org/web/20261003233252/https://getartcraft.com/">debuted its pivot</a> to <a href="https://getartcraft.com/apps">a suite of seven open source apps</a> recreating the user interface and tools found in Adobe's Photoshop, Illustrator, Premiere, Lightroom, After Effects, InDesign, and Acrobat Pro.</p>
+<p>In <a href="https://www.reddit.com/r/SaaS/comments/1wwnhbt/ive_created_open_source_100_rust_cleanroom/">announcing those new apps on Reddit</a> earlier this week, <a href="https://www.linkedin.com/in/possibilistic/">software developer Brandon Thomas</a> said he used Anthropic's Claude Opus 5.5 to create "clean-room replacements" for Adobe's closed source software in Rust (with WebAssembly versions available for use in a browser). And while commenters <a href="https://news.ycombinator.com/item?id=49960138">on Hacker News</a> and <a href="https://bsky.app/profile/chinnyvision.bsky.social/post/3mxcfhzfgpc2c">elsewhere</a> have <a href="https://bsky.app/profile/whatabouttheken.bsky.social/post/3mxcc3ey72c2f">taken pains</a> to point out the new software's many current shortcomings, Thomas make the grandiose promise that <a href="https://news.ycombinator.com/item?id=49959605">the current "super early alpha" state</a> will soon lead to something just as functional as anything Adobe has ever put out.</p><p><a href="https://arstechnica.com/ai/2026/10/software-is-over-bold-ai-developer-takes-aim-at-adobe-with-open-source-clones/">Read full article</a></p>
+<p><a href="https://arstechnica.com/ai/2026/10/software-is-over-bold-ai-developer-takes-aim-at-adobe-with-open-source-clones/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>182</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/greatwave-1152x648.webp" type="image/webp" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/greatwave-500x500-1791408830.webp" width="500" height="500" />
+<media:credit>Artcraft</media:credit><media:text>Think that's a screen from Photoshop? Look again...</media:text></media:content>
+            </item>
+                    <item>
+                <title>Fraudster jailed for using 10K bots and AI songs to outstream Taylor Swift</title>
+                <link>https://arstechnica.com/tech-policy/2026/10/outstreaming-taylor-swift-is-easy-with-10k-bots-and-ai-songs-fraudster-admits/</link>
+                                    <comments>https://arstechnica.com/tech-policy/2026/10/outstreaming-taylor-swift-is-easy-with-10k-bots-and-ai-songs-fraudster-admits/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ashley Belanger]]>
+                </dc:creator>
+                <pubDate>Wed, 07 Oct 2026 17:57:39 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Policy]]></category>
+		<category><![CDATA[ai songs]]></category>
+		<category><![CDATA[amazon music]]></category>
+		<category><![CDATA[apple music]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[spotify]]></category>
+		<category><![CDATA[streaming fraud]]></category>
+		<category><![CDATA[youtube music]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/tech-policy/2026/10/outstreaming-taylor-swift-is-easy-with-10k-bots-and-ai-songs-fraudster-admits/</guid>
+
+                                    <description>
+                        <![CDATA[Man gets 18 months for AI scheme stealing $8M in music streaming royalties.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>After pleading guilty, a 54-year-old North Carolina man, Michael Smith, was sentenced to 18 months in prison for using artificial intelligence to generate songs for a scheme that stole millions from music streaming platforms.</p>
+<p>In a <a href="https://www.justice.gov/usao-sdny/pr/north-carolina-man-sentenced-18-months-prison-super-intelligence-assisted-music">press release</a> Tuesday, the US Department of Justice said that Smith is the first American criminally charged with AI-assisted streaming fraud.</p>
+<p>First <a href="https://www.justice.gov/usao-sdny/pr/north-carolina-musician-charged-music-streaming-fraud-aided-artificial-intelligence">charged</a> in 2024, Smith successfully ran the scheme for seven years without detection.</p><p><a href="https://arstechnica.com/tech-policy/2026/10/outstreaming-taylor-swift-is-easy-with-10k-bots-and-ai-songs-fraudster-admits/">Read full article</a></p>
+<p><a href="https://arstechnica.com/tech-policy/2026/10/outstreaming-taylor-swift-is-easy-with-10k-bots-and-ai-songs-fraudster-admits/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>68</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-2297466143-1024x648.jpg" type="image/jpeg" medium="image" width="1024" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-2297466143-500x500.jpg" width="500" height="500" />
+<media:credit>Taylor Hill / Contributor | FilmMagic</media:credit></media:content>
+            </item>
+                    <item>
+                <title>Mistral says &quot;Le Chonk&quot; can challenge the best AI models</title>
+                <link>https://arstechnica.com/ai/2026/10/mistral-says-le-chonk-can-challenge-the-best-ai-models/</link>
+                                    <comments>https://arstechnica.com/ai/2026/10/mistral-says-le-chonk-can-challenge-the-best-ai-models/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Joel Khalili, wired.com]]>
+                </dc:creator>
+                <pubDate>Wed, 07 Oct 2026 14:12:37 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[European AI]]></category>
+		<category><![CDATA[Le Chonk]]></category>
+		<category><![CDATA[Mistral]]></category>
+		<category><![CDATA[Open weights AI]]></category>
+		<category><![CDATA[syndication]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/ai/2026/10/mistral-says-le-chonk-can-challenge-the-best-ai-models/</guid>
+
+                                    <description>
+                        <![CDATA[Mistral says Le Chonk can rival top closed models while remaining open-weight.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>As tensions mount over <a href="https://www.wired.com/story/trumps-ai-safety-accord-is-a-fancy-pinky-swear/">who gets access</a> to top-end <a href="https://www.wired.com/tag/artificial-intelligence/">artificial intelligence</a>, French company <a href="https://www.wired.com/story/mistral-is-in-the-right-place-at-the-right-time/">Mistral</a> has released a new freely available model that it claims can compete with the very best from the US and China.</p>
+<p>The new 1 trillion-parameter model, Mistral Large 4—nicknamed Le Chonk—can be used and customized by anyone. It’s currently available in preview, with a final version to follow by the end of the month. Though Le Chonk is built to compete with leading general-purpose models, it’s optimized specifically for coding and cyberdefense, as well as tasks particular to manufacturing, finance, electrical engineering, and other niches.</p>
+<p>“There are a lot of areas where the other labs will not focus that much,” Guillaume Lample, cofounder and chief scientist at Mistral, tells WIRED. “There are so many domains in which you can improve models.”</p><p><a href="https://arstechnica.com/ai/2026/10/mistral-says-le-chonk-can-challenge-the-best-ai-models/">Read full article</a></p>
+<p><a href="https://arstechnica.com/ai/2026/10/mistral-says-le-chonk-can-challenge-the-best-ai-models/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>97</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2025/12/mistral_header_2-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2025/12/mistral_header_2-500x500.jpg" width="500" height="500" />
+<media:credit>Mistral / Benj Edwards</media:credit><media:text>The Mistral logo.</media:text></media:content>
+            </item>
+                    <item>
+                <title>Google rolls out improved SynthID AI content detector, now available globally</title>
+                <link>https://arstechnica.com/ai/2026/10/google-rolls-out-improved-synthid-ai-content-detector-now-available-globally/</link>
+                                    <comments>https://arstechnica.com/ai/2026/10/google-rolls-out-improved-synthid-ai-content-detector-now-available-globally/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ryan Whitwam]]>
+                </dc:creator>
+                <pubDate>Wed, 07 Oct 2026 14:00:08 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[gemini]]></category>
+		<category><![CDATA[google]]></category>
+		<category><![CDATA[SynthID]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/ai/2026/10/google-rolls-out-improved-synthid-ai-content-detector-now-available-globally/</guid>
+
+                                    <description>
+                        <![CDATA[The new SynthID website can now identify AI content from Google, OpenAI, and more.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Every piece of AI content from Google's Gemini models has a hidden SynthID label, which makes it <a href="https://arstechnica.com/ai/2026/07/tested-google-synthid-works-great-but-labeling-ai-content-may-be-a-losing-game/">very difficult to pass the content off as authentic</a>. SynthID has also gotten buy-in from other major AI players, but actually checking for those invisible watermarks has been a convoluted process. It's going to be a little easier going forward, though. Google has <a href="https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/">announced</a> that its SynthID detector now supports watermarks from all its partners, and it's available for anyone to use on a new dedicated website.</p>
+<p>SynthID is an invisible signal encoded in the pixels of AI-generated images and videos, and in the waveform of AI audio. Google says Gemini alone has integrated SynthID with over 180 billion images and videos, plus 240,000 years of audio. Until now, the only way for those outside of Google's trusted tester program to check for SynthID was to ask Gemini. This is rather clunky, and the model's output could sometimes be confusing when you just wanted a simple "yes" or "no."</p>
+<p>Now you can cut Gemini out of the loop. Starting today, you can go to the new <a href="http://synthid.com/">SynthID.com</a> website to check a piece of content for an AI watermark. A major limitation of Google's previous detector was that it only checked for Google's version of SynthID. Even though ChatGPT images, for example, have SynthID, they wouldn't be flagged in Google's detector. That's no longer a problem.</p><p><a href="https://arstechnica.com/ai/2026/10/google-rolls-out-improved-synthid-ai-content-detector-now-available-globally/">Read full article</a></p>
+<p><a href="https://arstechnica.com/ai/2026/10/google-rolls-out-improved-synthid-ai-content-detector-now-available-globally/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>29</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/07/synthid-fingerprint-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/07/synthid-fingerprint-500x500.jpg" width="500" height="500" />
+<media:credit>Aurich Lawson</media:credit></media:content>
+            </item>
+                    <item>
+                <title>OpenAI will watermark ChatGPT outputs by default—but only in the EU</title>
+                <link>https://arstechnica.com/ai/2026/10/openai-will-watermark-chatgpt-outputs-by-default-but-only-in-the-eu/</link>
+                                    <comments>https://arstechnica.com/ai/2026/10/openai-will-watermark-chatgpt-outputs-by-default-but-only-in-the-eu/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Samuel Axon]]>
+                </dc:creator>
+                <pubDate>Tue, 06 Oct 2026 20:50:32 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[ChatGPT]]></category>
+		<category><![CDATA[Codex]]></category>
+		<category><![CDATA[EU]]></category>
+		<category><![CDATA[openai]]></category>
+		<category><![CDATA[textGrain]]></category>
+		<category><![CDATA[watermark]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/ai/2026/10/openai-will-watermark-chatgpt-outputs-by-default-but-only-in-the-eu/</guid>
+
+                                    <description>
+                        <![CDATA[Like other solutions, it is not especially reliable, and it's easy to circumvent.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>OpenAI will begin automatically watermarking text generated with ChatGPT in the European Union, the company has announced. It will also offer the watermarking feature in other regions, but it will be off by default outside of the EU.</p>
+<p>The move in Europe is driven by a need to comply with the EU AI Act, which took effect in August. It requires marking content produced by AI models in a way that another tool can detect. Unfortunately, there is still no completely effective and reliable way to do that. A few standards already exist, like SynthID and the C2PA project, but they are relatively easy to circumvent for anyone with basic know-how.</p>
+<p>The same is likely true for OpenAI's watermark. Its method is proprietary; the company calls it textGrain, and has published a technical paper <a href="https://cdn.openai.com/pdf/e9508624-d767-41b6-a26d-e34ca798ada6/textgrain-entropy-calibrated-watermarking-for-language-model-text.pdf">explaining</a> how it works. But in general, it works like other LLM watermarking tools we've seen in the past: It puts patterns in the word choices that are not clear to a human reader and that don't meaningfully change the general quality of the output, but that someone with a key can use a specialized detector to find. OpenAI says it will be giving access to the detector to a limited number of researchers and organizations and providing a request-for-approval process for others to be added over time.</p><p><a href="https://arstechnica.com/ai/2026/10/openai-will-watermark-chatgpt-outputs-by-default-but-only-in-the-eu/">Read full article</a></p>
+<p><a href="https://arstechnica.com/ai/2026/10/openai-will-watermark-chatgpt-outputs-by-default-but-only-in-the-eu/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>105</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/09/chatgpt-icon-1152x648-1789154124.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/09/chatgpt-icon-500x500-1789154135.jpg" width="500" height="500" />
+<media:credit>Getty Images | NurPhoto</media:credit></media:content>
+            </item>
+                    <item>
+                <title>OpenAI agents tried to hack Wikipedia tools and flooded it with traffic</title>
+                <link>https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/</link>
+                                    <comments>https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Dan Goodin]]>
+                </dc:creator>
+                <pubDate>Tue, 06 Oct 2026 12:21:53 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Biz & IT]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[AI agents]]></category>
+		<category><![CDATA[allignment]]></category>
+		<category><![CDATA[openai]]></category>
+		<category><![CDATA[wikipedia]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/</guid>
+
+                                    <description>
+                        <![CDATA[The reports of OpenAI agents harming third-party sites keep coming.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>The publisher of Wikipedia said Monday that OpenAI agents attempted to hack a note-taking tool it hosts, made unauthorized edits, and sent millions of resource-intensive requests to its infrastructure, in the latest instance of OpenAI systems taking harmful and potentially dangerous actions.</p>
+<p>The objective of some of the OpenAI agents’ actions, the Wikimedia Foundation <a href="https://wikimediafoundation.org/news/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/">said</a>, was to use Wikipedia as a proxy for fetching data from third-party sites. In one case, the agents posted “malicious edits” that were intended to repurpose a citation tool as a proxy. In another, the agents made unsuccessful attempts to compromise the Wikipedia Etherpad note-taking tool so it would serve the same purpose.</p>
+<p>The agents also made millions of automated API requests, crawled millions of pages, and made hundreds of thousands of queries to the Wikidata Query Service. The last action may have contributed to a <a href="https://wikitech.wikimedia.org/wiki/Incidents/2026-05-13_wdqs">partial shutdown</a> of the query service in May, the publisher said.</p><p><a href="https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/">Read full article</a></p>
+<p><a href="https://arstechnica.com/security/2026/10/openai-agents-tried-to-hack-wikipedia-tools-and-flooded-it-with-traffic/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>167</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/ai-agentic-hacking-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/ai-agentic-hacking-500x500.jpg" width="500" height="500" />
+<media:credit>Getty Images</media:credit></media:content>
+            </item>
+                    <item>
+                <title>MCP for agent-to-agent comms may be the riskiest protocol you&#039;ve never heard of</title>
+                <link>https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp/</link>
+                                    <comments>https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Dan Goodin]]>
+                </dc:creator>
+                <pubDate>Mon, 05 Oct 2026 22:26:35 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Biz & IT]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[agentic AI]]></category>
+		<category><![CDATA[MCP]]></category>
+		<category><![CDATA[Model Context Protocol]]></category>
+		<category><![CDATA[prompt injection]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp/</guid>
+
+                                    <description>
+                        <![CDATA[Trust gaps in the new protocol spread malicious prompts from one agent to another.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>The adoption of AI agents in millions of organizations is creating new opportunities for attackers to make them take malicious actions, such as exfiltrating database contents and sensitive business and personal information.</p>
+<p>In the past five months, Google and four other organizations—with little in common except for their use of AI agents—have acknowledged vulnerabilities that exploit one agent inside a targeted network to spread harmful instructions to other internal agents. The technique is a special form of prompt injection that targets not the LLM but a particular agent, such as one for translation or data analysis. Guardrails inside such agents, if they exist at all, are often lax and will send the instructions to other agents down the chain. Because the latter agent explicitly trusts the first one, it follows the directions.</p>
+<h2>Unexpected and hard to mitigate</h2>
+<p>Independent researcher Syed Anas Mohiuddin tested agents from organizations including Google, JP Morgan Chase, Weviate, Rapid7, the French government's interministerial digital directorate, and the US federal government. His proof-of-concept attacks exploit trust gaps in MCP, short for <a href="https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro">Model Context Protocol</a>. The standard is one way AI apps and agents communicate with each other inside an internal network. The illustration below shows a simplified MCP in action.</p><p><a href="https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp/">Read full article</a></p>
+<p><a href="https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>100</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/ai-agents-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/ai-agents-500x500.jpg" width="500" height="500" />
+<media:credit>Getty Images</media:credit></media:content>
+            </item>
+                    <item>
+                <title>Command-line tool quickly removes Apple Intelligence from macOS 27</title>
+                <link>https://arstechnica.com/apple/2026/10/command-line-tool-quickly-removes-apple-intelligence-from-macos-27/</link>
+                                    <comments>https://arstechnica.com/apple/2026/10/command-line-tool-quickly-removes-apple-intelligence-from-macos-27/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Scharon Harding]]>
+                </dc:creator>
+                <pubDate>Mon, 05 Oct 2026 19:14:44 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Apple]]></category>
+		<category><![CDATA[apple]]></category>
+		<category><![CDATA[MacOS]]></category>
+		<category><![CDATA[macos 27]]></category>
+		<category><![CDATA[macos 27 golden gate]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/apple/2026/10/command-line-tool-quickly-removes-apple-intelligence-from-macos-27/</guid>
+
+                                    <description>
+                        <![CDATA[The tool can free up over 12GB of storage. ]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>A new tool is allowing Mac users the ability again to easily turn off Apple Intelligence with one click and free up to 12GB of storage.</p>
+<p>Unlike with previous versions of macOS, <a href="https://arstechnica.com/gadgets/2026/09/macos-27-golden-gate-the-ars-technica-review/">macOS 27 Golden Gate </a>doesn’t have a toggle for turning off Apple Intelligence. That makes disabling AI features that you may not want more difficult. It also means that the AI models necessary for running Apple Intelligence will take up space on your disk<a href="https://support.apple.com/en-us/102149">,</a> <a href="https://support.apple.com/en-us/102149">even if you don’t use them</a> or if you go through your settings to individually find and disable AI capabilities.</p>
+<p>In response, a developer known as <a href="https://github.com/omlahore">Om Lahore</a> on GitHub last week created RemoveMacAI, a command-line tool that allows macOS 27 users to “turn off Apple Intelligence on macOS 27" in a way that is “fully reversible,” per <a href="https://github.com/omlahore/RemoveMacAI">the GitHub page</a>. They said that Apple's Intelligence models take up "about 12GB," but the models can actually take up over 30GB, <a href="https://www.theverge.com/ai-artificial-intelligence/1004672/mac-delete-apple-intelligence-ai-tool?">The Verge</a> noted.</p><p><a href="https://arstechnica.com/apple/2026/10/command-line-tool-quickly-removes-apple-intelligence-from-macos-27/">Read full article</a></p>
+<p><a href="https://arstechnica.com/apple/2026/10/command-line-tool-quickly-removes-apple-intelligence-from-macos-27/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>122</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/03/Screenshot-2026-03-03-at-10.30.27-AM-1152x648.jpeg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/03/Screenshot-2026-03-03-at-10.30.27-AM-500x500.jpeg" width="500" height="500" />
+<media:credit>Apple</media:credit><media:text>Two MacBook Airs.</media:text></media:content>
+            </item>
+                    <item>
+                <title>AI glasses face their first major government crackdown</title>
+                <link>https://arstechnica.com/ai/2026/10/ai-glasses-face-their-first-major-government-crackdown/</link>
+                                    <comments>https://arstechnica.com/ai/2026/10/ai-glasses-face-their-first-major-government-crackdown/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Richard Milne, Financial Times]]>
+                </dc:creator>
+                <pubDate>Mon, 05 Oct 2026 13:39:30 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[ai glasses]]></category>
+		<category><![CDATA[privacy]]></category>
+		<category><![CDATA[syndication]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/ai/2026/10/ai-glasses-face-their-first-major-government-crackdown/</guid>
+
+                                    <description>
+                        <![CDATA[Norway wants time to write permanent rules for glasses that can record bystanders.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Norway has become the first major country to propose a temporary ban on the use of AI glasses in selected public places amid growing privacy concerns over wearable technology.</p>
+<p>The rich Scandinavian country’s center-left government said on Monday that it would introduce a law to parliament soon on a temporary ban for places such as parks, beaches, schools, and kindergartens. It will also set up an expert group to propose permanent national rules.</p>
+<p>“I am concerned about the introduction of powerful new technology where people risk being photographed, filmed, or recorded without their knowledge,” said Torgeir Micaelsen, Norway’s digitalization minister. A temporary ban “will give us time to conduct a thorough assessment and hold an informed debate that can lay the foundation for permanent regulation,” he said.</p><p><a href="https://arstechnica.com/ai/2026/10/ai-glasses-face-their-first-major-government-crackdown/">Read full article</a></p>
+<p><a href="https://arstechnica.com/ai/2026/10/ai-glasses-face-their-first-major-government-crackdown/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>127</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/03/546417470_31238681149113739_395523165946500898_n.jpg" type="image/jpeg" medium="image">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/03/546417470_31238681149113739_395523165946500898_n-500x424.jpg" width="500" height="424" />
+<media:credit>Meta</media:credit><media:text>A marketing image for Ray-Ban Meta smart glasses.</media:text></media:content>
+            </item>
+                    <item>
+                <title>Apple changes full-disk access permissions to curb abuse from AI agents</title>
+                <link>https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/</link>
+                                    <comments>https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Dan Goodin]]>
+                </dc:creator>
+                <pubDate>Fri, 02 Oct 2026 23:03:16 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Apple]]></category>
+		<category><![CDATA[Biz & IT]]></category>
+		<category><![CDATA[Security]]></category>
+		<category><![CDATA[meta]]></category>
+		<category><![CDATA[muse]]></category>
+		<category><![CDATA[privacy]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/</guid>
+
+                                    <description>
+                        <![CDATA[Meta says FDA isn't sufficient to Muse reading messages. Apple begs to differ.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Apple says it is changing its macOS privacy settings to stop third-party app developers from misusing them to access message histories.</p>
+<p>Friday's <a href="https://developer.apple.com/news/?id=p6zjojqw">announcement</a> comes two weeks after tech columnist Jason Aten <a href="https://www.inc.com/jason-aten/metas-new-muse-ai-agent-read-my-private-messages-i-never-asked-it-to/91408202">said</a> that Meta’s new general-purpose AI agent Muse sent him an unsolicited notification referencing a thread between him and a co-worker over Apple Messages. Aten said he never granted Muse permissions to read his messages and had assumed they were off-limits. Social media last week blew up with masses of people who agreed and said the incident showed that AI assistants given access to calendars, emails, messages, shopping accounts, and other resources are akin to a skill saw or other power tool. While potentially useful, they can do real damage if not used carefully.</p>
+<h2>He said/she said</h2>
+<p>Meta CTO David Singleton <a href="https://www.threads.com/@davidsingleton/post/DddI7WtG8ul">joined the fray</a> with a rebuttal that appeared solid. For Muse to access Apple Messages, a user must manually give it two privileges. One is full-disk access, a macOS system-level permission. The other is to enable a Messages connector setting in Muse.</p><p><a href="https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/">Read full article</a></p>
+<p><a href="https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>236</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/02/gatekeeping-ai-agents-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/02/gatekeeping-ai-agents-500x500.jpg" width="500" height="500" />
+<media:credit>Aurich Lawson</media:credit></media:content>
+            </item>
+                    <item>
+                <title>Amazon’s $1B plan to combat data center backlash draws more backlash</title>
+                <link>https://arstechnica.com/tech-policy/2026/10/amazons-1b-plan-to-combat-data-center-backlash-draws-more-backlash/</link>
+                                    <comments>https://arstechnica.com/tech-policy/2026/10/amazons-1b-plan-to-combat-data-center-backlash-draws-more-backlash/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ashley Belanger]]>
+                </dc:creator>
+                <pubDate>Fri, 02 Oct 2026 20:30:27 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Policy]]></category>
+		<category><![CDATA[ai data center]]></category>
+		<category><![CDATA[Amazon]]></category>
+		<category><![CDATA[data center moratoriums]]></category>
+		<category><![CDATA[pollution]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/tech-policy/2026/10/amazons-1b-plan-to-combat-data-center-backlash-draws-more-backlash/</guid>
+
+                                    <description>
+                        <![CDATA[Amazon praised for ending NDAs but slammed for downplaying data center pollution.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>On Friday, Amazon committed to donating more than $1 billion over the next five years to communities neighboring data centers.</p>
+<p>In a <a href="https://www.aboutamazon.com/news/company-news/amazon-data-centers-built-together">press release</a>, Amazon Web Services’ CEO Matt Garman said that communities would decide how to prioritize funds across “education, job training, energy affordability, water, and energy preservation, and local priorities.”</p>
+<p>Laying out other community commitments, Amazon also promised to ensure data centers wouldn’t increase power bills or wipe out local water supplies. Regarding the latter, Amazon promised to be “water positive” by 2030, while claiming that 75 percent of projects have already met this goal.</p><p><a href="https://arstechnica.com/tech-policy/2026/10/amazons-1b-plan-to-combat-data-center-backlash-draws-more-backlash/">Read full article</a></p>
+<p><a href="https://arstechnica.com/tech-policy/2026/10/amazons-1b-plan-to-combat-data-center-backlash-draws-more-backlash/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>81</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-2292181016.jpg" type="image/jpeg" medium="image">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-2292181016-500x500.jpg" width="500" height="500" />
+<media:credit>Anna Moneymaker / Staff | Getty Images News</media:credit><media:text>An aerial view of an Amazon Web Services data center in Sterling, Virginia.</media:text></media:content>
+            </item>
+                    <item>
+                <title>US arrests tech CEO accused of smuggling $300M in Nvidia chips into China</title>
+                <link>https://arstechnica.com/tech-policy/2026/10/us-arrests-tech-ceo-accused-of-smuggling-300m-in-nvidia-chips-into-china/</link>
+                                    <comments>https://arstechnica.com/tech-policy/2026/10/us-arrests-tech-ceo-accused-of-smuggling-300m-in-nvidia-chips-into-china/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ashley Belanger]]>
+                </dc:creator>
+                <pubDate>Fri, 02 Oct 2026 18:39:36 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Policy]]></category>
+		<category><![CDATA[AI chips]]></category>
+		<category><![CDATA[china]]></category>
+		<category><![CDATA[Donald Trump]]></category>
+		<category><![CDATA[Export controls]]></category>
+		<category><![CDATA[NVIDIA]]></category>
+		<category><![CDATA[us-china trade war]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/tech-policy/2026/10/us-arrests-tech-ceo-accused-of-smuggling-300m-in-nvidia-chips-into-china/</guid>
+
+                                    <description>
+                        <![CDATA[Nvidia’s chip-smuggling problem won’t go away as arrests continue.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>The US has arrested another suspect accused of smuggling high-end computer servers containing export-controlled Nvidia chips into China.</p>
+<p>In a <a href="https://www.justice.gov/opa/pr/california-man-arrested-smuggling-more-300-million-export-controlled-computer-servers-china">press release</a> on Thursday, the Department of Justice accused 38-year-old Greg Lui of using false paperwork to mask shipments of servers worth more than $300 million that he allegedly knew were ultimately destined for China.</p>
+<p>As the CEO of Earthmade Computer, Lui allegedly conspired with freight-forwarding firms in South Asian countries like Malaysia and Singapore to illegally divert chip shipments into China, including Nvidia’s A100 GPUs and H100 GPUs, the FBI’s <a href="https://cdn.arstechnica.net/wp-content/uploads/2026/10/US-v-Lui-Indictment-10-1-26.pdf">indictment</a> alleged. These are not Nvidia’s most advanced chips. However, the chips can process large amounts of data and train large language models, which the US fears could pose national security risks if China suddenly gets access to enough chips to drastically advance its AI or strengthen its military.</p><p><a href="https://arstechnica.com/tech-policy/2026/10/us-arrests-tech-ceo-accused-of-smuggling-300m-in-nvidia-chips-into-china/">Read full article</a></p>
+<p><a href="https://arstechnica.com/tech-policy/2026/10/us-arrests-tech-ceo-accused-of-smuggling-300m-in-nvidia-chips-into-china/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>48</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-1258977050-2-1024x648.jpg" type="image/jpeg" medium="image" width="1024" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-1258977050-2-500x500.jpg" width="500" height="500" />
+<media:credit>Bloomberg / Contributor | Bloomberg</media:credit><media:text>Nvidia H100 graphics processor chips were illegally diverted to China, FBI says.</media:text></media:content>
+            </item>
+                    <item>
+                <title>The 7-year-old Nvidia Shield TV is now $100 more expensive due to AI</title>
+                <link>https://arstechnica.com/gadgets/2026/10/the-7-year-old-nvidia-shield-tv-is-now-100-more-expensive-thanks-to-ai/</link>
+                                    <comments>https://arstechnica.com/gadgets/2026/10/the-7-year-old-nvidia-shield-tv-is-now-100-more-expensive-thanks-to-ai/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ryan Whitwam]]>
+                </dc:creator>
+                <pubDate>Fri, 02 Oct 2026 14:52:16 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Tech]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[NVIDIA]]></category>
+		<category><![CDATA[Nvidia Shield TV]]></category>
+		<category><![CDATA[price increase]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/gadgets/2026/10/the-7-year-old-nvidia-shield-tv-is-now-100-more-expensive-thanks-to-ai/</guid>
+
+                                    <description>
+                        <![CDATA[Initially launched in 2019, the Nvidia Shield TV Pro now retails for $299.99.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>The era of generative AI has upended technology supply chains, and there is one ironclad rule in 2026: If it has memory or storage, it's getting more expensive. Even devices with years-old tech inside are still apparently subject to that unwritten rule. Nvidia has just announced that the Shield TV Pro is getting $100 more expensive, effective immediately.</p>
+<p>The most recent version of the Shield streaming box debuted in 2019, running Android TV with AI upscaling and hardware decoding for almost any type of media. While it ran an aging Tegra X1+ processor, that was (and still is) fast for a TV media streamer. The device launched at $199.99, with a non-Pro variant at $149.99. The non-Pro Shield has since been discontinued, but the Shield TV Pro lives on at the new $299.99 price.</p>
+<p>Nvidia has confirmed that you can blame AI for the higher Shield TV pricing. "Starting October 2, SHIELD Pro will be priced at $299. The cost of components, including memory, has increased substantially across the industry," a spokesperson told Ars.</p><p><a href="https://arstechnica.com/gadgets/2026/10/the-7-year-old-nvidia-shield-tv-is-now-100-more-expensive-thanks-to-ai/">Read full article</a></p>
+<p><a href="https://arstechnica.com/gadgets/2026/10/the-7-year-old-nvidia-shield-tv-is-now-100-more-expensive-thanks-to-ai/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>107</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/01/Shield-10-yrs-1-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/01/Shield-10-yrs-1-500x500.jpg" width="500" height="500" />
+<media:credit>Ryan Whitwam</media:credit><media:text>The Shield TV has that classic Nvidia aesthetic. </media:text></media:content>
+            </item>
+                    <item>
+                <title>Judge dismisses Chegg and Penske antitrust lawsuits targeting Google AI search</title>
+                <link>https://arstechnica.com/google/2026/10/antitrust-lawsuits-targeting-google-ai-search-dismissed-by-federal-judge/</link>
+                                    <comments>https://arstechnica.com/google/2026/10/antitrust-lawsuits-targeting-google-ai-search-dismissed-by-federal-judge/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ryan Whitwam]]>
+                </dc:creator>
+                <pubDate>Thu, 01 Oct 2026 20:11:55 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Policy]]></category>
+		<category><![CDATA[ai search]]></category>
+		<category><![CDATA[antitrust]]></category>
+		<category><![CDATA[google]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/google/2026/10/antitrust-lawsuits-targeting-google-ai-search-dismissed-by-federal-judge/</guid>
+
+                                    <description>
+                        <![CDATA[The court acknowledges AI search comes with consequences, but it's not an antitrust issue.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>In a setback for publishers worried about the effects of AI search, a US federal judge has dismissed lawsuits filed by Chegg and Penske Media against Google. The companies accused Google of antitrust violations in products like AI overviews, which have led to decreasing traffic at numerous sites. However, US District Judge Amit Mehta has <a href="https://www.documentcloud.org/documents/28712400-penske-and-chegg-v-google-dismissal/">ruled</a> that Google's conduct is not illegal under antitrust law.</p>
+<p>The lawsuits were <a href="https://arstechnica.com/tech-policy/2025/02/education-tech-firm-sues-google-over-ai-search-summaries/">filed in 2025</a>, and Google requested a dismissal earlier this year. Chegg, an education and learning platform, claimed in its lawsuit that Google illegally scraped its educational content. This allowed Gemini models to essentially recreate that content and reduce the site's traffic. Penske, which owns publications like Rolling Stone and Variety, filed a similar case that <a href="https://arstechnica.com/google/2026/05/google-will-put-more-links-to-websites-in-ai-overviews/">alleged lost traffic</a>. Specifically, the publisher claimed it was unfair that sites indexed for organic search would also have their content harvested for AI answers, with no way to opt out.</p>
+<p>These arguments did not sway the judge, who noted that Google's implicit agreement with websites is not legally relevant. "Plaintiffs have pleaded only that they have an ‘expectation’ that Google will send them search ​traffic if they make their content available for free," wrote Mehta. "But an expectation is not an agreement. It is simply how a general search engine works."</p><p><a href="https://arstechnica.com/google/2026/10/antitrust-lawsuits-targeting-google-ai-search-dismissed-by-federal-judge/">Read full article</a></p>
+<p><a href="https://arstechnica.com/google/2026/10/antitrust-lawsuits-targeting-google-ai-search-dismissed-by-federal-judge/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>27</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2025/05/Google-sign-IO-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2025/05/Google-sign-IO-500x500-1748638352.jpg" width="500" height="500" />
+<media:credit>Ryan Whitwam</media:credit></media:content>
+            </item>
+                    <item>
+                <title>With most information hidden, the game Stratego had stumped AI—until now</title>
+                <link>https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/</link>
+                                    <comments>https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Jacek Krywko]]>
+                </dc:creator>
+                <pubDate>Thu, 01 Oct 2026 16:28:04 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Science]]></category>
+		<category><![CDATA[Computer science]]></category>
+		<category><![CDATA[games]]></category>
+		<category><![CDATA[hidden information]]></category>
+		<category><![CDATA[strategy]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/</guid>
+
+                                    <description>
+                        <![CDATA[Adding in a second neural network that guesses the identity of hidden pieces was key.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Deep Blue took down Garry Kasparov at chess in 1997, AlphaGo beat Lee Sedol at Go in 2016, and poker bots have been beating professionals for years. But one classic game called <em>Stratego</em> held out. Even DeepMind, with its exceptional budget, couldn't build a machine that reliably beat the best human players.</p>
+<p>Now, a team of researchers from Carnegie Mellon, MIT, New York University, and Stanford University has done it. Their AI, called Ataraxos, beat Pim Niemeijer, arguably the best <em>Stratego</em> player of all time, 15 games to one, with four draws. And it took just 16 GPUs and a few thousand dollars to train it.</p>
+<h2>Hidden armies</h2>
+<p>In <em>Stratego</em>, each player gets 40 pieces representing military ranks, from a marshal down to a spy, plus bombs and a flag. You win by capturing the opponent's flag. Your opponent knows <em>where</em> your pieces are, but not <em>what</em> they are. Identities are revealed only when two pieces collide in battle—the weaker one is removed, and the identity of the winner is revealed. That makes <em>Stratego</em> an imperfect-information game, just like poker, which computers cracked years ago. “There's something super distinctive about <em>Stratego</em>, which is that it is a massive amount of hidden information that unfolds over a very long time scale,” said Eugene Vinitsky, a researcher at NYU and co-author of the study.</p><p><a href="https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/">Read full article</a></p>
+<p><a href="https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>59</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-1864707238-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/10/GettyImages-1864707238-500x500.jpg" width="500" height="500" />
+<media:credit>Vectorwin</media:credit></media:content>
+            </item>
+                    <item>
+                <title>Google announces Gemini 4 Argon AI model, but you can&#039;t use it yet</title>
+                <link>https://arstechnica.com/google/2026/09/google-announces-gemini-4-argon-ai-model-but-you-cant-use-it-yet/</link>
+                                    <comments>https://arstechnica.com/google/2026/09/google-announces-gemini-4-argon-ai-model-but-you-cant-use-it-yet/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ryan Whitwam]]>
+                </dc:creator>
+                <pubDate>Wed, 30 Sep 2026 20:11:08 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Google]]></category>
+		<category><![CDATA[Artificial Intelligence]]></category>
+		<category><![CDATA[gemini 4]]></category>
+		<category><![CDATA[generative ai]]></category>
+		<category><![CDATA[google]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/google/2026/09/google-announces-gemini-4-argon-ai-model-but-you-cant-use-it-yet/</guid>
+
+                                    <description>
+                        <![CDATA[So much for Gemini 3.5 Pro. ]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Google <a href="https://arstechnica.com/google/2026/05/google-announces-agent-optimized-gemini-3-5-flash-and-a-do-anything-model-called-omni/">promised Gemini 3.5 Pro</a> in June, but it spent the summer trotting out <a href="https://arstechnica.com/google/2026/07/google-reveals-faster-and-cheaper-gemini-3-6-flash-says-3-5-pro-is-still-in-testing/">smaller Flash models</a>. Now, Google is ready to take on the frontier again with <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/?utm_source=deepmind.google&amp;utm_medium=referral&amp;utm_campaign=gdm&amp;utm_content=">Gemini 4 Argon</a>. The company claims this new AI offers industry-leading performance in coding, knowledge work, and cybersecurity, but you aren't allowed to use it yet.</p>
+<p>While most of us will have to wait to test Gemini 4, Google says engineers inside the company are already using the new model extensively. Argon reportedly used "fleet-wide telemetry data" to help Google save 300 TiB of memory across its data centers. Meanwhile, Argon agents have been working to migrate C/C++ codebases to Rust across Google, including thousands of lines in the core re2 and libgav1 libraries and more than 800,000 lines in the Fuchsia OS Zircon kernel.</p>
+<p>Google has also come armed with a raft of benchmarks to back up its claims. On the software engineering DeepSWE v1.1 benchmark, Gemini 4 Argon hits 77.9 percent, which is higher than GPT-6 Astra, Fable 5.1, and Opus 5.5. Google promises similar power across a range of long-horizon tasks, pointing to Argon's industry-leading score in the economic analysis Vals Index test.</p><p><a href="https://arstechnica.com/google/2026/09/google-announces-gemini-4-argon-ai-model-but-you-cant-use-it-yet/">Read full article</a></p>
+<p><a href="https://arstechnica.com/google/2026/09/google-announces-gemini-4-argon-ai-model-but-you-cant-use-it-yet/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>65</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/04/gemini-general-1-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/04/gemini-general-1-500x500.jpg" width="500" height="500" />
+<media:credit>Aurich Lawson</media:credit></media:content>
+            </item>
+                    <item>
+                <title>RFK Jr. thinks AI will free us from the &quot;tyranny&quot; of medical facts, expertise</title>
+                <link>https://arstechnica.com/health/2026/09/rfk-jr-says-ai-backs-his-anti-vaccine-views-we-checked-it-doesnt/</link>
+                                    <comments>https://arstechnica.com/health/2026/09/rfk-jr-says-ai-backs-his-anti-vaccine-views-we-checked-it-doesnt/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Beth Mole]]>
+                </dc:creator>
+                <pubDate>Wed, 30 Sep 2026 19:31:25 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Health]]></category>
+		<category><![CDATA[anti-vaccine]]></category>
+		<category><![CDATA[MAHA]]></category>
+		<category><![CDATA[robert f kennedy jr]]></category>
+		<category><![CDATA[vaccines]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/health/2026/09/rfk-jr-says-ai-backs-his-anti-vaccine-views-we-checked-it-doesnt/</guid>
+
+                                    <description>
+                        <![CDATA[AI is far from a perfect resource. But it seems to hallucinate less than Kennedy.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>At a Make America Healthy Again event Tuesday, anti-vaccine Health Secretary Robert F. Kennedy opened a "fireside chat" with Vice President JD Vance on the topic of artificial intelligence. While MAHA generally coalesces around things like healthy lifestyles and mistrust of drugmakers, Kennedy quickly turned to extolling the potential of artificial intelligence, surprising Vance, who said he was expecting to discuss "weight loss and acid, not AI."</p>
+<p>Kennedy boasted that the Trump administration is "making it easy for every American to use AI," which he claimed would free us from the "medical tyranny" of doctors and health experts. He suggested Americans should start using AI to get second opinions about medical recommendations, saying AI is "better informed than any doctor in the country." He also suggested that the technology would confirm his misinformation about vaccines and contrarian views on public health guidance.</p>
+<p>"We're never, ever again going to be able to be dominated by public officials who tell us trust the experts, because every American will be able to check their own medical advice," Kennedy said.</p><p><a href="https://arstechnica.com/health/2026/09/rfk-jr-says-ai-backs-his-anti-vaccine-views-we-checked-it-doesnt/">Read full article</a></p>
+<p><a href="https://arstechnica.com/health/2026/09/rfk-jr-says-ai-backs-his-anti-vaccine-views-we-checked-it-doesnt/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>132</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/09/GettyImages-2294068904-1152x648.jpg" type="image/jpeg" medium="image" width="1152" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/09/GettyImages-2294068904-500x500.jpg" width="500" height="500" />
+<media:credit>Getty | Kent NISHIMURA</media:credit><media:text>US Secretary of Health and Human Services Robert F. Kennedy Jr. </media:text></media:content>
+            </item>
+                    <item>
+                <title>Trump plan to combat AI risks hinges on Big Tech pals policing themselves</title>
+                <link>https://arstechnica.com/tech-policy/2026/09/trump-plan-to-combat-ai-risks-hinges-on-big-tech-pals-policing-themselves/</link>
+                                    <comments>https://arstechnica.com/tech-policy/2026/09/trump-plan-to-combat-ai-risks-hinges-on-big-tech-pals-policing-themselves/#comments</comments>
+                
+                <dc:creator>
+                    <![CDATA[Ashley Belanger]]>
+                </dc:creator>
+                <pubDate>Wed, 30 Sep 2026 18:47:01 +0000</pubDate>
+                		<category><![CDATA[AI]]></category>
+		<category><![CDATA[Policy]]></category>
+		<category><![CDATA[AI safety]]></category>
+		<category><![CDATA[ai safety testing]]></category>
+		<category><![CDATA[Anthropic]]></category>
+		<category><![CDATA[Donald Trump]]></category>
+		<category><![CDATA[Elon Musk]]></category>
+		<category><![CDATA[google]]></category>
+		<category><![CDATA[Jensen Huang]]></category>
+		<category><![CDATA[NVIDIA]]></category>
+		<category><![CDATA[openai]]></category>
+		<category><![CDATA[sam altman]]></category>
+                <guid isPermaLink="true">https://arstechnica.com/tech-policy/2026/09/trump-plan-to-combat-ai-risks-hinges-on-big-tech-pals-policing-themselves/</guid>
+
+                                    <description>
+                        <![CDATA[Trump gets dozens of AI firms to agree to voluntary safety tests.]]>
+                    </description>
+                                                                <content:encoded>
+                            <![CDATA[<p>Amid escalating AI security incidents causing OpenAI to <a href="https://arstechnica.com/ai/2026/09/openai-halts-frontier-model-training-amid-string-of-agent-misalignment-incidents/">halt training</a> and <a href="https://arstechnica.com/ai/2026/09/openai-delays-ipo-over-ai-safety-concerns/">pause releases</a>, Donald Trump continues to advocate for the AI industry to regulate itself as the best path to combat emerging risks when developing frontier AI.</p>
+<p>In an <a href="https://static-assets-1.truthsocial.com/tmtg:prime-ts-assets/media_attachments/files/117/356/434/517/531/231/original/f469ac2b8d8005a1.jpg">agreement</a> Tuesday, two dozen tech firms voluntarily committed to implementing controls recommended by the White House, including undergoing independent safety audits that will test whether firms’ internal controls, monitoring, and detecting are actually working. Key focuses for external reviews included “risks related to cybersecurity, biosecurity, chemical threats, and unintended actions by AI models.”</p>
+<p>Firms also agreed to regularly meet to discuss best practices and set common AI safety standards and benchmarks. Among signers were leaders like Anthropic’s Dario Amodei, OpenAI’s Sam Altman, SpaceXAI’s Elon Musk, Nvidia’s Jensen Huang, Meta’s Mark Zuckerberg, and Alphabet/Google’s Sundar Pichai.</p><p><a href="https://arstechnica.com/tech-policy/2026/09/trump-plan-to-combat-ai-risks-hinges-on-big-tech-pals-policing-themselves/">Read full article</a></p>
+<p><a href="https://arstechnica.com/tech-policy/2026/09/trump-plan-to-combat-ai-risks-hinges-on-big-tech-pals-policing-themselves/#comments">Comments</a></p>
+]]>
+                        </content:encoded>
+                                    
+                                    <slash:comments>50</slash:comments>
+                
+                
+                <media:content url="https://cdn.arstechnica.net/wp-content/uploads/2026/09/GettyImages-2297759490-1024x648.jpg" type="image/jpeg" medium="image" width="1024" height="648">
+<media:thumbnail url="https://cdn.arstechnica.net/wp-content/uploads/2026/09/GettyImages-2297759490-500x500.jpg" width="500" height="500" />
+<media:credit>Kevin Dietsch / Staff | Getty Images News</media:credit><media:text>Nvidia CEO Jensen Huang (seated-L) speaks with US President Donald Trump during a meeting with AI executives at the White House.</media:text></media:content>
+            </item>
+            </channel>
+</rss>

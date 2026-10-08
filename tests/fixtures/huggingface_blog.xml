@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <atom:link href="https://huggingface.co/blog/feed.xml" rel="self" type="application/rss+xml"/>
+  <title>Hugging Face - Blog</title>
+  <link>https://huggingface.co/blog</link>
+  <description>The Hugging Face blog</description>
+  <language>en-US</language>
+  <item>
+   <title>Multimodal open d1 decision models for the edge</title>
+   <pubDate>Wed, 07 Oct 2026 16:54:33 GMT</pubDate>
+   <link>https://huggingface.co/blog/LiquidAI/open-d1</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/LiquidAI/open-d1</guid>
+  </item>
+  <item>
+   <title>One Model Family, Two Gold-Level Results: Fine-Tuning Nemotron for IOI and IMO</title>
+   <pubDate>Wed, 07 Oct 2026 12:45:31 GMT</pubDate>
+   <link>https://huggingface.co/blog/nvidia/nemotron-ioi-and-imo-2026</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/nvidia/nemotron-ioi-and-imo-2026</guid>
+  </item>
+  <item>
+   <title>The Agent Said It Was Done. The Database Disagreed.</title>
+   <pubDate>Sat, 03 Oct 2026 22:56:48 GMT</pubDate>
+   <link>https://huggingface.co/blog/microsoft/thinkingbox</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/microsoft/thinkingbox</guid>
+  </item>
+  <item>
+   <title>Open-sourcing AstaBrief, the fast report-generation model in Asta</title>
+   <pubDate>Fri, 02 Oct 2026 15:19:50 GMT</pubDate>
+   <link>https://huggingface.co/blog/allenai/astabrief</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/allenai/astabrief</guid>
+  </item>
+  <item>
+   <title>AutoSynthData: Generating Training Data for Enterprise Agents</title>
+   <pubDate>Fri, 02 Oct 2026 04:01:31 GMT</pubDate>
+   <link>https://huggingface.co/blog/ServiceNow-AI/autosynthdata</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/ServiceNow-AI/autosynthdata</guid>
+  </item>
+  <item>
+   <title>Open TTS Leaderboard: Scalable Evaluation for Multilingual Text-to-Speech and Voice Cloning</title>
+   <pubDate>Wed, 30 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/open-tts-leaderboard</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/open-tts-leaderboard</guid>
+  </item>
+  <item>
+   <title>Getting the Source Right, Not Just the Fact: Source-Aware Verification for MCP Agents</title>
+   <pubDate>Tue, 29 Sep 2026 13:07:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/MultiverseComputingCAI/getting-the-source-right-not-just-the-fact-source</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/MultiverseComputingCAI/getting-the-source-right-not-just-the-fact-source</guid>
+  </item>
+  <item>
+   <title>Holo4: powering generalist computer-use agents</title>
+   <pubDate>Mon, 28 Sep 2026 09:44:05 GMT</pubDate>
+   <link>https://huggingface.co/blog/Hcompany/holo4</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/Hcompany/holo4</guid>
+  </item>
+  <item>
+   <title>Welcome RL Environments to the hub</title>
+   <pubDate>Mon, 28 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/rl-environments</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/rl-environments</guid>
+  </item>
+  <item>
+   <title>How UK AISI and EvalEval Are Making Benchmark Results Reproducible</title>
+   <pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/evaleval-aisi</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/evaleval-aisi</guid>
+  </item>
+  <item>
+   <title>Transformers now runs llama.cpp quants</title>
+   <pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/transformers-llama-cpp-quants</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/transformers-llama-cpp-quants</guid>
+  </item>
+  <item>
+   <title>Jun Kim, oMLX creator and maintainer, joins Hugging Face to support the MLX community</title>
+   <pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/omlx</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/omlx</guid>
+  </item>
+  <item>
+   <title>tokenizers v1: encode, decode and scaling, measured</title>
+   <pubDate>Mon, 21 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/tokenizers-v1</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/tokenizers-v1</guid>
+  </item>
+  <item>
+   <title>Your Agent Aced the Task. Will It Do It Again?</title>
+   <pubDate>Tue, 15 Sep 2026 16:00:44 GMT</pubDate>
+   <link>https://huggingface.co/blog/ibm-research/altk-evolve-consistency</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/ibm-research/altk-evolve-consistency</guid>
+  </item>
+  <item>
+   <title>Async GRPO with LoRA across HF Jobs: a bucket, a proxy, and no NCCL</title>
+   <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/asyncgrpo-lora-hfjobs</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/asyncgrpo-lora-hfjobs</guid>
+  </item>
+  <item>
+   <title>Rebuilding AUTOMATIC1111 with Gradio Workflow</title>
+   <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/gradio-workflow-1111</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/gradio-workflow-1111</guid>
+  </item>
+  <item>
+   <title>NeoMME: an efficient Multimodal-native and Multilingual Encoder</title>
+   <pubDate>Thu, 03 Sep 2026 13:13:48 GMT</pubDate>
+   <link>https://huggingface.co/blog/Hcompany/neomme</link>
+   <guid isPermaLink="false">https://huggingface.co/blog/Hcompany/neomme</guid>
+  </item>
+  <item>
+   <title>Fine-tuning a 350M Model for Better Structured Outputs in 100 GRPO Steps</title>
+   <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/grpo-with-trl-ifstruct</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/grpo-with-trl-ifstruct</guid>
+  </item>
+  <item>
+   <title>Give Your Coding Agents a Memory You Own</title>
+   <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/funes</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/funes</guid>
+  </item>
+  <item>
+   <title>Training a coding model to paint watercolours with TRL and OpenEnv</title>
+   <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
+   <link>https://huggingface.co/blog/train-to-paint-with-code</link>
+   <guid isPermaLink="true">https://huggingface.co/blog/train-to-paint-with-code</guid>
+  </item>
+</channel>
+</rss>
