@@ -145,8 +145,15 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 
 ### 4. Ingest Job
 
-- **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
-- An article with only a feed summary is already valid, so store right after fetching, before extraction.
+- [x] **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
+- [x] An article with only a feed summary is already valid, so store right after fetching, before extraction.
+- [ ] We need to add 10 more Feeds to store enough `Article`s in a day or two.
+     - [ ] Name the 10 sources
+     - [ ] Manually check what you get
+     - [ ] Download fixtures (trimmed to 20)
+     - [ ] Manually check if you can read the content.
+     - [ ] Add the new feeds to `feeds.py`
+     - [ ] If needed, extend the following texts: `test_rss_fetcher.py`, `test_sqlite_store.py`, `test_urls.py`, `test_models.py`, `test_parse_feed.py`, `test_summary.py`  
 
 ### 5. Extraction (full text)
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
