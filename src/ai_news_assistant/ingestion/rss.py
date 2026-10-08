@@ -7,7 +7,7 @@ import httpx
 from pydantic import ValidationError
 
 from ai_news_assistant.ingestion.dates import entry_published_at
-from ai_news_assistant.ingestion.summary import clean_summary
+from ai_news_assistant.ingestion.summary import clean_summary, html_to_text
 from ai_news_assistant.ingestion.urls import article_id
 from ai_news_assistant.models import Article
 
@@ -72,8 +72,9 @@ def download_feed(
 def parse_feed(content: bytes | str, source: str | None = None) -> list[Article]:
     """Parse raw feed XML into validated articles.
 
-    The source name is the publisher part of the feed title ("Section | Publisher"),
-    falling back to `source` when the feed has no title. Entries that fail validation
+    The source name is `source` when given, since feed titles are untrusted and often not
+    the publisher name. Without it, the publisher part of the feed title ("Section |
+    Publisher") is used. Entry titles are reduced to plain text. Entries that fail validation
     or repeat an earlier link are skipped and logged. `text` is left empty for the
     later extraction step.
     """
@@ -107,7 +108,8 @@ def parse_feed(content: bytes | str, source: str | None = None) -> list[Article]
 class RSSFetcher:
     """Fetches one RSS or Atom feed and returns its articles.
 
-    `source` is the fallback name for feeds without a title. Pass `client` to share a
+    `source` is the publisher name for its articles; without it, the feed title is used.
+    Pass `client` to share a
     connection pool or to test with httpx.MockTransport; with None, each fetch opens its own.
     """
 
@@ -143,7 +145,7 @@ def _parse_entry(entry: Mapping[str, Any], source: str) -> Article | None:
             {
                 "id": article_id(link),
                 "url": link,
-                "title": entry.get("title", ""),
+                "title": _clean_title(entry.get("title")),
                 "source": source,
                 "published_at": entry_published_at(entry),
                 "summary": clean_summary(entry.get("summary")),
@@ -169,9 +171,17 @@ def _log_skip(source: str, link: str, reason: str) -> None:
     )
 
 
-def _source_name(feed_title: str | None, fallback: str | None) -> str | None:
-    title = " ".join((feed_title or "").split())
-    name = title.rpartition(" | ")[2].strip() if title else (fallback or "").strip()
+def _clean_title(raw: str | None) -> str:
+    # Some feeds (The Verge) double-escape titles, so feedparser leaves "&#8217;" in them.
+    # Decoding can produce markup such as "<script>", so strip it like a summary.
+    return html_to_text(raw or "")
+
+
+def _source_name(feed_title: str | None, configured: str | None) -> str | None:
+    name = " ".join((configured or "").split())
+    if not name:
+        title = " ".join((feed_title or "").split())
+        name = title.rpartition(" | ")[2].strip()
     return name[:MAX_SOURCE_LENGTH] or None
 
 
