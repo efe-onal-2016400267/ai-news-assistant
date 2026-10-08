@@ -8,6 +8,8 @@ ingested articles. Python 3.12, managed with uv, `src/` layout
 Always run through `uv run`. Never use pip.
 - `uv sync`: install from `uv.lock` (CI and Docker use `uv sync --frozen`)
 - `uv run ai-news-assistant`: run the CLI entry point
+- `uv run ai-news-ingest`: fetch all feeds into SQLite (env: `NEWS_DB_PATH`, default
+  `data/news.db`; `NEWS_LOG_FILE`, default `logs/ingest.log`)
 - `uv add <pkg>` / `uv add --dev <pkg>`: add dependencies; don't hand-edit them in pyproject.toml
 - `uv run ruff check . && uv run ruff format --check .`
 - `uv run mypy src`

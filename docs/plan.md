@@ -133,11 +133,22 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
     - [x] Saving the same article twice inserts once. The future ingest command will be idempotent.
     - [x] Saving an empty list is fine, get of an unknown id returns None.
 
-### 3. Ingest Job
+### 3. Ingest Command
+- [x] `ingest(fetchers, store)` takes fetchers and an `ArticleStore` as arguments (no feed URLs or database paths inside it) and returns a small result object: per feed, articles fetched and articles newly saved, or the error.
+- [x] A feed that raises is logged with the feed's identity and traceback (`logger.exception`) and does not stop the other feeds.
+- [x] One summary line is logged per run (feeds ok/failed, articles fetched, articles new).
+- [x] `main()` builds the two `RSSFetcher`s from a feed list, opens a `SQLiteStore`, calls `ingest`, and sets the exit code: non-zero only if every feed failed.
+- [x] Configuration: feed list (constant or `feeds.py`), DB path (default `data/news.db`, parent directory created if missing), log file path.
+- [x] Logging is configured in `main()` only, so tests don't write log files.
+- [x] Runnable with one command (`python -m ai_news_assistant.ingest` or a `[project.scripts]` entry).
+
+
+### 4. Ingest Job
+
 - **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
 - An article with only a feed summary is already valid, so store right after fetching, before extraction.
 
-### 4. Extraction (full text)
+### 5. Extraction (full text)
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
 - trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
 - If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
@@ -145,25 +156,28 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - Check each publisher's terms and robots.txt, rate-limit requests, never scrape paywalled content.
 - Tests use saved HTML pages, not live sites.
 
-### 5. Baseline retrieval and eval harness (including chunking experiments)
+### 6. Baseline retrieval and eval harness (including chunking experiments)
 - [ ] Ingest a few hundred articles
 - [ ] Write 30-50 questions myself, each labeled with the **article IDs** that answer them (article-level labels are far cheaper than chunk-level; a chunk hit maps to its parent article)
 - [ ] Simplest possible retriever (embeddings in memory, or BM25)
 - [ ] Make chunking a parameter and compare: whole article, fixed 256/512 tokens with overlap, paragraph-based. Metrics: recall@k and MRR.
 - Chunking cannot be evaluated without retrieval, so this comes first. News articles are short, so expect the strategies to differ less than you would think; do not spend days here.
 
-### 6. Near-duplicate detection (cut or simplify if time is short)
+### 7. Near-duplicate detection (cut or simplify if time is short)
 - [ ] Runs after extraction, since teasers are too short to compare reliably
 - Approaches: MinHash with LSH (`datasketch`) on 5-word shingles is the standard fit for republished wire copy; SimHash; embedding similarity (also catches paraphrases but merges different articles on the same topic).
 - Compare only against a recent window (a few days), not the whole table.
 - Hand-label about 50 pairs (duplicate or not) and choose the threshold from them.
 - Store `duplicate_of` on the row instead of deleting, so no information is lost.
 
-### 7. Story clustering (cut or simplify if time is short)
+### 8. Story clustering (cut or simplify if time is short)
 - [ ] `stories` table (id, title, first_seen, last_updated) and a `story_id` column on articles (one story has many articles; not just per-article metadata)
 - Online approach: embed title plus lead, assign to the nearest existing story within a time window (about 48 hours) above a similarity threshold, otherwise start a new story. Alternative: periodic batch clustering (agglomerative or HDBSCAN) over recent articles.
 - Treat assignments as derived data that can be recomputed, since stories merge and split over time.
 - Evaluate with a small hand-labeled set and pairwise precision and recall.
+
+### 9. I should look at LangGraph Deep Agents as well
+- Just to see how I could make this agent more advanced.
 
 ### Housekeeping
 - [x] Update `docs/design.md`: the product is *AI* news, `Article` has `tags`, and the delivery order is now fetch, store, extract, retrieval and evals, then near-dup and clustering.

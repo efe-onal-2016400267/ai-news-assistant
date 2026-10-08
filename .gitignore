@@ -18,3 +18,7 @@ CLAUDE.local.md
 .vscode/*
 !.vscode/settings.json
 scratch/
+
+# Local database and logs from the ingest command
+data/
+logs/

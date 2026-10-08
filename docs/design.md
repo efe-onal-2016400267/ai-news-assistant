@@ -98,7 +98,7 @@ Feed text is parsed defensively: HTML is reduced to text, invalid entries are sk
 
 ## 5. Interfaces and data models
 
-Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array).
+Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array). The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; feed names (the mapping keys) and URLs are in `ingestion/feeds.py`.
 
 ```python
 from collections.abc import Iterable
