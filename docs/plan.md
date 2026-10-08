@@ -148,12 +148,22 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - [x] **Poll every 30-60 minutes, not daily.** Feeds keep only about the latest 20 items, so a daily poll can miss articles.
 - [x] An article with only a feed summary is already valid, so store right after fetching, before extraction.
 - [ ] We need to add 10 more Feeds to store enough `Article`s in a day or two.
-     - [ ] Name the 10 sources
-     - [ ] Manually check what you get
-     - [ ] Download fixtures (trimmed to 20)
-     - [ ] Manually check if you can read the content.
-     - [ ] Add the new feeds to `feeds.py`
-     - [ ] If needed, extend the following texts: `test_rss_fetcher.py`, `test_sqlite_store.py`, `test_urls.py`, `test_models.py`, `test_parse_feed.py`, `test_summary.py`  
+     - [x] Name the 10 sources
+        1. The Verge, AI: `https://www.theverge.com/rss/ai-artificial-intelligence/index.xml`
+        2. Ars Technica: `https://arstechnica.com/ai/feed/`
+        3. Wired AI: `https://www.wired.com/feed/tag/ai/latest/rss`
+        4. MIT Technology Review: `https://www.technologyreview.com/topic/artificial-intelligence/feed`
+        5. The Decoder: `https://the-decoder.com/feed/`
+        6. OpenAI news: `https://openai.com/news/rss.xml` (`summary, tags` keys are sometimes missing)
+        7. Google Deep Mind Blog: `https://deepmind.google/blog/rss.xml` (`bozo: True`) (`summary, tags` keys are sometimes missing)
+        8. Hugging Face Blog: `https://huggingface.co/blog/feed.xml` (`summary, tags` keys are sometimes missing)
+        9. Mistral AI News: `https://mistral.ai/news/rss` (`bozo: True`) (`summary, tags` keys are sometimes missing)
+        10. Simon Willison's Weblog: `https://simonwillison.net/atom/everything/` (`tags` keys are sometimes missing)
+     - [x] Manually check what you get
+     - [x] Download fixtures (trimmed to 20)
+     - [x] Manually check if you can read the content.
+     - [x] Add the new feeds to `feeds.py`
+     - [x] If needed, extend the following texts: `test_rss_fetcher.py`, `test_sqlite_store.py`, `test_urls.py`, `test_models.py`, `test_parse_feed.py`, `test_summary.py`  
 
 ### 5. Extraction (full text)
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
@@ -167,6 +177,7 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - [ ] Ingest a few hundred articles
 - [ ] Write 30-50 questions myself, each labeled with the **article IDs** that answer them (article-level labels are far cheaper than chunk-level; a chunk hit maps to its parent article)
 - [ ] Simplest possible retriever (embeddings in memory, or BM25)
+- [ ] Evaluate for only embeddings, only BM25, both.
 - [ ] Make chunking a parameter and compare: whole article, fixed 256/512 tokens with overlap, paragraph-based. Metrics: recall@k and MRR.
 - Chunking cannot be evaluated without retrieval, so this comes first. News articles are short, so expect the strategies to differ less than you would think; do not spend days here.
 

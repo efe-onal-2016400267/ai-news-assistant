@@ -33,6 +33,13 @@ Separate layers, each testable on its own. Keep these boundaries:
   changed and why, and wait for the developer's questions before continuing.
 - Leave changes uncommitted. Run ruff, mypy and pytest before saying a piece
   is done.
+- Work only on the issue in the current branch name or prompt.
+- If you find a bug, missing test or design question outside that issue's scope,
+  stop and tell me before fixing it. Say what you found, why it matters, and
+  whether it blocks the current issue.
+- Exception: a fix that the issue cannot work without (the feature would be
+  wrong without it) can go in, but list it in your final summary under
+  "Changes outside the issue text".
 - Use plan mode for anything non-trivial and wait for approval of the plan.
 - New behavior needs a test; agent changes need an eval case.
 - Unit tests never call a real LLM or the network.

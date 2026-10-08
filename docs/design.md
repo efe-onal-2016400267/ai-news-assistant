@@ -94,11 +94,11 @@ SQLite needs no server and works in CI. A deployed container's disk is not durab
 The live database keeps growing; metrics must not move for reasons unrelated to the retriever. Accumulate articles, export a snapshot after extraction, label questions against article ids in that snapshot, and run all retrieval and chunking experiments against it.
 
 ### D11. Feed content is untrusted input
-Feed text is parsed defensively: HTML is reduced to text, invalid entries are skipped and logged (field names and messages only, not the untrusted values), and the source name is length-capped. Downloads are streamed and capped at `MAX_FEED_BYTES` (5 MB, `Content-Length` checked first, then a running byte count of the decompressed body); exceeding it raises `FeedTooLargeError`.
+Feed text is parsed defensively: HTML is reduced to text, entry titles are reduced to plain text like summaries (tags and script content removed), invalid entries are skipped and logged (field names and messages only, not the untrusted values), and the source name is length-capped. The source name configured in `feeds.py` takes precedence over the feed title, so a feed cannot rename itself; the title is only a fallback. Downloads are streamed and capped at `MAX_FEED_BYTES` (5 MB, `Content-Length` checked first, then a running byte count of the decompressed body); exceeding it raises `FeedTooLargeError`.
 
 ## 5. Interfaces and data models
 
-Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array). The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; feed names (the mapping keys) and URLs are in `ingestion/feeds.py`.
+Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array). The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; `ingestion/feeds.py` maps feed names (the mapping keys) to `Feed(url, source)`, where `source` is the configured publisher name stored on the feed's articles.
 
 ```python
 from collections.abc import Iterable
@@ -202,7 +202,7 @@ class Agent(Protocol):
 
 ## 9. Open questions
 
-- **News sources:** two AI feeds so far (Guardian AI, TechCrunch AI). Add more RSS sources, or also a news API? English-only first; add Dutch sources (e.g. NOS) later with a multilingual embedding model.
+- **News sources:** twelve AI feeds so far: news sites (Guardian AI, TechCrunch AI, The Verge AI, Ars Technica AI, Wired AI, MIT Technology Review AI, The Decoder), lab blogs (OpenAI, Google DeepMind, Hugging Face, Mistral AI) and Simon Willison's weblog. Add a news API later? English-only first; add Dutch sources (e.g. NOS) later with a multilingual embedding model.
 - **LLM and embeddings provider:** default is Anthropic for the agent plus a local embedding model.
 - **Vector store:** default is Chroma; alternatives are SQLite with a vector extension, or Postgres with pgvector once the database moves.
 - **Hand-rolled loop first?** Build it for comparison with LangChain, or go straight to LangChain.
