@@ -7,6 +7,8 @@ BLOCK_TAGS = frozenset(
 SKIP_TAGS = frozenset({"script", "style", "template", "noscript"})
 
 CONTINUE_READING = re.compile(r"continue reading(\.\.\.|…)?", re.IGNORECASE)
+# WordPress trailer (The Decoder): "The article <title> appeared first on <site>."
+APPEARED_FIRST_ON = re.compile(r"The article .+ appeared first on .+")
 # Entity-escaped markup (&lt;script&gt;) decodes into script-looking text; drop it too.
 ESCAPED_SCRIPT = re.compile(r"<script\b[^>]*>.*?</script\s*>", re.IGNORECASE | re.DOTALL)
 STRAY_SCRIPT_TAG = re.compile(r"</?script\b[^>]*>", re.IGNORECASE)
@@ -56,23 +58,37 @@ class _BlockTextParser(HTMLParser):
 
 
 def _is_boilerplate(text: str, in_list_item: bool) -> bool:
-    if CONTINUE_READING.fullmatch(text):
+    if CONTINUE_READING.fullmatch(text) or APPEARED_FIRST_ON.fullmatch(text):
         return True
     # Guardian promo list: "Get our new political email, free app or daily news podcast".
     return in_list_item and text.startswith("Get our")
+
+
+def _parse_blocks(raw: str) -> list[tuple[str, bool]]:
+    parser = _BlockTextParser()
+    parser.feed(raw)
+    parser.close()
+    return parser.blocks
+
+
+def html_to_text(raw: str) -> str:
+    """Turn a short HTML fragment, such as an entry title, into one line of plain text.
+
+    Decodes entities once and strips tags, including script and style content and
+    entity-escaped script tags. Returns "" if nothing is left.
+    """
+    return " ".join(text for text, _ in _parse_blocks(raw))
 
 
 def clean_summary(raw: str | None) -> str | None:
     """Turn a feed summary into plain text, one blank line between blocks.
 
     Strips HTML (including script and style content), drops the Guardian
-    "Continue reading..." trailer and "Get our ..." promo list items.
+    "Continue reading..." trailer and "Get our ..." promo list items, and the
+    WordPress "The article ... appeared first on ..." trailer.
     Returns None if nothing is left.
     """
     if raw is None:
         return None
-    parser = _BlockTextParser()
-    parser.feed(raw)
-    parser.close()
-    blocks = [text for text, in_li in parser.blocks if not _is_boilerplate(text, in_li)]
+    blocks = [text for text, in_li in _parse_blocks(raw) if not _is_boilerplate(text, in_li)]
     return "\n\n".join(blocks) or None
