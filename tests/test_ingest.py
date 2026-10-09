@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Iterable, Iterator
+from datetime import datetime
 from pathlib import Path
 
 import httpx
@@ -60,6 +61,12 @@ class FailingStore:
 
     def get(self, article_id: str) -> Article | None:
         return None
+
+    def get_unextracted(self, limit: int | None = None) -> list[Article]:
+        return []
+
+    def save_extraction(self, article_id: str, text: str | None, extracted_at: datetime) -> bool:
+        return False
 
 
 @pytest.fixture
