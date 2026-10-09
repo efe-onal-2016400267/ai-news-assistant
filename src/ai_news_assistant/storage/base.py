@@ -21,3 +21,10 @@ class ArticleStore(Protocol):
     def get(self, article_id: str) -> Article | None:
         """Return the stored article, or None if the id is unknown."""
         ...
+
+    def get_unextracted(self, limit: int | None = None) -> list[Article]:
+        """Return articles whose extraction was never tried, newest first, undated last.
+
+        Failed and successful extractions are excluded. `limit` caps the batch; None means all.
+        """
+        ...

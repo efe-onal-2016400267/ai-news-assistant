@@ -31,20 +31,31 @@ _ADDED_COLUMNS = {
     "extracted_at": "TEXT",
 }
 
-_INSERT = """
-INSERT INTO articles (
+# One column list for every query, in the order `_to_row` produces values.
+_COLUMNS = """
     id, url, title, source, published_at, summary, text, tags,
     extraction_successful, extracted_at
-)
+"""
+
+_INSERT = f"""
+INSERT INTO articles ({_COLUMNS})
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (id) DO NOTHING
 """
 
-_SELECT = """
-SELECT id, url, title, source, published_at, summary, text, tags,
-       extraction_successful, extracted_at
+_SELECT = f"""
+SELECT {_COLUMNS}
 FROM articles
 WHERE id = ?
+"""
+
+# Newest first, since pages change and disappear; undated last; id makes ties deterministic.
+_SELECT_UNEXTRACTED = f"""
+SELECT {_COLUMNS}
+FROM articles
+WHERE extraction_successful IS NULL
+ORDER BY published_at DESC NULLS LAST, id
+LIMIT ?
 """
 
 
@@ -78,6 +89,14 @@ class SQLiteStore:
     def get(self, article_id: str) -> Article | None:
         row = self._conn.execute(_SELECT, (article_id,)).fetchone()
         return None if row is None else _from_row(row)
+
+    def get_unextracted(self, limit: int | None = None) -> list[Article]:
+        """Return articles whose extraction was never tried, newest first, undated last."""
+        if limit is not None and limit < 0:
+            raise ValueError(f"limit must be >= 0, got {limit}")
+        # -1 is SQLite's "no limit"; Postgres would use LIMIT ALL.
+        rows = self._conn.execute(_SELECT_UNEXTRACTED, (-1 if limit is None else limit,))
+        return [_from_row(row) for row in rows]
 
     def _migrate(self) -> None:
         """Add columns missing from a database created by an older schema."""

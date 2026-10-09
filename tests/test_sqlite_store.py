@@ -229,3 +229,89 @@ def test_migration_is_idempotent(tmp_path: Path) -> None:
     with SQLiteStore(path) as reopened:
         assert reopened.save([make_article()]) == 1
         assert reopened.get("abc123") == make_article()
+
+
+def test_get_unextracted_on_empty_store(store: SQLiteStore) -> None:
+    assert store.get_unextracted() == []
+
+
+def test_get_unextracted_returns_only_never_tried(store: SQLiteStore) -> None:
+    pending = make_article(id="pending", summary="A teaser.")
+    failed = make_article(id="failed", extraction_successful=False)
+    done = make_article(
+        id="done",
+        text="Full text.",
+        extraction_successful=True,
+        extracted_at=datetime(2026, 10, 9, 8, 30, tzinfo=UTC),
+    )
+    store.save([pending, failed, done])
+
+    assert store.get_unextracted() == [pending]
+
+
+def _save_dated_articles(store: SQLiteStore) -> None:
+    store.save(
+        [
+            make_article(id="middle", published_at=datetime(2026, 10, 7, tzinfo=UTC)),
+            make_article(id="undated"),
+            make_article(id="newest", published_at=datetime(2026, 10, 8, tzinfo=UTC)),
+            make_article(id="oldest", published_at=datetime(2026, 10, 6, tzinfo=UTC)),
+        ]
+    )
+
+
+def test_get_unextracted_newest_first_undated_last(store: SQLiteStore) -> None:
+    _save_dated_articles(store)
+
+    ids = [article.id for article in store.get_unextracted()]
+
+    assert ids == ["newest", "middle", "oldest", "undated"]
+
+
+def test_get_unextracted_orders_by_instant_not_offset(store: SQLiteStore) -> None:
+    plus_five = timezone(timedelta(hours=5))
+    # 10:00+05:00 is 05:00 UTC, so it is older than 06:00 UTC despite the larger wall time.
+    store.save(
+        [
+            make_article(id="earlier", published_at=datetime(2026, 10, 6, 10, tzinfo=plus_five)),
+            make_article(id="later", published_at=datetime(2026, 10, 6, 6, tzinfo=UTC)),
+        ]
+    )
+
+    assert [article.id for article in store.get_unextracted()] == ["later", "earlier"]
+
+
+def test_get_unextracted_limit(store: SQLiteStore) -> None:
+    _save_dated_articles(store)
+
+    assert [article.id for article in store.get_unextracted(limit=2)] == ["newest", "middle"]
+    assert store.get_unextracted(limit=0) == []
+
+
+def test_get_unextracted_rejects_negative_limit(store: SQLiteStore) -> None:
+    with pytest.raises(ValueError, match="limit"):
+        store.get_unextracted(limit=-1)
+
+
+def test_migrated_rows_count_as_never_tried(tmp_path: Path) -> None:
+    path = tmp_path / "news.db"
+    conn = sqlite3.connect(path)
+    with conn:
+        conn.execute(_ORIGINAL_SCHEMA)
+        conn.execute(
+            "INSERT INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                "abc123",
+                "https://example.com/news/story",
+                "A headline",
+                "Example",
+                None,
+                None,
+                None,
+                "[]",
+            ),
+        )
+    conn.close()
+
+    with SQLiteStore(path) as store:
+        assert store.get_unextracted() == [make_article()]

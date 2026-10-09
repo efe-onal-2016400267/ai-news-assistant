@@ -51,6 +51,9 @@ class FailingStore:
     def get(self, article_id: str) -> Article | None:
         return None
 
+    def get_unextracted(self, limit: int | None = None) -> list[Article]:
+        return []
+
 
 @pytest.fixture
 def store() -> Iterator[SQLiteStore]:
