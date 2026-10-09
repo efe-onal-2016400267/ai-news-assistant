@@ -31,6 +31,8 @@ Separate layers, each testable on its own. Keep these boundaries:
   reviews your changes and makes all commits and PRs.
 - Work on one piece at a time. After each piece, stop, summarize what you
   changed and why, and wait for the developer's questions before continuing.
+- Present the plan in commitable changes so after each piece I can make a commit
+  and follow the procedure easily.
 - Leave changes uncommitted. Run ruff, mypy and pytest before saying a piece
   is done.
 - Use plan mode for anything non-trivial and wait for approval of the plan.

@@ -149,13 +149,13 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - An article with only a feed summary is already valid, so store right after fetching, before extraction.
 
 ### 5. Extraction (full text)
-- [ ] Update Store Functionalities for Extractor
-    - [ ] Add `extracted_at` (if successful) and `extraction_successful` (missing: not tried, 0: unsuccessful, 1: successful) fields to `Article` data model so we do not attempt failing extractions every time.
-    - [ ] As we change the `Article` data model, we also need to change the DB table with `ALTER TABLE` so we do not loose the records in it.
-    - [ ] In the `ArticleStore` protocol we need a new function to extract all `Article`s that have their `extraction_successful` field as missing. It will be an empty function in the protocol.
-    - [ ] In the `ArticleStore` protocol we need a new function to save text on an existing article without creating a new row.
-    - [ ] Saving text into an article in the DB must not change other article records.
-    - [ ] Saving text into an article in the DB must change only `extracted_at`, `extraction_successful`, and `text` fields.
+- [x] Update Store Functionalities for Extractor
+    - [x] Add `extracted_at` (if successful) and `extraction_successful` (missing: not tried, 0: unsuccessful, 1: successful) fields to `Article` data model so we do not attempt failing extractions every time.
+    - [x] As we change the `Article` data model, we also need to change the DB table with `ALTER TABLE` so we do not loose the records in it.
+    - [x] In the `ArticleStore` protocol we need a new function to extract all `Article`s that have their `extraction_successful` field as missing. It will be an empty function in the protocol.
+    - [x] In the `ArticleStore` protocol we need a new function to save text on an existing article without creating a new row.
+    - [x] Saving text into an article in the DB must not change other article records.
+    - [x] Saving text into an article in the DB must change only `extracted_at`, `extraction_successful`, and `text` fields.
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
 - trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
 - If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
