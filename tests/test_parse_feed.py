@@ -11,8 +11,8 @@ from ai_news_assistant.ingestion.feeds import FEEDS
 from ai_news_assistant.ingestion.rss import MAX_SOURCE_LENGTH, parse_feed
 from ai_news_assistant.ingestion.urls import article_id
 
-FIXTURES = Path(__file__).parent / "fixtures"
-# Feeds whose entries can lack a summary or category tags (see tests/fixtures/README.md).
+FIXTURES = Path(__file__).parent / "rss_fixtures"
+# Feeds whose entries can lack a summary or category tags (see tests/rss_fixtures/README.md).
 MAY_LACK_SUMMARY = frozenset({"deepmind-blog", "huggingface-blog", "mistral-news", "openai-news"})
 MAY_LACK_TAGS = MAY_LACK_SUMMARY | {"simon-willison"}
 

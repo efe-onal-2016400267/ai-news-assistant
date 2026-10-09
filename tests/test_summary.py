@@ -6,7 +6,7 @@ import pytest
 
 from ai_news_assistant.ingestion.summary import clean_summary, html_to_text
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "rss_fixtures"
 GUARDIAN_SUMMARIES = [e.summary for e in feedparser.parse(FIXTURES / "guardian_ai.xml").entries]
 
 

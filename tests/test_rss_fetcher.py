@@ -8,7 +8,7 @@ from ai_news_assistant.ingestion.base import Fetcher
 from ai_news_assistant.ingestion.rss import USER_AGENT, RSSFetcher
 from ai_news_assistant.models import Article
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "rss_fixtures"
 GUARDIAN = (FIXTURES / "guardian_ai.xml").read_bytes()
 FEED_URL = "https://example.com/feed.xml"
 
