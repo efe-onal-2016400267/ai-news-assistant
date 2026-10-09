@@ -22,6 +22,6 @@ class Article(BaseModel):
     def _check_extraction_state(self) -> Self:
         if self.extracted_at is not None and self.extraction_successful is not True:
             raise ValueError("extracted_at is only set when extraction_successful is True")
-        if self.extraction_successful is True and self.text is None:
-            raise ValueError("text is required when extraction_successful is True")
+        if self.extraction_successful is True and (self.text is None or not self.text.strip()):
+            raise ValueError("non-empty text is required when extraction_successful is True")
         return self

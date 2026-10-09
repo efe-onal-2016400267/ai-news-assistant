@@ -81,6 +81,16 @@ def test_successful_extraction_without_text_rejected() -> None:
         )
 
 
+@pytest.mark.parametrize("text", ["", "   ", "\n\t"])
+def test_successful_extraction_with_blank_text_rejected(text: str) -> None:
+    with pytest.raises(ValidationError, match="non-empty text is required"):
+        make_article(
+            text=text,
+            extraction_successful=True,
+            extracted_at=datetime(2026, 10, 9, 8, 30, tzinfo=UTC),
+        )
+
+
 @pytest.mark.parametrize("successful", [None, False])
 def test_extracted_at_without_success_rejected(successful: bool | None) -> None:
     with pytest.raises(ValidationError, match="extracted_at"):

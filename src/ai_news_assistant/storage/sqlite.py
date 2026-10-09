@@ -58,6 +58,14 @@ ORDER BY published_at DESC NULLS LAST, id
 LIMIT ?
 """
 
+# Only never-tried rows match, so each article records exactly one extraction attempt
+# and overlapping extraction runs cannot overwrite each other.
+_UPDATE_EXTRACTION = """
+UPDATE articles
+SET text = ?, extraction_successful = ?, extracted_at = ?
+WHERE id = ? AND extraction_successful IS NULL
+"""
+
 
 class SQLiteStore:
     """Article store backed by one SQLite database file.
@@ -97,6 +105,24 @@ class SQLiteStore:
         # -1 is SQLite's "no limit"; Postgres would use LIMIT ALL.
         rows = self._conn.execute(_SELECT_UNEXTRACTED, (-1 if limit is None else limit,))
         return [_from_row(row) for row in rows]
+
+    def save_extraction(self, article_id: str, text: str | None, extracted_at: datetime) -> bool:
+        """Record the one extraction attempt of an article.
+
+        Non-empty `text` means success; None or blank text means failure. Returns False,
+        changing nothing, if the id is unknown or an attempt was already recorded.
+        """
+        if extracted_at.utcoffset() is None:
+            raise ValueError("extracted_at must be timezone-aware")
+        params: tuple[Any, ...]
+        if text is None or not text.strip():
+            params = (None, 0, None, article_id)
+        else:
+            params = (text, 1, _to_utc_text(extracted_at), article_id)
+        # Extracted text is untrusted, so it only ever goes in as a parameter.
+        with self._conn:
+            cursor = self._conn.execute(_UPDATE_EXTRACTION, params)
+        return cursor.rowcount == 1
 
     def _migrate(self) -> None:
         """Add columns missing from a database created by an older schema."""

@@ -315,3 +315,138 @@ def test_migrated_rows_count_as_never_tried(tmp_path: Path) -> None:
 
     with SQLiteStore(path) as store:
         assert store.get_unextracted() == [make_article()]
+
+
+EXTRACTED_AT = datetime(2026, 10, 9, 8, 30, tzinfo=UTC)
+
+
+def make_feed_article(**overrides: Any) -> Article:
+    fields: dict[str, Any] = {
+        "published_at": datetime(2026, 10, 6, 12, 0, tzinfo=UTC),
+        "summary": "A teaser.",
+        "tags": ["AI"],
+    }
+    fields.update(overrides)
+    return make_article(**fields)
+
+
+def test_save_extraction_success_changes_only_extraction_fields(store: SQLiteStore) -> None:
+    article = make_feed_article()
+    store.save([article])
+
+    assert store.save_extraction(article.id, "Full text.", EXTRACTED_AT) is True
+
+    assert store.get(article.id) == article.model_copy(
+        update={
+            "text": "Full text.",
+            "extraction_successful": True,
+            "extracted_at": EXTRACTED_AT,
+        }
+    )
+
+
+def test_save_extraction_stores_time_in_utc(store: SQLiteStore) -> None:
+    store.save([make_article()])
+    plus_two = timezone(timedelta(hours=2))
+
+    store.save_extraction("abc123", "Full text.", datetime(2026, 10, 9, 10, 30, tzinfo=plus_two))
+
+    loaded = store.get("abc123")
+    assert loaded is not None
+    assert loaded.extracted_at == EXTRACTED_AT
+    assert loaded.extracted_at is not None
+    assert loaded.extracted_at.utcoffset() == timedelta(0)
+
+
+def test_save_extraction_failure_sets_only_flag(store: SQLiteStore) -> None:
+    article = make_feed_article()
+    store.save([article])
+
+    assert store.save_extraction(article.id, None, EXTRACTED_AT) is True
+
+    assert store.get(article.id) == article.model_copy(update={"extraction_successful": False})
+
+
+def test_save_extraction_leaves_other_rows_unchanged(store: SQLiteStore) -> None:
+    others = [make_feed_article(id="before"), make_feed_article(id="after", summary=None)]
+    store.save([others[0], make_feed_article(id="target"), others[1]])
+
+    store.save_extraction("target", "Full text.", EXTRACTED_AT)
+
+    assert [store.get(article.id) for article in others] == others
+
+
+@pytest.mark.parametrize("text", ["Full text.", None])
+def test_extracted_article_leaves_unextracted_list(store: SQLiteStore, text: str | None) -> None:
+    store.save([make_article(id="target"), make_article(id="other")])
+
+    store.save_extraction("target", text, EXTRACTED_AT)
+
+    assert [article.id for article in store.get_unextracted()] == ["other"]
+
+
+def test_save_extraction_unknown_id_creates_no_row(store: SQLiteStore) -> None:
+    assert store.save_extraction("unknown", "Full text.", EXTRACTED_AT) is False
+
+    assert store.get("unknown") is None
+    assert store.get_unextracted() == []
+
+
+def test_save_extraction_rejects_naive_time(store: SQLiteStore) -> None:
+    store.save([make_article()])
+
+    with pytest.raises(ValueError, match="timezone-aware"):
+        store.save_extraction("abc123", "Full text.", datetime(2026, 10, 9, 8, 30))
+
+    assert store.get("abc123") == make_article()
+
+
+@pytest.mark.parametrize(
+    ("first", "second"),
+    [("Full text.", None), (None, "Full text."), ("Full text.", "Other text.")],
+)
+def test_second_attempt_is_refused(
+    store: SQLiteStore, first: str | None, second: str | None
+) -> None:
+    store.save([make_article()])
+    store.save_extraction("abc123", first, EXTRACTED_AT)
+    after_first = store.get("abc123")
+
+    assert store.save_extraction("abc123", second, EXTRACTED_AT + timedelta(hours=1)) is False
+
+    assert store.get("abc123") == after_first
+
+
+@pytest.mark.parametrize("text", ["", "   ", "\n\t"])
+def test_empty_extracted_text_is_recorded_as_failure(store: SQLiteStore, text: str) -> None:
+    article = make_feed_article()
+    store.save([article])
+
+    assert store.save_extraction(article.id, text, EXTRACTED_AT) is True
+
+    assert store.get(article.id) == article.model_copy(update={"extraction_successful": False})
+
+
+def test_sql_in_extracted_text_is_stored_as_data(store: SQLiteStore) -> None:
+    hostile = "'); DROP TABLE articles; --"
+    store.save([make_article(), make_article(id="other")])
+
+    assert store.save_extraction("abc123", hostile, EXTRACTED_AT) is True
+
+    loaded = store.get("abc123")
+    assert loaded is not None
+    assert loaded.text == hostile
+    assert store.get("other") == make_article(id="other")
+
+
+def test_ingesting_same_article_again_keeps_extracted_text(store: SQLiteStore) -> None:
+    article = make_feed_article()
+    store.save([article])
+    store.save_extraction(article.id, "Full text.", EXTRACTED_AT)
+
+    assert store.save([article]) == 0
+
+    loaded = store.get(article.id)
+    assert loaded is not None
+    assert loaded.text == "Full text."
+    assert loaded.extraction_successful is True
