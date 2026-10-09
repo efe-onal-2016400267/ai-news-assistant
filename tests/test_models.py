@@ -45,6 +45,49 @@ def test_minimal_article_uses_defaults() -> None:
     assert first.text is None
     assert first.tags == []
     assert first.tags is not second.tags
+    assert first.extraction_successful is None
+    assert first.extracted_at is None
+
+
+def test_successful_extraction_with_aware_time() -> None:
+    extracted = datetime(2026, 10, 9, 8, 30, tzinfo=UTC)
+    article = make_article(text="Full text.", extraction_successful=True, extracted_at=extracted)
+
+    assert article.extraction_successful is True
+    assert article.extracted_at == extracted
+
+
+def test_failed_extraction_without_time() -> None:
+    article = make_article(extraction_successful=False)
+
+    assert article.extraction_successful is False
+    assert article.extracted_at is None
+
+
+def test_naive_extracted_at_rejected() -> None:
+    with pytest.raises(ValidationError):
+        make_article(
+            text="Full text.",
+            extraction_successful=True,
+            extracted_at=datetime(2026, 10, 9, 8, 30),
+        )
+
+
+def test_successful_extraction_without_text_rejected() -> None:
+    with pytest.raises(ValidationError, match="text is required"):
+        make_article(
+            extraction_successful=True,
+            extracted_at=datetime(2026, 10, 9, 8, 30, tzinfo=UTC),
+        )
+
+
+@pytest.mark.parametrize("successful", [None, False])
+def test_extracted_at_without_success_rejected(successful: bool | None) -> None:
+    with pytest.raises(ValidationError, match="extracted_at"):
+        make_article(
+            extraction_successful=successful,
+            extracted_at=datetime(2026, 10, 9, 8, 30, tzinfo=UTC),
+        )
 
 
 @pytest.mark.parametrize("url", ["not a url", "ftp://x.com/a", ""])
