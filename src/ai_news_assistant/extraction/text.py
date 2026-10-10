@@ -9,6 +9,12 @@ MIN_TEXT_CHARS = 200  # Shorter results are cookie notices or teasers, not artic
 _HIDDEN_STYLE = re.compile(r"display\s*:\s*none|visibility\s*:\s*hidden", re.I)
 # Some sites hide the whole page until scripts run, so these are never dropped.
 _NEVER_DROPPED = {"html", "head", "body"}
+# extract() sometimes stops mid-article. baseline() is noisier but rarely cut, so when
+# extract()'s text contains less than MIN_COVERAGE of baseline's long sentences, baseline
+# is used. Measured on the page fixtures: the cut Ars Technica page 0.30, all others 0.71-1.00.
+MIN_COVERAGE = 0.5
+MIN_SENTENCE_CHARS = 60  # Shorter "sentences" are mostly navigation and captions
+_SENTENCE_END = re.compile(r"(?<=[.!?…\"”’)])\s+")
 
 
 def extract_text_from_html(html: str) -> str | None:
@@ -20,12 +26,17 @@ def extract_text_from_html(html: str) -> str | None:
 
     Hidden elements are dropped first: readers never see them, so they are a place to plant
     instructions, and text hidden until you subscribe is paywalled content we don't take.
+
+    trafilatura's extract() gives the cleanest text but sometimes stops mid-article; then its
+    noisier baseline() is used instead (see `_choose`).
     """
     tree = _parse(html)
     if tree is None:
         return None
     _drop_hidden(tree)
-    text = (trafilatura.extract(tree, include_comments=False) or "").strip()
+    extracted = trafilatura.extract(tree, include_comments=False)
+    fallback = trafilatura.baseline(tree)[1]  # extract() leaves the tree unchanged
+    text = (_choose(extracted, fallback) or "").strip()
     if len(text) < MIN_TEXT_CHARS:
         return None
     return text
@@ -56,6 +67,33 @@ def _drop_hidden(tree: lxml.html.HtmlElement) -> None:
     for element in hidden:
         if element.getparent() is not None:
             element.drop_tree()
+
+
+def _choose(extracted: str | None, fallback: str | None) -> str | None:
+    """Pick extract()'s text unless it looks cut compared with baseline()'s.
+
+    When extract() finds nothing, the page is not used at all: baseline() then falls back to
+    the whole page body, which on a login wall or cookie page is not an article.
+    """
+    if not extracted or not extracted.strip():
+        return None
+    if not fallback or _coverage(extracted, fallback) >= MIN_COVERAGE:
+        return extracted
+    return fallback
+
+
+def _coverage(candidate: str, reference: str) -> float:
+    """Share of the reference's long sentences that appear in the candidate text."""
+    sentences = _sentences(reference)
+    if not sentences:
+        return 1.0  # Nothing to judge by
+    text = " ".join(candidate.split())
+    return sum(sentence in text for sentence in sentences) / len(sentences)
+
+
+def _sentences(text: str) -> list[str]:
+    parts = _SENTENCE_END.split(" ".join(text.split()))
+    return [part for part in parts if len(part) >= MIN_SENTENCE_CHARS]
 
 
 def _is_hidden(element: lxml.html.HtmlElement) -> bool:

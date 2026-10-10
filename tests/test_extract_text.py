@@ -4,7 +4,13 @@ from typing import Any
 
 import pytest
 
-from ai_news_assistant.extraction.text import MIN_TEXT_CHARS, extract_text_from_html
+from ai_news_assistant.extraction.text import (
+    MIN_TEXT_CHARS,
+    _choose,
+    _coverage,
+    _sentences,
+    extract_text_from_html,
+)
 
 FIXTURES = Path(__file__).parent / "text_html_fixtures"
 EXPECTED: dict[str, dict[str, Any]] = json.loads(
@@ -137,17 +143,50 @@ def test_fixture_contains_first_sentence(name: str) -> None:
     assert norm(EXPECTED[name]["first"]) in fixture_text(name)
 
 
+@pytest.mark.parametrize("name", sorted(EXPECTED))
+def test_fixture_contains_last_sentence(name: str) -> None:
+    # Ars Technica only passes through the baseline() fallback: extract() stops mid-article.
+    assert norm(EXPECTED[name]["last"]) in fixture_text(name)
+
+
+LONG_A = "The first long sentence says what the company released and when it happened."
+LONG_B = "The second long sentence explains what the release means for developers today."
+LONG_C = "The third long sentence quotes an analyst on how competitors are likely to react."
+
+
+def test_sentences_split_after_end_marks_and_drop_short_ones() -> None:
+    text = f"{LONG_A} Short one. “{LONG_B}”\n\n{LONG_C}"
+
+    assert _sentences(text) == [LONG_A, f"“{LONG_B}”", LONG_C]
+
+
 @pytest.mark.parametrize(
-    "name",
+    ("candidate", "expected"),
     [
-        pytest.param(
-            name,
-            marks=pytest.mark.xfail(strict=True, reason="extract() cuts the article (Step 3)"),
-        )
-        if name == "arstechnica-ai"
-        else name
-        for name in sorted(EXPECTED)
+        (f"{LONG_A} {LONG_B}", 1.0),
+        (LONG_A, 0.5),
+        ("Something else entirely.", 0.0),
+        (f"{LONG_A}\n\n   {LONG_B}", 1.0),
     ],
 )
-def test_fixture_contains_last_sentence(name: str) -> None:
-    assert norm(EXPECTED[name]["last"]) in fixture_text(name)
+def test_coverage_counts_reference_sentences_found(candidate: str, expected: float) -> None:
+    assert _coverage(candidate, f"{LONG_A} {LONG_B}") == expected
+
+
+def test_coverage_without_long_reference_sentences_is_full() -> None:
+    assert _coverage("anything", "Menu. Home. About us.") == 1.0
+
+
+@pytest.mark.parametrize(
+    ("extracted", "fallback", "expected"),
+    [
+        (None, f"{LONG_A} {LONG_B}", None),
+        ("   ", f"{LONG_A} {LONG_B}", None),
+        (f"{LONG_A} {LONG_B}", f"Menu. {LONG_A} {LONG_B} Footer.", f"{LONG_A} {LONG_B}"),
+        (LONG_A, f"{LONG_A} {LONG_B} {LONG_C}", f"{LONG_A} {LONG_B} {LONG_C}"),
+        (LONG_A, None, LONG_A),
+        (LONG_A, "", LONG_A),
+    ],
+)
+def test_choose(extracted: str | None, fallback: str | None, expected: str | None) -> None:
+    assert _choose(extracted, fallback) == expected
