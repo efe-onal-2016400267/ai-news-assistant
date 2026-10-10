@@ -36,8 +36,8 @@ A scheduler (launchd or cron locally, a scheduled cloud job when deployed) runs 
 | # | Component | Responsibility |
 |---|-----------|----------------|
 | 1 | Fetchers | One adapter per source behind a common `Fetcher` interface. `RSSFetcher` (one instance per feed) downloads with `httpx` and parses with `feedparser`. Returns typed `Article`s. Network and HTTP errors, and `FeedTooLargeError`, propagate; the `ingest` command handles them per feed. |
-| 2 | Store | Relational store for articles (stories later). SQLite first, behind a small storage interface. Insert keyed by `Article.id`; existing ids are ignored, so `ingest` is idempotent. An article with only a feed summary is already valid. |
-| 3 | Extraction | A separate stage: find rows without `text`, fetch the page, extract clean text (`trafilatura`). Fall back to the feed summary if the page is paywalled or fails. Runs soon after ingestion, since pages change and disappear. Rate-limited, respects robots.txt and publisher terms. |
+| 2 | Store | Relational store for articles (stories later). SQLite first, behind a small storage interface. Insert keyed by `Article.id`; existing ids are ignored, so `ingest` is idempotent. An article with only a feed summary is already valid. Each article also records its extraction state (`extraction_successful`: not tried, failed or succeeded; `extracted_at` on success). `get_unextracted` lists the articles never tried, and `save_extraction` records exactly one attempt per article (enforced in the SQL `WHERE`). New columns are added in place with `ALTER TABLE`, so existing rows are kept. |
+| 3 | Extraction | A separate stage: find articles never tried (`get_unextracted`), fetch the page with our own `fetch_html` (`httpx`, size-capped like feeds; see D12), extract clean text (`trafilatura`), and record the one attempt with `save_extraction`. Permanent failures are recorded and transient ones are retried on the next run (D12). Fall back to the feed summary if the page is paywalled, blocked or fails; pages behind bot challenges (OpenAI) are not fetched. Runs soon after ingestion, since pages change and disappear. Rate-limited, respects robots.txt and publisher terms. |
 | 4 | Dedupe | Exact duplicates via the normalized-URL id. Near-duplicate detection (wire stories are republished everywhere) runs after extraction; store `duplicate_of` instead of deleting. Optional if time is short. |
 | 5 | Story clustering | Group articles about the same event into a story. Powers timelines and source comparison. Optional if time is short. |
 | 6 | Vector index | Index over chunks of article text. Chunking is a parameter, compared in the eval harness. |
@@ -94,14 +94,24 @@ SQLite needs no server and works in CI. A deployed container's disk is not durab
 The live database keeps growing; metrics must not move for reasons unrelated to the retriever. Accumulate articles, export a snapshot after extraction, label questions against article ids in that snapshot, and run all retrieval and chunking experiments against it.
 
 ### D11. Feed content is untrusted input
-Feed text is parsed defensively: HTML is reduced to text, entry titles are reduced to plain text like summaries (tags and script content removed), invalid entries are skipped and logged (field names and messages only, not the untrusted values), and the source name is length-capped. The source name configured in `feeds.py` takes precedence over the feed title, so a feed cannot rename itself; the title is only a fallback. Downloads are streamed and capped at `MAX_FEED_BYTES` (5 MB, `Content-Length` checked first, then a running byte count of the decompressed body); exceeding it raises `FeedTooLargeError`.
+Feed text is parsed defensively: HTML is reduced to text, entry titles are reduced to plain text like summaries (tags and script content removed), invalid entries are skipped and logged (field names and messages only, not the untrusted values), and the source name is length-capped. The source name configured in `feeds.py` takes precedence over the feed title, so a feed cannot rename itself; the title is only a fallback. Downloads are streamed and capped at `MAX_FEED_BYTES` (5 MB, `Content-Length` checked first, then a running byte count of the decompressed body); exceeding it raises `FeedTooLargeError`. Article pages are untrusted too and go through the same capped `download` (`MAX_PAGE_BYTES`, 5 MB, `PageTooLargeError`). An untrusted charset or content type never crashes decoding: unknown or non-text charsets fall back to UTF-8, invalid bytes are replaced, and only a short, cut media type appears in `NotHTMLError`.
+
+### D12. Pages are fetched with our own client; the pipeline classifies failures
+`fetch_html` uses the project's `httpx` download, like feeds, and raises instead of returning `None`, with no catching or retries (as in D7): `httpx.HTTPStatusError` (4xx, 5xx), `httpx.TransportError` (timeouts, connection errors, too many redirects), `PageTooLargeError`, and `NotHTMLError` (a `Content-Type` that is present and not HTML; a missing one is accepted).
+- **Why not `trafilatura.fetch_url`:** it returns `None` for every failure, so a timeout can't be told apart from a 404 or a paywall, and it can't use our client, so tests couldn't use `MockTransport`. trafilatura is used only to extract text.
+- **Permanent vs transient:** the store records one attempt per article, so the extraction run must not record a temporary problem as a failure. Permanent failures (4xx except 408 and 429, too large, not HTML) are recorded with `save_extraction(id, None, now)`. Transient ones (transport errors, 5xx, 408, 429) record nothing, so the next run retries.
+- **No getting around bot protection:** robots.txt is respected, and we don't switch HTTP clients or fingerprints to pass a bot challenge. openai.com answers our client with a Cloudflare challenge (403) whatever the User-Agent, so OpenAI articles keep their feed summary.
+- **Revisit if:** transient failures keep repeating for the same articles (then cap the attempts), or an important source becomes unreachable (then look for an official feed or API).
 
 ## 5. Interfaces and data models
 
-Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array). The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; `ingestion/feeds.py` maps feed names (the mapping keys) to `Feed(url, source)`, where `source` is the configured publisher name stored on the feed's articles.
+Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array, `extraction_successful` as an INTEGER that is NULL, 0 or 1). The shared capped `download` and `USER_AGENT` live in `src/ai_news_assistant/downloads.py`; `fetch_html` lives in `src/ai_news_assistant/extraction/fetch.py`. The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; `ingestion/feeds.py` maps feed names (the mapping keys) to `Feed(url, source)`, where `source` is the configured publisher name stored on the feed's articles.
 
 ```python
 from collections.abc import Iterable
+from datetime import datetime
+
+import httpx
 from pydantic import AwareDatetime, BaseModel, HttpUrl
 from typing import Protocol
 
@@ -115,6 +125,8 @@ class Article(BaseModel):
     summary: str | None = None  # cleaned feed teaser
     text: str | None = None  # extracted full text, filled by extraction
     tags: list[str]  # feed category terms, cleaned, deduplicated
+    extraction_successful: bool | None = None  # None: not tried, False: failed, True: succeeded
+    extracted_at: AwareDatetime | None = None  # only on success, which also needs non-empty text
 
 
 class ArticleHit(BaseModel):
@@ -144,6 +156,15 @@ class Fetcher(Protocol):
 class ArticleStore(Protocol):
     def save(self, articles: Iterable[Article]) -> int: ...  # inserts new ids, returns count
     def get(self, article_id: str) -> Article | None: ...
+    def get_unextracted(
+        self, limit: int | None = None
+    ) -> list[Article]: ...  # never tried, newest first
+    def save_extraction(  # one attempt per article; blank text means failure
+        self, article_id: str, text: str | None, extracted_at: datetime
+    ) -> bool: ...
+
+
+def fetch_html(url: str, client: httpx.Client | None = None) -> str: ...  # raises, see D12
 
 
 class Retriever(Protocol):

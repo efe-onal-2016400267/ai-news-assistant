@@ -13,7 +13,7 @@ from ai_news_assistant.ingestion.rss import parse_feed
 from ai_news_assistant.models import Article
 from ai_news_assistant.storage.sqlite import SQLiteStore
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "rss_fixtures"
 GUARDIAN_URL = "https://example.com/guardian.xml"
 TECHCRUNCH_URL = "https://example.com/techcrunch.xml"
 FEEDS = {

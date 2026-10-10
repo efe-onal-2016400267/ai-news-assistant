@@ -1,0 +1,57 @@
+{
+  "guardian-ai": {
+    "url": "https://www.theguardian.com/technology/2026/oct/05/internet-watch-foundation-huge-rise-ai-child-sexual-abuse-material",
+    "first": "AI-generated child sexual abuse material is proliferating online, with the amount of illegal material investigated this year already exceeding the total for 2025.",
+    "last": "The guidance suggests making social media accounts private or sharing pictures of children through a “close friends” group only."
+  },
+  "techcrunch-ai": {
+    "url": "https://techcrunch.com/2026/10/05/hot-girl-hotline-is-like-dear-abby-for-the-ai-era/",
+    "first": "Women throughout history have always sought out relationship advice, whether from newspaper columnists like “Dear Abby,” letters to Cosmo, or just chatting with girlfriends.",
+    "last": "It’s available on iOS and the web."
+  },
+  "verge-ai": {
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1007276/openai-chatgpt-intelligent-ui-gpt-6",
+    "first": "OpenAI is launching a new Intelligent UI feature in ChatGPT that allows the chatbot to answer your questions with interactive visuals.",
+    "last": "While higher-tier subscribers will gain access to the mid-range GPT-6 Sol model, Go and free users will get to use the more efficient GPT-6 Luna."
+  },
+  "arstechnica-ai": {
+    "url": "https://arstechnica.com/ai/2026/10/nvidias-big-bet-on-physical-ai-aims-for-safer-robotaxis-humanoid-robots/",
+    "first": "Investors bullish on AI data centers may be fueling Nvidia’s multitrillion-dollar market capitalization, but the AI chipmaker has also bet billions of dollars on physical AI technologies such as robotics and self-driving cars.",
+    "last": "“But in the new age of robotics with a generalized body as well as generalized skills, it is essential that the robots can do multiple tasks in multiple environments—and the only way you can do that in production is if you improve safety.”"
+  },
+  "wired-ai": {
+    "url": "https://www.wired.com/story/tristan-harris-tech-nonprofit-is-laying-off-most-staff-and-going-founder-led/",
+    "first": "The Center for Humane Technology, the online safety group cofounded by former Google product manager Tristan Harris and featured in the hit documentary The Social Dilemma, is laying off about half of its 16 non-founder employees, ex-staffers tell WIRED.",
+    "last": "Shah says the organization’s sole goal is ensuring “today’s most consequential technologies serve humanity.”"
+  },
+  "mit-tech-review-ai": {
+    "url": "https://www.technologyreview.com/2026/10/08/1145923/ai-breakthroughs-in-robotics-wont-change-your-life-any-time-soon/",
+    "first": "Advances in AI offer tantalizing glimpses of a future in which robots navigate the world the way humans do.",
+    "last": "Today’s robots, even with the transformative power of advanced AI, still face the same existential challenge."
+  },
+  "the-decoder": {
+    "url": "https://the-decoder.com/claude-haiku-5-5-arrives-with-massive-price-cuts-proving-the-ai-pricing-arms-race-is-far-from-over/",
+    "first": "Anthropic has released Claude Haiku 5.5, its fastest and most affordable small model, built for high-volume tasks like data queries and customer support.",
+    "last": "The company is updating its Python and TypeScript SDKs as well, adding beta support for computer use and browser use."
+  },
+  "deepmind-blog": {
+    "url": "https://deepmind.google/blog/embeddinggemma-2-an-open-lightweight-multimodal-embedding-model/",
+    "first": "We introduced EmbeddingGemma last year to provide a lightweight option for high-quality text embeddings, to help your apps organize, search, and connect information directly on consumer hardware.",
+    "last": "Explore our developer guide, documentation, and guides for inference and fine-tuning."
+  },
+  "huggingface-blog": {
+    "url": "https://huggingface.co/blog/LiquidAI/open-d1",
+    "first": "Best decision model under 10B on the Decision Index 0.2.1: d1-3B scores 48.57, ahead of every 4B and 9B model and of Decider 35B-A3B (47.11).",
+    "last": "We can't wait to see what you build."
+  },
+  "mistral-news": {
+    "url": "https://mistral.ai/news/mistral-large-4/",
+    "first": "Today, we’re launching a public preview of Mistral Large 4.",
+    "last": "The pace of progress from here will be fast. Stay tuned."
+  },
+  "simon-willison": {
+    "url": "https://simonwillison.net/2026/Oct/7/ben-affleck/",
+    "first": "I've always been kind of into computers since I was young.",
+    "last": "And a tensor, you use a convolutional neural network to identify patterns in that that would reveal what's called edge detection or feature extraction, which is just identifying patterns enough to know like this is where the window ledge is, so we can more easily take the green screen image out and replace it with something."
+  }
+}

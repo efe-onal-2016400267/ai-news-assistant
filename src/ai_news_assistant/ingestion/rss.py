@@ -6,26 +6,29 @@ import feedparser
 import httpx
 from pydantic import ValidationError
 
+from ai_news_assistant.downloads import (
+    DEFAULT_TIMEOUT,
+    USER_AGENT,
+    ResponseTooLargeError,
+    download,
+)
 from ai_news_assistant.ingestion.dates import entry_published_at
 from ai_news_assistant.ingestion.summary import clean_summary, html_to_text
 from ai_news_assistant.ingestion.urls import article_id
 from ai_news_assistant.models import Article
 
-USER_AGENT = "ai-news-assistant/0.1"
+__all__ = ["USER_AGENT", "FeedTooLargeError", "RSSFetcher", "download_feed", "parse_feed"]
+
 MAX_SOURCE_LENGTH = 300  # The feed title is untrusted input
-DEFAULT_TIMEOUT = 15.0  # Seconds
 MAX_FEED_BYTES = 5 * 1024 * 1024  # Real feeds are well under 1 MB
 
 logger = logging.getLogger(__name__)
 
 
-class FeedTooLargeError(Exception):
+class FeedTooLargeError(ResponseTooLargeError):
     """The feed response is larger than the download limit."""
 
-    def __init__(self, url: str, max_bytes: int) -> None:
-        super().__init__(f"Feed {url} exceeds {max_bytes} bytes")
-        self.url = url
-        self.max_bytes = max_bytes
+    kind = "Feed"
 
 
 def download_feed(
@@ -40,33 +43,9 @@ def download_feed(
     Raises FeedTooLargeError when the body is larger than `max_bytes`, checking
     Content-Length first so an oversized body is never read.
     """
-
-    # To be able to do offline tests with httpx.MockTransport.
-    # Tests will call with mock transport, production will call with None as client.
-    if client is None:
-        with httpx.Client() as own_client:
-            return download_feed(url, own_client, timeout=timeout, max_bytes=max_bytes)
-
-    with client.stream(
-        "GET",
-        url,
-        headers={"User-Agent": USER_AGENT},
-        timeout=timeout,
-        follow_redirects=True,
-    ) as response:
-        response.raise_for_status()
-        if _content_length(response) > max_bytes:
-            raise FeedTooLargeError(url, max_bytes)
-
-        # iter_bytes yields decompressed bytes, so this also caps gzip bombs.
-        chunks: list[bytes] = []
-        total = 0
-        for chunk in response.iter_bytes():
-            total += len(chunk)
-            if total > max_bytes:
-                raise FeedTooLargeError(url, max_bytes)
-            chunks.append(chunk)
-        return b"".join(chunks)
+    return download(
+        url, client, max_bytes=max_bytes, timeout=timeout, too_large=FeedTooLargeError
+    ).content
 
 
 def parse_feed(content: bytes | str, source: str | None = None) -> list[Article]:
@@ -183,14 +162,6 @@ def _source_name(feed_title: str | None, configured: str | None) -> str | None:
         title = " ".join((feed_title or "").split())
         name = title.rpartition(" | ")[2].strip()
     return name[:MAX_SOURCE_LENGTH] or None
-
-
-def _content_length(response: httpx.Response) -> int:
-    # The header is untrusted; a missing or invalid value leaves the byte count as the guard.
-    try:
-        return max(int(response.headers.get("Content-Length", 0)), 0)
-    except ValueError:
-        return 0
 
 
 def _clean_tags(tags: Iterable[Mapping[str, Any]]) -> list[str]:

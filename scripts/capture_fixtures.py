@@ -1,4 +1,4 @@
-"""Download feeds into tests/fixtures, trimmed to the first KEEP entries.
+"""Download feeds into tests/rss_fixtures, trimmed to the first KEEP entries.
 
 Usage: uv run python scripts/capture_fixtures.py [feed-name ...]
 With no names, every feed in FEEDS is captured.
@@ -11,7 +11,7 @@ from pathlib import Path
 from ai_news_assistant.ingestion.feeds import FEEDS
 from ai_news_assistant.ingestion.rss import download_feed
 
-OUT_DIR = Path("tests/fixtures")
+OUT_DIR = Path("tests/rss_fixtures")
 KEEP = 20
 # RSS <item> or Atom <entry>; works on bytes so each file keeps its declared encoding.
 ENTRY = re.compile(rb"<(item|entry)\b[^>]*>.*?</\1\s*>", flags=re.DOTALL)

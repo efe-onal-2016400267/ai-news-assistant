@@ -5,7 +5,7 @@ import pytest
 
 from ai_news_assistant.ingestion.feeds import FEEDS
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "rss_fixtures"
 
 
 def test_sources_are_unique_and_non_empty() -> None:
