@@ -12,19 +12,16 @@ import sys
 import time
 from datetime import date
 from pathlib import Path
-from urllib.parse import urlsplit
-from urllib.robotparser import RobotFileParser
 
 import httpx
 
-from ai_news_assistant.downloads import USER_AGENT, download
 from ai_news_assistant.extraction.fetch import fetch_html
+from ai_news_assistant.extraction.robots import RobotsPolicy
 from ai_news_assistant.ingestion.feeds import FEEDS
 from ai_news_assistant.ingestion.rss import parse_feed
 
 OUT_DIR = Path("tests/text_html_fixtures")
 RSS_DIR = Path("tests/rss_fixtures")
-MAX_ROBOTS_BYTES = 512 * 1024
 PAUSE_SECONDS = 1.0
 
 
@@ -40,30 +37,13 @@ def first_article_url(name: str) -> str:
     return str(articles[0].url)
 
 
-def robots_allows(url: str, client: httpx.Client) -> bool:
-    """Check robots.txt with our own User-Agent.
+def capture(name: str, client: httpx.Client, robots: RobotsPolicy) -> str:
+    """Save the page for one feed and return its README table row.
 
-    RobotFileParser.read() is not used: it sends urllib's default User-Agent and treats a
-    401/403 on robots.txt as "disallow all". A missing robots.txt (404) allows everything;
-    any other error propagates, so the page is skipped as "couldn't check".
+    Raises RobotsUnavailableError when the host's robots.txt can't be read.
     """
-    parts = urlsplit(url)
-    robots_url = f"{parts.scheme}://{parts.netloc}/robots.txt"
-    try:
-        robots = download(robots_url, client, max_bytes=MAX_ROBOTS_BYTES)
-    except httpx.HTTPStatusError as exc:
-        if exc.response.status_code == 404:
-            return True
-        raise
-    parser = RobotFileParser()
-    parser.parse(robots.content.decode("utf-8", errors="replace").splitlines())
-    return parser.can_fetch(USER_AGENT, url)
-
-
-def capture(name: str, client: httpx.Client) -> str:
-    """Save the page for one feed and return its README table row."""
     url = first_article_url(name)
-    if not robots_allows(url, client):
+    if not robots.allowed(url):
         raise PermissionError(f"robots.txt disallows {url}")
     html = fetch_html(url, client)
     path = fixture_path(name)
@@ -81,11 +61,12 @@ def main(names: list[str]) -> None:
     rows: list[str] = []
     failed: list[str] = []
     with httpx.Client() as client:
+        robots = RobotsPolicy(client)
         for index, name in enumerate(names or FEEDS):
             if index:
                 time.sleep(PAUSE_SECONDS)
             try:
-                rows.append(capture(name, client))
+                rows.append(capture(name, client, robots))
                 print(f"Saved {name}")
             except Exception as exc:
                 failed.append(name)
