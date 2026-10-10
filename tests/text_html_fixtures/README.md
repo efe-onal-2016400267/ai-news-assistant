@@ -38,14 +38,23 @@ For each page: its `url` and the `first` and `last` sentence of the article body
 navigation or teasers), so extraction tests can check that the text is complete and not cut in
 the middle. Drafted from the saved HTML and checked against the live page.
 
-Notes for the extraction step, from comparing trafilatura's `extract()` and `baseline()` on
-these pages:
+Findings from comparing trafilatura's `extract()` and `baseline()` on these pages, and how
+`extract_text_from_html` handles them (decision D13 in `docs/design.md`):
 
 - Ars Technica: `extract()` stops mid-article (after "…Goel said."); only `baseline()` reaches
-  the last sentence. `baseline()` then continues into the author bio and comment count.
+  the last sentence, then continues into the author bio and comment count. Handled by the
+  fallback: `extract()`'s text holds only 0.30 of baseline's long sentences (the other pages
+  0.71 to 1.00), so baseline's text is used for this page only.
 - Wired and Hugging Face: the first sentence is only in `extract()`; `baseline()` starts later.
 - TechCrunch: `baseline()` starts with the site navigation.
 - `extract()` keeps trailing boilerplate on MIT Technology Review ("Deep Dive", "Stay
-  connected"), The Decoder (subscription box), Mistral (pricing card), Simon Willison (recent
-  posts) and Wired ("Comments", "Back to top").
-- `extract(favor_recall=True)` returned the same text as `extract()` on every page.
+  connected"), The Decoder (subscription box), Mistral (pricing card) and Simon Willison
+  (recent posts). Left as is: no per-site cleaning. Wired's "Comments | Back to top" is gone
+  with `include_comments=False`.
+- `extract(favor_recall=True)` returned the same text as `extract()` on every page, and
+  `favor_precision=True` lost MIT Technology Review's first sentence, so neither is used.
+- Removing hidden elements before extracting changed only 48 characters of Hugging Face's text
+  and no expected sentence.
+
+`tests/test_extract_text.py` checks that every page's text contains its `first` and `last`
+sentence. When adding a source, capture its page and add its sentences here first.
