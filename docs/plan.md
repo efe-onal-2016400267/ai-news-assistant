@@ -191,9 +191,21 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
     - [x] Step 4: Docs
         - [x] `design.md`: component rows 2 and 3, interfaces in §5 (including the store's extraction fields and methods), new D12 "Page fetching failures", D11 caps also apply to pages.
         - [x] D12 includes the rule for the pipeline ToDo: permanent failures (4xx except 408/429, too large, not HTML) are recorded with `save_extraction(id, None, now)`; transient ones (transport errors, 5xx, 408, 429) record nothing, so the next run retries.
-- [ ] Text Extraction From HTML
-    - [ ] Plain function: `extract_text_from_html(html: str) -> str | None`
-    - [ ] The function should take the output of `fetch_html`, it does not call it so we can test standalone. Use trafilatura to extract the main article text, nothing else.
+- [x] Text Extraction From HTML: plain function `extract_text_from_html(html: str) -> str | None` in `extraction/text.py`. It takes the output of `fetch_html` and never calls it, so it can be tested standalone with the saved fixtures.
+    - [x] Step 1: Basic extractor
+        - [x] `uv add lxml` (now imported directly) and `uv add --dev types-lxml` (stubs for mypy strict).
+        - [x] Parse once; blank or unparseable input returns `None`. Run `trafilatura.extract(tree, include_comments=False)`; `include_comments=True` leaves "Comments | Back to top" on Wired; `favor_precision` loses MIT's first sentence; `favor_recall` changes nothing.
+        - [x] Results shorter than `MIN_TEXT_CHARS` (200) return `None` (cookie notices, teasers).
+        - [x] Tests: degenerate input, short page, no script/style/comment text, and each fixture contains its expected first and last sentence (Ars Technica's last one marked xfail until Step 3).
+    - [x] Step 2: Drop hidden elements before extracting
+        - [x] Remove elements with `hidden`, `aria-hidden="true"`, or inline `display:none` / `visibility:hidden`, never `html`/`head`/`body` themselves. Blocks hidden prompt-injection text, and text hidden until you subscribe is not taken (no paywalled scraping).
+        - [x] Adversarial tests: each hidden form is removed; a hidden `<body>` still yields the article; visible injection text is kept as plain data (the defense against it is downstream).
+    - [x] Step 3: Fall back to `baseline()` when `extract()` cuts the article
+        - [x] Use the extract text if it contains at least half of baseline's sentences of 60+ characters, else use baseline. Measured: Ars Technica 0.30, all other fixtures 0.71 to 1.00. When `extract()` finds nothing, return `None` rather than baseline's whole-page text.
+        - [x] Pure helper functions with unit tests; every fixture then contains its first and last sentence.
+        - Known limit (in D13): a login wall or navigation-only page can come back from `extract()` itself as a few hundred characters of menu text.
+    - [x] Step 4: Docs
+        - [x] `design.md`: row 3 and a new D13 "Article text extraction"; update the fixtures README notes.
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
 - trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
 - If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
