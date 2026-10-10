@@ -173,6 +173,27 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
     - [x] In the `ArticleStore` protocol we need a new function to save text on an existing article without creating a new row.
     - [x] Saving text into an article in the DB must not change other article records.
     - [x] Saving text into an article in the DB must change only `extracted_at`, `extraction_successful`, and `text` fields.
+- [x] Fetch `text` HTML (own `httpx` download, not `trafilatura.fetch_url`: it returns `None` for every failure, so a timeout can't be told apart from a 404 or paywall, and it can't use our client or `MockTransport`)
+    - [x] Step 1: Extract the shared capped downloader (pure refactor, no behavior change)
+        - [x] New `src/ai_news_assistant/downloads.py` (not `http.py`, which could shadow the stdlib `http` package) with `USER_AGENT`, `DEFAULT_TIMEOUT`, `ResponseTooLargeError`, and `download(url, client, *, timeout, max_bytes, accept, too_large) -> Download(content, headers)` holding today's `download_feed` logic (stream, `Content-Length` check, running byte count).
+        - [x] `rss.py`: `FeedTooLargeError` subclasses `ResponseTooLargeError`; `download_feed` becomes a thin wrapper.
+        - [x] `test_download_feed.py` passes untouched; add `test_http_download.py` for `download` directly.
+    - [x] Step 2: `fetch_html(url, client) -> str` in a new `extraction/fetch.py`
+        - [x] Streamed and capped at `MAX_PAGE_BYTES` (5 MB to start) via `download`, like `download_feed`.
+        - [x] Decodes with the `Content-Type` charset, else UTF-8, replacing invalid bytes.
+        - [x] Failures are raised, never returned as `None`, with no catching or retries (like D7): `httpx.HTTPStatusError` (4xx/5xx), `httpx.TransportError` (timeouts, connection, redirects), `PageTooLargeError`, `NotHTMLError` (`Content-Type` present but not HTML, e.g. PDF).
+        - [x] Tests with `MockTransport` only: success, redirect, size caps, status errors, timeout, content types, charsets.
+    - [x] Step 3: HTML fixtures, one real page per source, under `tests/text_html_fixtures/`
+        - [x] `scripts/capture_html_fixtures.py`: takes the first entry's link from each RSS fixture, checks robots.txt, saves `<feed_name>.html` raw; reports sizes and blocked sources. Run by me, not Claude (network).
+        - [x] `expected.json`: the first and last body sentence per article, so the extraction ToDo can test that text is complete, not cut in the middle.
+        - [x] `README.md`: file, URL, capture date, size, notes (blocked, script-rendered, paywalled).
+        - [x] Test: every feed has a fixture (or is listed as blocked), and `fetch_html` returns each one as non-empty text under the cap.
+    - [x] Step 4: Docs
+        - [x] `design.md`: component rows 2 and 3, interfaces in §5 (including the store's extraction fields and methods), new D12 "Page fetching failures", D11 caps also apply to pages.
+        - [x] D12 includes the rule for the pipeline ToDo: permanent failures (4xx except 408/429, too large, not HTML) are recorded with `save_extraction(id, None, now)`; transient ones (transport errors, 5xx, 408, 429) record nothing, so the next run retries.
+- [ ] Text Extraction From HTML
+    - [ ] Plain function: `extract_text_from_html(html: str) -> str | None`
+    - [ ] The function should take the output of `fetch_html`, it does not call it so we can test standalone. Use trafilatura to extract the main article text, nothing else.
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
 - trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
 - If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
