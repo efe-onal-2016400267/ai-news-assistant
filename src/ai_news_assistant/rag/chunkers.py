@@ -10,7 +10,15 @@ def chunk_words(text: str, size: int, overlap: int) -> list[str]:
     splitter = CharacterTextSplitter.from_huggingface_tokenizer(
         tokenizer=tokenizer, separator=" ", chunk_size=size, chunk_overlap=overlap
     )
-    return splitter.split_text(text)
+
+    # return splitter.split_text(text)
+    chunks: list[str] = []
+    for piece in splitter.split_text(text):
+        if len(tokenizer.encode(piece)) > size:
+            chunks.extend(chunk_recursive(piece, size, overlap))
+        else:
+            chunks.append(piece)
+    return chunks
 
 
 def chunk_recursive(text: str, size: int, overlap: int) -> list[str]:
