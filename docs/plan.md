@@ -290,6 +290,95 @@ Report for every configuration: chunk count, mean/min/max chunk length, recall@1
 6. Eval set and runner
 7. Run the grid, read failures, write up in `design.md`
 
+# Chunkers issue: plan
+
+## Scope
+
+Two chunkers (word-aligned baseline and recursive), both sized in embedding-model tokens, a way to write their chunks into the `chunks` table, and chunk statistics.
+
+Out of scope: the semantic chunker (needs the embedding model and a cache, so it gets its own issue), an exact token-window chunker (optional fourth config later), and prepending the title to chunks (do that at embedding time so stored chunk text stays clean; stretch experiment).
+
+## Decisions
+
+- **Sizes are in tokens**, measured with the embedding model's own tokenizer (`BAAI/bge-small-en-v1.5`, WordPiece, lowercasing, `model_max_length` 512 including `[CLS]` and `[SEP]`, so 510 usable).
+- **Size:** 256 tokens, overlap 32 (roughly the old 1,000 / 150 characters). Far below the limit, so nothing is truncated at embedding time.
+- **Both chunkers use the same tokenizer and the same size**, so only the splitting method differs.
+- **Config names carry their parameters:** `words-tok256-32`, `recursive-tok256-32`.
+- **Baseline:** `CharacterTextSplitter` with `separator=" "`. It is word-aligned (never cuts mid-word) but has no paragraph or sentence awareness. The comparison with recursive therefore isolates one question: does respecting paragraph and sentence boundaries help? Name it honestly so the results are easy to read later.
+  - Not `separator=""`: it makes one piece per character and calls the tokenizer for each, which is slow.
+  - Not the default `"\n\n"`: it splits on paragraphs and an oversized paragraph becomes one oversized chunk.
+  - Not `r"\s+"` with `is_separator_regex=True`: when merging, the splitter joins pieces with the regex text unless `keep_separator=True` is set. Not needed, so skip it.
+  - With `" "`, a newline stays glued to its neighbouring word. That is harmless: token counts are right and no text is lost.
+- **Tokenizer:** `AutoTokenizer.from_pretrained("BAAI/bge-small-en-v1.5")`. `from_huggingface_tokenizer` counts length with `tok.encode`, which adds `[CLS]` and `[SEP]` (+2 per measurement). Irrelevant at 256 against 510.
+
+```python
+from transformers import AutoTokenizer
+from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
+
+tok = AutoTokenizer.from_pretrained("BAAI/bge-small-en-v1.5")
+words = CharacterTextSplitter.from_huggingface_tokenizer(
+    tok, separator=" ", chunk_size=256, chunk_overlap=32
+)
+recursive = RecursiveCharacterTextSplitter.from_huggingface_tokenizer(
+    tok, chunk_size=256, chunk_overlap=32
+)
+```
+
+## Steps
+
+### 1. Branch and plan
+
+- Create the branch from the issue: `gh issue develop N --checkout`
+- Start Claude Code in plan mode.
+- Keep to the scope rule in CLAUDE.md.
+
+### 2. Dependencies first
+
+- `uv add langchain-text-splitters transformers`
+  - `langchain-text-splitters` is the small standalone package (no full LangChain).
+  - `transformers` is needed for the tokenizer. The tokenizer alone does not need torch. If you embed with `sentence-transformers`, torch comes with it later anyway.
+- Commit `pyproject.toml` and `uv.lock` on their own.
+
+### 3. `rag/chunkers.py`
+
+Functions that take text and return a list of strings, with the same signature for both (`text`, `size`, `overlap`, tokenizer built once and reused).
+
+- `chunk_words(text, size, overlap)`: wrapper around the `CharacterTextSplitter` above.
+- `chunk_recursive(text, size, overlap)`: wrapper around `RecursiveCharacterTextSplitter` above.
+- Build the tokenizer once at module or factory level. Loading it per article is slow.
+- Optional later: `chunk_token_windows`, an exact fixed-size token window (tokenize once with `return_offsets_mapping=True`, slice the original text by offsets). Offsets need the fast tokenizer, which `AutoTokenizer` returns by default.
+
+### 4. Tests before the build script
+
+- Both: every chunk is at most `size` tokens (count with the same tokenizer); no chunk is empty.
+- Both: empty or whitespace-only text gives no chunks; text shorter than `size` gives one chunk.
+- Words: no chunk starts or ends mid-word; a long unbroken string (for example a URL) is the known case that can exceed the limit, so decide whether to accept or special-case it.
+- Recursive: a text with paragraphs splits at paragraph boundaries when it can.
+- Consecutive chunks overlap by roughly `overlap` tokens (whole words or separators, so not exact).
+
+### 5. Build step
+
+A function in `rag/` or `scripts/build_chunks.py` with a `--config` flag:
+
+1. Read `store.corpus_articles()`.
+2. Chunk each article's `text` with the chosen chunker.
+3. Wrap results as `Chunk(config_id, article_id, i, text)`.
+4. Call `replace_chunks(config_id, chunks)`.
+5. Print stats: chunk count, mean / min / max length in tokens (and characters).
+
+### 6. Look before moving on
+
+- Check the recursive chunker does not produce lots of tiny chunks.
+- Read a handful of real chunks from each config.
+- Check the run time over the whole corpus (tokenizer calls per word for the baseline).
+- Do this before the embeddings: a bad chunker otherwise looks like a bad retriever later.
+
+## Done when
+
+- Both configs are in the `chunks` table for the frozen corpus.
+- Tests, `uv run mypy src` and `uv run ruff check` pass.
+- Chunk stats for both configs are noted for `design.md`.
+
 ### 7. Schedule
 
 - **Day 1:** issues 1-5 for fixed and recursive chunking; a working `search()`.
