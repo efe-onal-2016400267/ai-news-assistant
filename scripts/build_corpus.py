@@ -18,12 +18,22 @@ SELECT id FROM articles
 WHERE published_at >= ? AND source = ?
 """
 
+
 def main() -> None:
     conn = sqlite3.connect(SNAPSHOT)
 
     # Get the id's to be put into the corpus
     ids = [r[0] for r in conn.execute(_OTHER_IDS, (HF_SOURCE,))]
-    ids += [r[0] for r in conn.execute(_HF_IDS, (HF_CUTOFF, HF_SOURCE,))]
+    ids += [
+        r[0]
+        for r in conn.execute(
+            _HF_IDS,
+            (
+                HF_CUTOFF,
+                HF_SOURCE,
+            ),
+        )
+    ]
     conn.close()
 
     # Create the corpus
@@ -38,15 +48,10 @@ def main() -> None:
         print(f"    {source:<25} {count}")
 
     # Print the oldest HuggingFace date for filter check
-    hf_dates = [
-        a.published_at for a in articles if a.source == HF_SOURCE and a.published_at
-    ]
+    hf_dates = [a.published_at for a in articles if a.source == HF_SOURCE and a.published_at]
     if hf_dates:
         print(f"Oldest Hugging Face article kept: {min(hf_dates)}")
 
 
 if __name__ == "__main__":
     main()
-
-
-

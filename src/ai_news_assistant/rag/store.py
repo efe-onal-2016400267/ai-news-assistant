@@ -46,12 +46,13 @@ WHERE config_id = ?
 ORDER BY article_id, chunk_index
 """
 
+
 @dataclass(frozen=True)
 class CorpusArticle:
     id: str
     title: str
     source: str
-    published_at: str | None    # ISO 8601 UTC text, as stored
+    published_at: str | None  # ISO 8601 UTC text, as stored
     text: str
 
 
@@ -68,7 +69,7 @@ class Chunk:
 
 
 class RagStore:
-    """ Corpus selection and chunks, in the same SQLite file as the articles they refer to. """
+    """Corpus selection and chunks, in the same SQLite file as the articles they refer to."""
 
     def __init__(self, path: str | Path) -> None:
         self._conn = sqlite3.connect(path)
@@ -79,10 +80,10 @@ class RagStore:
             self._conn.execute(_CREATE_CHUNKS)
 
     def replace_corpus(self, article_ids: Iterable[str]) -> int:
-        """ Make the corpus exactly these articles. Returns how many it holds.
-        
-            An id that is not in `articles` raises sqlite3.IntegrityError and the
-            old corpus stays untouched.
+        """Make the corpus exactly these articles. Returns how many it holds.
+
+        An id that is not in `articles` raises sqlite3.IntegrityError and the
+        old corpus stays untouched.
         """
 
         ids = list(dict.fromkeys(article_ids))  # dedupe, keep order
@@ -92,7 +93,7 @@ class RagStore:
         return len(ids)
 
     def corpus_articles(self) -> list[CorpusArticle]:
-        """ Return the list of all articles in the corpus. """
+        """Return the list of all articles in the corpus."""
         rows = self._conn.execute(_SELECT_CORPUS).fetchall()
         return [
             CorpusArticle(
@@ -100,13 +101,13 @@ class RagStore:
                 title=row["title"],
                 source=row["source"],
                 published_at=row["published_at"],
-                text=row["text"]
+                text=row["text"],
             )
             for row in rows
         ]
 
-    def replace_chunks(self, config_id, chunks: Iterable[Chunk]) -> int:
-        """ Replace all chunks of one config. Other configs are left unchanged. """
+    def replace_chunks(self, config_id: str, chunks: Iterable[Chunk]) -> int:
+        """Replace all chunks of one config. Other configs are left unchanged."""
         items = list(chunks)
         for chunk in items:
             if chunk.config_id != config_id:
@@ -116,18 +117,15 @@ class RagStore:
 
         with self._conn:
             self._conn.execute("DELETE FROM chunks WHERE config_id = ?", (config_id,))
-            self._conn.executemany(_INSERT_CHUNK,
-                                   [
-                                     (c.chunk_id, c.config_id, c.article_id, c.chunk_index, c.text)
-                                     for c in items  
-                                   ],
-                                )
+            self._conn.executemany(
+                _INSERT_CHUNK,
+                [(c.chunk_id, c.config_id, c.article_id, c.chunk_index, c.text) for c in items],
+            )
 
         return len(items)
 
-
     def get_chunks(self, config_id: str) -> list[Chunk]:
-        """ Get the chunks of a configuration. """
+        """Get the chunks of a configuration."""
         rows = self._conn.execute(_SELECT_CHUNKS, (config_id,)).fetchall()
         return [
             Chunk(
@@ -140,7 +138,7 @@ class RagStore:
         ]
 
     def config_ids(self) -> list[str]:
-        """ Get the id's of existing configurations. """
+        """Get the id's of existing configurations."""
         rows = self._conn.execute(
             "SELECT DISTINCT config_id FROM chunks ORDER BY config_id"
         ).fetchall()
@@ -154,9 +152,9 @@ class RagStore:
         return self
 
     def __exit__(
-            self,
-            exc_type: type[BaseException] | None,
-            exc: BaseException | None,
-            tb: TracebackType | None,
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
     ) -> None:
         self.close()
