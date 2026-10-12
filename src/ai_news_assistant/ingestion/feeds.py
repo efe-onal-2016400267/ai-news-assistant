@@ -27,7 +27,7 @@ FEEDS: dict[str, Feed] = {
         "MIT Technology Review",
     ),
     "the-decoder": Feed("https://the-decoder.com/feed/", "The Decoder"),
-    #"openai-news": Feed("https://openai.com/news/rss.xml", "OpenAI"),
+    # "openai-news": Feed("https://openai.com/news/rss.xml", "OpenAI"),
     "deepmind-blog": Feed("https://deepmind.google/blog/rss.xml", "Google DeepMind"),
     "huggingface-blog": Feed("https://huggingface.co/blog/feed.xml", "Hugging Face"),
     "mistral-news": Feed("https://mistral.ai/news/rss", "Mistral AI"),
