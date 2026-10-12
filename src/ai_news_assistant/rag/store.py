@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS chunks(
 # Only successfully extracted articles so text is never NULL.
 _SELECT_CORPUS = """
 SELECT a.id, a.title, a.source, a.published_at, a.text
-FROM corpus c JOIN articles a ON a.article_id = c.article_id
+FROM corpus c JOIN articles a ON a.id = c.article_id
 WHERE a.extraction_successful = 1
-ORDER BY a.published_ad DESC, a.id
+ORDER BY a.published_at DESC, a.id
 """
 
 _INSERT_CORPUS = """
@@ -97,7 +97,7 @@ class RagStore:
         return [
             CorpusArticle(
                 id=row["id"],
-                title=row["tite"],
+                title=row["title"],
                 source=row["source"],
                 published_at=row["published_at"],
                 text=row["text"]
