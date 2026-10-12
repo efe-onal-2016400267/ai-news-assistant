@@ -206,6 +206,22 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
         - Known limit (in D13): a login wall or navigation-only page can come back from `extract()` itself as a few hundred characters of menu text.
     - [x] Step 4: Docs
         - [x] `design.md`: row 3 and a new D13 "Article text extraction"; update the fixtures README notes.
+
+- [ ] Create the Orchestrator Extract Command: `ai-news-extract`, shaped like `ingest.py`. Gets unextracted articles, collects the HTML for each, cleans it into text and writes the text back to the DB.
+    - [ ] Step 1: robots.txt policy in `extraction/robots.py`
+        - [ ] One robots.txt download per host per run, with our client and User-Agent. RFC 9309: 2xx parse, 4xx means no rules, 5xx or network error means the host is unreachable this run. Reads `Crawl-delay`.
+        - [ ] `scripts/capture_html_fixtures.py` uses it instead of its own copy.
+        - [ ] Tests with `MockTransport`: allow and disallow, 404 and 403, 500 and timeout, cache, crawl delay, oversized file.
+    - [ ] Step 2: Outcome classification and per-host throttle
+        - [ ] `classify(exc)`: permanent (4xx except 408/429, too large, not HTML, robots disallow) is recorded as failed; transient (network errors, 5xx, 408, 429, robots unreachable) records nothing, so the next run retries (D12).
+        - [ ] `HostThrottle`: at least 2 s between requests to the same host, or the robots `Crawl-delay` if larger (max 60 s). Clock and sleep injected so tests never sleep.
+    - [ ] Step 3: The `extract` command
+        - [ ] `extract(store, client, ...)`: for each article from `get_unextracted(limit)`: robots check, throttle, `fetch_html`, `extract_text_from_html`, `save_extraction`. A failing article never stops the others; one summary log line; no article text in logs.
+        - [ ] `run()` and `main()`: env `NEWS_DB_PATH`, `NEWS_LOG_FILE` (default `logs/extract.log`), `EXTRACT_LIMIT` (default 100 per run, newest first); script `ai-news-extract`. Exit code 1 only if every article had to be retried.
+        - [ ] Offline tests with an in-memory store and the saved page fixtures: saved, no text, failed, retried, robots, idempotent second run, limit, logs.
+    - [ ] Step 4: Docs
+        - [ ] `design.md` (row 3, scheduler sentence, rate limit and robots decision), `CLAUDE.md` commands, tick this list.
+
 - [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
 - trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
 - If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.

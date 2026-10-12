@@ -18,6 +18,7 @@ dependencies = [
 [project.scripts]
 ai-news-assistant = "ai_news_assistant:main"
 ai-news-ingest = "ai_news_assistant.ingest:main"
+ai-news-extract = "ai_news_assistant.extract:main"
 
 [build-system]
 requires = ["uv_build>=0.12.21,<0.13.0"]
