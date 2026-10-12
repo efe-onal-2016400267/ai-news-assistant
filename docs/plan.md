@@ -233,6 +233,7 @@ Goal: compare 3 chunking strategies x 2 retrievers on a small labelled question 
   `sqlite3 data/news.db ".backup 'snapshots/news-2026-10-12.db'"`
 - [ ] Corpus = rows with `extraction_successful = 1` (1,319 of 1,329 today).
 - [ ] Hugging Face is 877 articles, about two thirds of the corpus. Keep only its newest N so its share is about 30-35% (N of 200-250 gives roughly 640-690 articles, about 4-5k chunks). Pick the cutoff date from the other sources' date range, so the corpus covers one time window.
+    - published at >= '2026-05-15' returns 99 HuggingFace articles, which is cool.
 - [ ] Freeze the choice as a `corpus` table in the snapshot DB (or a committed `corpus_ids.txt`). Retrieval and eval read only that. Never delete rows from the live DB.
 - [ ] Record the cutoff and the reason in `design.md` (new decision).
 
