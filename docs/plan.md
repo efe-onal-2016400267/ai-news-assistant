@@ -207,29 +207,103 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
     - [x] Step 4: Docs
         - [x] `design.md`: row 3 and a new D13 "Article text extraction"; update the fixtures README notes.
 
-- [ ] Create the Orchestrator Extract Command: `ai-news-extract`, shaped like `ingest.py`. Gets unextracted articles, collects the HTML for each, cleans it into text and writes the text back to the DB.
-    - [ ] Step 1: robots.txt policy in `extraction/robots.py`
-        - [ ] One robots.txt download per host per run, with our client and User-Agent. RFC 9309: 2xx parse, 4xx means no rules, 5xx or network error means the host is unreachable this run. Reads `Crawl-delay`.
-        - [ ] `scripts/capture_html_fixtures.py` uses it instead of its own copy.
-        - [ ] Tests with `MockTransport`: allow and disallow, 404 and 403, 500 and timeout, cache, crawl delay, oversized file.
-    - [ ] Step 2: Outcome classification and per-host throttle
-        - [ ] `classify(exc)`: permanent (4xx except 408/429, too large, not HTML, robots disallow) is recorded as failed; transient (network errors, 5xx, 408, 429, robots unreachable) records nothing, so the next run retries (D12).
-        - [ ] `HostThrottle`: at least 2 s between requests to the same host, or the robots `Crawl-delay` if larger (max 60 s). Clock and sleep injected so tests never sleep.
-    - [ ] Step 3: The `extract` command
-        - [ ] `extract(store, client, ...)`: for each article from `get_unextracted(limit)`: robots check, throttle, `fetch_html`, `extract_text_from_html`, `save_extraction`. A failing article never stops the others; one summary log line; no article text in logs.
-        - [ ] `run()` and `main()`: env `NEWS_DB_PATH`, `NEWS_LOG_FILE` (default `logs/extract.log`), `EXTRACT_LIMIT` (default 100 per run, newest first); script `ai-news-extract`. Exit code 1 only if every article had to be retried.
-        - [ ] Offline tests with an in-memory store and the saved page fixtures: saved, no text, failed, retried, robots, idempotent second run, limit, logs.
-    - [ ] Step 4: Docs
-        - [ ] `design.md` (row 3, scheduler sentence, rate limit and robots decision), `CLAUDE.md` commands, tick this list.
+- [x] Create the Orchestrator Extract Command: `ai-news-extract`, shaped like `ingest.py`. Gets unextracted articles, collects the HTML for each, cleans it into text and writes the text back to the DB.
+    - [x] Step 1: robots.txt policy in `extraction/robots.py`
+        - [x] One robots.txt download per host per run, with our client and User-Agent. RFC 9309: 2xx parse, 4xx means no rules, 5xx or network error means the host is unreachable this run. Reads `Crawl-delay`.
+        - [x] `scripts/capture_html_fixtures.py` uses it instead of its own copy.
+        - [x] Tests with `MockTransport`: allow and disallow, 404 and 403, 500 and timeout, cache, crawl delay, oversized file.
+    - [x] Step 2: Outcome classification and per-host throttle
+        - [x] `classify(exc)`: permanent (4xx except 408/429, too large, not HTML, robots disallow) is recorded as failed; transient (network errors, 5xx, 408, 429, robots unreachable) records nothing, so the next run retries (D12).
+        - [x] `HostThrottle`: at least 2 s between requests to the same host, or the robots `Crawl-delay` if larger (max 60 s). Clock and sleep injected so tests never sleep.
+    - [x] Step 3: The `extract` command
+        - [x] `extract(store, client, ...)`: for each article from `get_unextracted(limit)`: robots check, throttle, `fetch_html`, `extract_text_from_html`, `save_extraction`. A failing article never stops the others; one summary log line; no article text in logs.
+        - [x] `run()` and `main()`: env `NEWS_DB_PATH`, `NEWS_LOG_FILE` (default `logs/extract.log`), `EXTRACT_LIMIT` (default 100 per run, newest first); script `ai-news-extract`. Exit code 1 only if every article had to be retried.
+        - [x] Offline tests with an in-memory store and the saved page fixtures: saved, no text, failed, retried, robots, idempotent second run, limit, logs.
+    - [x] Step 4: Docs
+        - [x] `design.md` (row 3, scheduler sentence, rate limit and robots decision), `CLAUDE.md` commands, tick this list.
 
-- [ ] Second pipeline stage: find rows with no `text`, download the page with the project's own `httpx` client, run `trafilatura.extract`, update the row
-- trafilatura returns plain text by default (as far as I know), so no extra HTML parsing is needed. Check the current docs.
-- If extraction returns `None` (paywall, script-rendered page), fall back to the feed summary.
-- Extraction can fail or retry without affecting ingestion.
-- Check each publisher's terms and robots.txt, rate-limit requests, never scrape paywalled content.
-- Tests use saved HTML pages, not live sites.
 
-### 6. Baseline retrieval and eval harness (including chunking experiments)
+### 6. # RAG plan: retrieval over a frozen snapshot
+
+Goal: compare 3 chunking strategies x 2 retrievers on a small labelled question set, understand why the winner wins, and expose the best configuration as read-only tools for the agent.
+
+#### 1. Snapshot and corpus
+
+- [x] Copy the DB with SQLite's own backup command (safe while the scheduler writes; plain `cp` is not):
+  `sqlite3 data/news.db ".backup 'snapshots/news-2026-10-12.db'"`
+- [ ] Corpus = rows with `extraction_successful = 1` (1,319 of 1,329 today).
+- [ ] Hugging Face is 877 articles, about two thirds of the corpus. Keep only its newest N so its share is about 30-35% (N of 200-250 gives roughly 640-690 articles, about 4-5k chunks). Pick the cutoff date from the other sources' date range, so the corpus covers one time window.
+- [ ] Freeze the choice as a `corpus` table in the snapshot DB (or a committed `corpus_ids.txt`). Retrieval and eval read only that. Never delete rows from the live DB.
+- [ ] Record the cutoff and the reason in `design.md` (new decision).
+
+#### 2. Decisions
+
+| Choice | Pick | Why |
+|---|---|---|
+| Embedding model | `BAAI/bge-small-en-v1.5` (local, 384 dims, 512-token limit) | Free, reproducible, fast on a laptop for ~5k chunks, strong for its size. Use the query prefix `Represent this sentence for searching relevant passages: ` for questions, none for chunks. Normalise vectors. Lighter install: `fastembed` (ONNX, no torch). Optional second model later: `nomic-embed-text-v1.5` (8k context). |
+| Vector store | Chroma, persistent, one collection per chunking config | Metadata filters (source, date) for the agent tools, LangChain integration, no server. At ~5k vectors even exact numpy search would work; swap later if you like. Set cosine distance. |
+| Keyword retriever | `rank-bm25` (BM25Okapi) in memory, built from the chunk table | You control tokenisation. SQLite FTS5 is the alternative, but natural-language questions need escaping for its query syntax. |
+| Chunk size | 1,000 chars, 150 overlap for fixed and recursive | 512 tokens is about 2,000 chars, so chunks fit the model. Same size for both so only the splitting method differs. |
+
+The 512-token limit is why "whole article as one chunk" is not an arm: most of your articles are over 2,000 characters.
+
+#### 3. Storage layout
+
+Your proposal is right: one vector store, one relational store.
+
+- **SQLite (source of truth):** `articles` (text, metadata; already there) and a new `chunks` table: `chunk_id`, `article_id`, `config_id`, `chunk_index`, `text`. Keep the chunk text here; BM25 and the agent's answers read it from here.
+- **Chroma:** id = `chunk_id`, the embedding, and only the metadata needed to filter or trace back: `article_id`, `source`, `published_at` (as a number, so range filters work), `chunk_index`.
+- `config_id` names the chunker and its parameters (for example `recursive-1000-150`). Every experiment gets its own collection; nothing is overwritten.
+
+#### 4. Experiments
+
+Chunkers (same embedding model for all):
+
+0. **Fixed-size baseline:** character windows with overlap, no separators (LangChain `CharacterTextSplitter` with an empty separator, or about ten lines of your own).
+1. **Recursive:** `RecursiveCharacterTextSplitter` (paragraph, then line, sentence, word).
+2. **Semantic:** `SemanticChunker` (`langchain-experimental`), using the same embedding model. Set a minimum chunk size, re-split oversize chunks recursively, and try at most two threshold settings. Cache chunk lists to JSONL.
+
+Retrievers: **vector** (Chroma top-k) and **BM25** (top-k over the same chunks). That gives 3 x 2 = 6 configurations.
+
+Stretch: **hybrid** by reciprocal rank fusion (`score = sum 1/(60 + rank)` over both rankings). About 20 lines, and usually the best of the three.
+
+Stretch: prepend the article title to each chunk before embedding. One line, often a big gain for news.
+
+Report for every configuration: chunk count, mean/min/max chunk length, recall@1/3/5/10 and MRR.
+
+#### 5. Evaluation
+
+- 15-20 questions written by you (single fact, "what did X announce", two or more sources, recency, 2-3 with no answer in the corpus), drawn across sources, not in proportion to counts.
+- Gold = **article ids**, possibly several per question; a hit is any chunk of a gold article in the top k (article-level, so chunkers with different chunk counts compare fairly).
+- Write the questions before looking at any retrieval output, so you don't tune to them.
+- With 15-20 questions, one question is 5-7 points of recall. Treat differences of one or two questions as ties.
+- JSONL file in the repo, one line per question; the eval runner prints one table for all 6 configurations.
+
+#### 6. Issues (one parent, sub-issues, one PR each)
+
+1. Snapshot and corpus selection (`corpus` table, cutoff, design note)
+2. Chunkers and `chunks` table (3 chunkers, cached, with chunk statistics)
+3. Embeddings and Chroma index builder (`--config` flag)
+4. BM25 index
+5. `search(query, k, filters)` interface returning ranked chunks with article ids (this is what the agent tools will call)
+6. Eval set and runner
+7. Run the grid, read failures, write up in `design.md`
+
+### 7. Schedule
+
+- **Day 1:** issues 1-5 for fixed and recursive chunking; a working `search()`.
+- **Day 2:** eval questions and runner (the longest part, about 4-5 hours); semantic chunker arm; run the grid.
+- **Day 3 (buffer):** hybrid, read the failures, write-up. If Day 2 overruns, drop the stretch items first, never the eval.
+
+### 8. Watch-outs
+
+- Normalise embeddings and use one distance everywhere.
+- Print chunk-size distributions before trusting any semantic-chunking number.
+- Cache embeddings and chunk lists on disk; re-running is then seconds.
+- Keep the eval question file and the corpus snapshot out of any tuning loop.
+- After each stage: can you explain what you built and why, without the code open?
+
+## 7. Baseline retrieval and eval harness (including chunking experiments)
 - [ ] Ingest a few hundred articles
 - [ ] Write 30-50 questions myself, each labeled with the **article IDs** that answer them (article-level labels are far cheaper than chunk-level; a chunk hit maps to its parent article)
 - [ ] Simplest possible retriever (embeddings in memory, or BM25)
@@ -237,20 +311,20 @@ Order of work after issue #5 (Article model and RSS fetcher). Each step is its o
 - [ ] Make chunking a parameter and compare: whole article, fixed 256/512 tokens with overlap, paragraph-based. Metrics: recall@k and MRR.
 - Chunking cannot be evaluated without retrieval, so this comes first. News articles are short, so expect the strategies to differ less than you would think; do not spend days here.
 
-### 7. Near-duplicate detection (cut or simplify if time is short)
+### 8. Near-duplicate detection (cut or simplify if time is short)
 - [ ] Runs after extraction, since teasers are too short to compare reliably
 - Approaches: MinHash with LSH (`datasketch`) on 5-word shingles is the standard fit for republished wire copy; SimHash; embedding similarity (also catches paraphrases but merges different articles on the same topic).
 - Compare only against a recent window (a few days), not the whole table.
 - Hand-label about 50 pairs (duplicate or not) and choose the threshold from them.
 - Store `duplicate_of` on the row instead of deleting, so no information is lost.
 
-### 8. Story clustering (cut or simplify if time is short)
+### 9. Story clustering (cut or simplify if time is short)
 - [ ] `stories` table (id, title, first_seen, last_updated) and a `story_id` column on articles (one story has many articles; not just per-article metadata)
 - Online approach: embed title plus lead, assign to the nearest existing story within a time window (about 48 hours) above a similarity threshold, otherwise start a new story. Alternative: periodic batch clustering (agglomerative or HDBSCAN) over recent articles.
 - Treat assignments as derived data that can be recomputed, since stories merge and split over time.
 - Evaluate with a small hand-labeled set and pairwise precision and recall.
 
-### 9. I should look at LangGraph Deep Agents as well
+### 10. I should look at LangGraph Deep Agents as well
 - Just to see how I could make this agent more advanced.
 
 ### Housekeeping
