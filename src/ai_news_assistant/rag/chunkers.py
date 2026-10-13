@@ -1,7 +1,7 @@
 from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
 from transformers import AutoTokenizer
+from ai_news_assistant.rag.config import MODEL_NAME
 
-MODEL_NAME = "BAAI/bge-small-en-v1.5"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
 

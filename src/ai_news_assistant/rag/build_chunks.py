@@ -5,10 +5,7 @@ from pathlib import Path
 
 from ai_news_assistant.rag.chunkers import chunk_recursive, chunk_words, tokenizer
 from ai_news_assistant.rag.store import Chunk, RagStore
-
-DEFAULT_DB = Path("data/snapshots/news-2026-10-12.db")
-SIZE = 256
-OVERLAP = 32
+from ai_news_assistant.rag.config import DEFAULT_DB, CHUNKSIZE as SIZE, CHUNK_OVERLAP as OVERLAP
 
 # config_id -> chunker. The name carries the parameters
 # recursive-tok256-32, words-tok256-32
