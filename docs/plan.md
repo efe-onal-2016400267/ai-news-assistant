@@ -379,6 +379,17 @@ A function in `rag/` or `scripts/build_chunks.py` with a `--config` flag:
 - Tests, `uv run mypy src` and `uv run ruff check` pass.
 - Chunk stats for both configs are noted for `design.md`.
 
+# Retrieval Interface Issue
+- [ ] Embedding backend chosen: `sentence-transformers` (torch), with
+      `langchain-huggingface` for the LangChain wrapper
+    - [x] Dependencies added, lockfile committed
+    - [x] `sentence-transformers` is the most documented, widely used approach. Continue with it.
+    - [ ] Model loads and encodes a test sentence (384 dimensions, normalised)
+- [ ] Retriever interface in `rag/`
+    - [ ] `Hit` type: `chunk_id`, `article_id`, `score`, `text`
+    - [ ] `search(query, k) -> list[Hit]`, ranked best first, as a `Protocol`
+    - [ ] Short docstring saying what `score` means (and that scores from different retrievers are not comparable)
+
 ### 7. Schedule
 
 - **Day 1:** issues 1-5 for fixed and recursive chunking; a working `search()`.
