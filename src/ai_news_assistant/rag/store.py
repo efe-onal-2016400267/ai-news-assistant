@@ -46,6 +46,12 @@ WHERE config_id = ?
 ORDER BY article_id, chunk_index
 """
 
+_SELECT_ARTICLE = """
+SELECT id, title, source, published_at, text
+FROM articles
+WHERE id = ?
+"""
+
 
 @dataclass(frozen=True)
 class CorpusArticle:
@@ -91,6 +97,17 @@ class RagStore:
             self._conn.execute("DELETE FROM corpus")
             self._conn.executemany(_INSERT_CORPUS, [(i,) for i in ids])
         return len(ids)
+
+    def get_article(self, article_id: str) -> CorpusArticle:
+        """Return a single article by id."""
+        row = self._conn.execute(_SELECT_ARTICLE, (article_id,)).fetchone()
+        return CorpusArticle(
+            id=row["id"],
+            title=row["title"],
+            source=row["source"],
+            published_at=row["published_at"],
+            text=row["text"],
+        )
 
     def corpus_articles(self) -> list[CorpusArticle]:
         """Return the list of all articles in the corpus."""

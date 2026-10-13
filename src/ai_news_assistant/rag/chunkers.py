@@ -1,7 +1,7 @@
 from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter
 from transformers import AutoTokenizer
 
-from ai_news_assistant.rag.config import MODEL_NAME
+from ai_news_assistant.rag.config import EMBEDDING_MODEL as MODEL_NAME
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 

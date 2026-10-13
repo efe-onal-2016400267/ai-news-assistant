@@ -6,7 +6,13 @@ from pathlib import Path
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from ai_news_assistant.rag.config import DEFAULT_DB, DEFAULT_VECTOR_STORE, MODEL_NAME
+from ai_news_assistant.rag.config import (
+    DEFAULT_DB,
+    DEFAULT_VECTOR_STORE,
+)
+from ai_news_assistant.rag.config import (
+    EMBEDDING_MODEL as MODEL_NAME,
+)
 from ai_news_assistant.rag.store import Chunk, CorpusArticle, RagStore
 
 BATCH = 1000  # chunks per Chroma `add` call
