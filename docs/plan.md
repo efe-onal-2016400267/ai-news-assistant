@@ -384,11 +384,27 @@ A function in `rag/` or `scripts/build_chunks.py` with a `--config` flag:
       `langchain-huggingface` for the LangChain wrapper
     - [x] Dependencies added, lockfile committed
     - [x] `sentence-transformers` is the most documented, widely used approach. Continue with it.
-    - [ ] Model loads and encodes a test sentence (384 dimensions, normalised)
-- [ ] Retriever interface in `rag/`
-    - [ ] `Hit` type: `chunk_id`, `article_id`, `score`, `text`
-    - [ ] `search(query, k) -> list[Hit]`, ranked best first, as a `Protocol`
-    - [ ] Short docstring saying what `score` means (and that scores from different retrievers are not comparable)
+    - [x] Model loads and encodes a test sentence (384 dimensions, normalised)
+- [x] Retriever interface in `rag/`
+    - [x] `Hit` type: `chunk_id`, `article_id`, `score`, `text`
+    - [x] `search(query, k) -> list[Hit]`, ranked best first, as a `Protocol`
+    - [x] Short docstring saying what `score` means (and that scores from different retrievers are not comparable)
+
+# Vector Retriever Module
+
+- [x] Sanity-check the index. Query a collection with the text of one stored chunk. It should come back first with distance about 0. This confirms the cosine setting took effect.
+- [ ] Query prefix in config.py. Add BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: ". Queries only, never chunks.
+- [ ] VectorRetriever in its own module (for example rag/vector_retriever.py):
+    - [ ] init(vector_store, config_id) loads the SentenceTransformer once, opens the PersistentClient and gets the collection.
+    - [ ] search(query, k) embeds PREFIX + query with normalize_embeddings=True and calls collection.query(query_embeddings=[...], n_results=k).
+    - [ ] Returns Hits with score = 1 - distance, best first. Chroma returns nested lists (one per query), so take index [0].
+    - [ ] Handles an empty collection and k larger than the count without crashing.
+- [ ] Manual check with 5-10 hand-written queries, run on both configs side by side. Look at the top 3 hits and scores. Unrelated text already scores about 0.5 with BGE, so a score of 0.6 means little on its own.
+- [ ] Tests with a tiny fake corpus in tmp_path, skipped when the model is unavailable, as with the tokenizer tests. Check that the obvious chunk is the top hit, that k is respected, and that scores are in descending order.
+- [ ] Housekeeping.
+    - [ ] Check the Chroma directory is in .gitignore.
+    - [ ] Narrow the bare except Exception around delete_collection.
+    - [ ] chunkers.py and build_chunks.py import the shared constants from config.py.
 
 ### 7. Schedule
 
