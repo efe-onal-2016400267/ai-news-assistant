@@ -4,8 +4,10 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from ai_news_assistant.rag.chunkers import chunk_recursive, chunk_words, tokenizer
+from ai_news_assistant.rag.config import CHUNK_OVERLAP as OVERLAP
+from ai_news_assistant.rag.config import CHUNK_SIZE as SIZE
+from ai_news_assistant.rag.config import DEFAULT_DB
 from ai_news_assistant.rag.store import Chunk, RagStore
-from ai_news_assistant.rag.config import DEFAULT_DB, CHUNKSIZE as SIZE, CHUNK_OVERLAP as OVERLAP
 
 # config_id -> chunker. The name carries the parameters
 # recursive-tok256-32, words-tok256-32
