@@ -393,18 +393,30 @@ A function in `rag/` or `scripts/build_chunks.py` with a `--config` flag:
 # Vector Retriever Module
 
 - [x] Sanity-check the index. Query a collection with the text of one stored chunk. It should come back first with distance about 0. This confirms the cosine setting took effect.
-- [ ] Query prefix in config.py. Add BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: ". Queries only, never chunks.
-- [ ] VectorRetriever in its own module (for example rag/vector_retriever.py):
-    - [ ] init(vector_store, config_id) loads the SentenceTransformer once, opens the PersistentClient and gets the collection.
-    - [ ] search(query, k) embeds PREFIX + query with normalize_embeddings=True and calls collection.query(query_embeddings=[...], n_results=k).
-    - [ ] Returns Hits with score = 1 - distance, best first. Chroma returns nested lists (one per query), so take index [0].
-    - [ ] Handles an empty collection and k larger than the count without crashing.
-- [ ] Manual check with 5-10 hand-written queries, run on both configs side by side. Look at the top 3 hits and scores. Unrelated text already scores about 0.5 with BGE, so a score of 0.6 means little on its own.
-- [ ] Tests with a tiny fake corpus in tmp_path, skipped when the model is unavailable, as with the tokenizer tests. Check that the obvious chunk is the top hit, that k is respected, and that scores are in descending order.
-- [ ] Housekeeping.
-    - [ ] Check the Chroma directory is in .gitignore.
+- [x] Query prefix in config.py. Add BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: ". Queries only, never chunks.
+- [x] VectorRetriever in its own module (for example rag/vector_retriever.py):
+    - [x] init(vector_store, config_id) loads the SentenceTransformer once, opens the PersistentClient and gets the collection.
+    - [x] search(query, k) embeds PREFIX + query with normalize_embeddings=True and calls collection.query(query_embeddings=[...], n_results=k).
+    - [x] Returns Hits with score = 1 - distance, best first. Chroma returns nested lists (one per query), so take index [0].
+    - [x] Handles an empty collection and k larger than the count without crashing.
+- [x] Manual check with 5-10 hand-written queries, run on both configs side by side. Look at the top 3 hits and scores. Unrelated text already scores about 0.5 with BGE, so a score of 0.6 means little on its own.
+- [x] Tests with a tiny fake corpus in tmp_path, skipped when the model is unavailable, as with the tokenizer tests. Check that the obvious chunk is the top hit, that k is respected, and that scores are in descending order.
+- [x] Housekeeping.
+    - [x] Check the Chroma directory is in .gitignore.
     - [ ] Narrow the bare except Exception around delete_collection.
     - [ ] chunkers.py and build_chunks.py import the shared constants from config.py.
+
+
+# Eval
+- [x] Finish the eval file.
+     - [x] Add the one or two no-answer questions and 3–5 questions from new topics. Take the new ones from articles outside the Mistral, Haiku and Leanstral clusters.
+     - [x] Move it to eval/questions.jsonl with stale and evidence fields.
+
+- [x] Turn the loop into a runner.
+     - [x] A function in the repo that takes a retriever and the questions and returns per-question results, with printing in a separate step.
+     - [x] Metrics: recall@5 and recall@10, the best rank of a gold article at k=50, and the stale-hit rate.
+     - [x] A small test of the metric functions on fake hits (no model needed), including the empty-gold case.
+     - [x] Write the results table to a file, so each run is comparable.
 
 ### 7. Schedule
 
