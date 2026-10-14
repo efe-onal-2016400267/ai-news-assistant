@@ -8,6 +8,7 @@ from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.bm25_retriever import BM25Retriever
 from ai_news_assistant.rag.config import DEFAULT_DB, DEFAULT_VECTOR_STORE, EVAL_RESULT_DIR
 from ai_news_assistant.rag.eval.question_list import QueryConfs, query_confs
+from ai_news_assistant.rag.hybrid_retriever import HybridRetriever
 from ai_news_assistant.rag.vector_retriever import VectorRetriever
 
 RECALL_THS = (5, 10)  # We will report Recall@5, Recall@10
@@ -113,6 +114,12 @@ def main() -> None:
         retrievers: dict[str, Retriever] = {
             "vector": VectorRetriever(vector_store=DEFAULT_VECTOR_STORE, config_id=config_id),
             "bm25": BM25Retriever(db=DEFAULT_DB, config_id=config_id),
+            f"hybrid_{config_id}": HybridRetriever(
+                retrievers=[
+                    VectorRetriever(vector_store=DEFAULT_VECTOR_STORE, config_id=config_id),
+                    BM25Retriever(db=DEFAULT_DB, config_id=config_id),
+                ]
+            ),
         }
         for name, retriever in retrievers.items():
             rows = run_eval(retriever, query_confs)
