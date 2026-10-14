@@ -48,7 +48,7 @@ select = ["E", "F", "I", "UP", "B"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["feedparser", "feedparser.*"]
+module = ["feedparser", "feedparser.*", "rank_bm25"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
