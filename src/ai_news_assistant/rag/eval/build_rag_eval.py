@@ -5,7 +5,8 @@ from statistics import mean
 from typing import Any
 
 from ai_news_assistant.rag.base import Retriever
-from ai_news_assistant.rag.config import DEFAULT_VECTOR_STORE, EVAL_RESULT_DIR
+from ai_news_assistant.rag.bm25_retriever import BM25Retriever
+from ai_news_assistant.rag.config import DEFAULT_DB, DEFAULT_VECTOR_STORE, EVAL_RESULT_DIR
 from ai_news_assistant.rag.eval.question_list import QueryConfs, query_confs
 from ai_news_assistant.rag.vector_retriever import VectorRetriever
 
@@ -109,11 +110,15 @@ def print_summary(rows: list[dict[str, Any]], config_id: str) -> None:
 
 def main() -> None:
     for config_id in query_confs["config_ids"]:
-        retriever = VectorRetriever(vector_store=DEFAULT_VECTOR_STORE, config_id=config_id)
-        rows = run_eval(retriever, query_confs)
-        print_summary(rows, config_id)
-        path = write_results(rows, EVAL_RESULT_DIR, retriever_name="vector", config_id=config_id)
-        print(f"Wrote {path}\n")
+        retrievers: dict[str, Retriever] = {
+            "vector": VectorRetriever(vector_store=DEFAULT_VECTOR_STORE, config_id=config_id),
+            "bm25": BM25Retriever(db=DEFAULT_DB, config_id=config_id),
+        }
+        for name, retriever in retrievers.items():
+            rows = run_eval(retriever, query_confs)
+            print_summary(rows, f"{name} / {config_id}")
+            path = write_results(rows, EVAL_RESULT_DIR, retriever_name=name, config_id=config_id)
+            print(f"Wrote {path}\n")
 
 
 if __name__ == "__main__":
