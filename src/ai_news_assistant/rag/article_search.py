@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.store import RagStore
+from pathlib import Path
 
 MAX_CHUNKS_PER_ARTICLE = 3
 OVERFETCH = 3  # chunks repeat articles, so ask for more chunks than articles wanted
@@ -18,7 +19,7 @@ class ArticleSnippet:
 
 
 def search_articles(
-    retriever: Retriever, store: RagStore, query: str, k: int
+    retriever: Retriever, store_path: Path, query: str, k: int
 ) -> list[ArticleSnippet]:
     """Searches the articles and returns the ArticleSnippet.
 
@@ -40,7 +41,8 @@ def search_articles(
 
     snippets: list[ArticleSnippet] = []
     for article_id, texts in list(texts_by_article.items())[:k]:
-        article = store.get_article(article_id)
+        with RagStore(path=store_path) as store:
+            article = store.get_article(article_id)
         snippets.append(
             ArticleSnippet(
                 article_id=article_id,
