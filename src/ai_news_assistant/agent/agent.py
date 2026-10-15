@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.config import CHAT_MODEL
-from ai_news_assistant.agent.propmts import SYSTEM_PROMPT
+from ai_news_assistant.agent.prompts import SYSTEM_PROMPT
 from ai_news_assistant.agent.tools import create_search_tool
 from ai_news_assistant.rag.bm25_retriever import BM25Retriever
 from ai_news_assistant.rag.config import (
