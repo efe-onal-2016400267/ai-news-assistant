@@ -1,9 +1,9 @@
 from typing import Any
 
-from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain.messages import HumanMessage
 from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.config import CHAT_MODEL
@@ -38,17 +38,16 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
         ),
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
+        checkpointer=InMemorySaver(),
     )
-
-
-load_dotenv()
 
 
 def main() -> None:
     agent = build_agent()
-    # config = {"configurable": {"thread_id": "efe_1"}}
+    thread_config = {"configurable": {"thread_id": "efe_1"}}
     result = agent.invoke(
-        {"messages": [HumanMessage(content="What does new OpenAI personal agent do?")]}
+        {"messages": [HumanMessage(content="What does new OpenAI personal agent do?")]},
+        config=thread_config,
     )
     for message in result["messages"]:
         message.pretty_print()
