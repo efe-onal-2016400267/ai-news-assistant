@@ -101,6 +101,8 @@ class RagStore:
     def get_article(self, article_id: str) -> CorpusArticle:
         """Return a single article by id."""
         row = self._conn.execute(_SELECT_ARTICLE, (article_id,)).fetchone()
+        if row is None:
+            raise KeyError(f"No article with id {article_id!r}")
         return CorpusArticle(
             id=row["id"],
             title=row["title"],
