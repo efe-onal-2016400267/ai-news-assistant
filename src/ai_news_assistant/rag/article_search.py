@@ -1,8 +1,8 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.store import RagStore
-from pathlib import Path
 
 MAX_CHUNKS_PER_ARTICLE = 3
 OVERFETCH = 3  # chunks repeat articles, so ask for more chunks than articles wanted

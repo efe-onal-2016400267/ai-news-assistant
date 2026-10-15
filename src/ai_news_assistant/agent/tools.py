@@ -1,14 +1,12 @@
 from dataclasses import asdict
+from pathlib import Path
 from typing import Any
 
 from langchain.tools import BaseTool, tool
 
 from ai_news_assistant.rag.article_search import search_articles
 from ai_news_assistant.rag.base import Retriever
-from ai_news_assistant.rag.store import RagStore
 from ai_news_assistant.rag.config import DEFAULT_DB
-from langchain.messages import AnyMessage
-from pathlib import Path
 
 MAX_K = 10
 
@@ -30,17 +28,17 @@ def create_search_tool(retriever: Retriever, store_path: Path) -> BaseTool:
         """
         k = max(1, min(k, MAX_K))
         return [
-            asdict(s) for s in search_articles(retriever=retriever, store_path=DEFAULT_DB, query=query, k=k)
+            asdict(s)
+            for s in search_articles(retriever=retriever, store_path=store_path, query=query, k=k)
         ]
 
     return search_news
 
 
-def main() -> list[AnyMessage]:
+def main() -> list[dict[str, Any]]:
     from ai_news_assistant.rag.bm25_retriever import BM25Retriever
     from ai_news_assistant.rag.config import (
         DEFAULT_CHUNKING_CONFIG,
-        DEFAULT_DB,
         DEFAULT_VECTOR_STORE,
     )
     from ai_news_assistant.rag.hybrid_retriever import HybridRetriever
@@ -50,15 +48,15 @@ def main() -> list[AnyMessage]:
         vector_store=DEFAULT_VECTOR_STORE, config_id=DEFAULT_CHUNKING_CONFIG
     )
     bm25_retriever = BM25Retriever(DEFAULT_DB, DEFAULT_CHUNKING_CONFIG)
-    store = RagStore(DEFAULT_DB)
 
     retriever = HybridRetriever(retrievers=[vector_retriever, bm25_retriever])
-    return create_search_tool(retriever=retriever, store_path=DEFAULT_VECTOR_STORE).invoke(
+    tool = create_search_tool(retriever=retriever, store_path=DEFAULT_DB)
+    articles: list[dict[str, Any]] = tool.invoke(
         input={"query": "What did Mistral announce about their new Large model?", "k": 5}
     )
+    return articles
 
 
 if __name__ == "__main__":
     results = main()
-    for message in results:
-        message.pretty_print()
+    print(results)

@@ -1,1 +1,1 @@
-CHAT_MODEL="gpt-6-luna"
+CHAT_MODEL = "gpt-6-luna"
