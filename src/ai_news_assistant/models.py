@@ -48,4 +48,4 @@ class Answer(BaseModel):
 
     text: str
     sources: list[Source] = Field(default_factory=list)
-    grouded: bool
+    grounded: bool
