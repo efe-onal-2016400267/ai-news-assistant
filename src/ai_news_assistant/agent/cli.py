@@ -9,10 +9,10 @@ from ai_news_assistant.agent.agent import build_agent
 
 
 def print_result_messages(results: dict[str, Any]) -> None:
-    print(f"------------------ DEBUG MESSAGES PRINT STARTS ------------------")
+    print("------------------ DEBUG MESSAGES PRINT STARTS ------------------")
     for message in results["messages"]:
         message.pretty_print()
-    print(f"------------------ DEBUG MESSAGES PRINT ENDS ------------------")
+    print("------------------ DEBUG MESSAGES PRINT ENDS ------------------")
 
 
 def main() -> None:

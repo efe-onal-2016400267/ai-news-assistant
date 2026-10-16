@@ -8,7 +8,7 @@ from langchain.tools import BaseTool, tool
 from ai_news_assistant.rag.article_search import search_articles
 from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.config import DEFAULT_DB
-from ai_news_assistant.rag.store import CorpusArticle, RagStore
+from ai_news_assistant.rag.store import RagStore
 
 MAX_K = 10
 MAX_ARTICLE_CHARS = 12_000  # keeps one long article from filling the context window
@@ -53,6 +53,7 @@ def create_search_tool(retriever: Retriever, store_path: Path) -> BaseTool:
 
     return search_news
 
+
 # Get single article tool
 def create_get_article_tool(store_path: Path) -> BaseTool:
     @tool
@@ -60,7 +61,7 @@ def create_get_article_tool(store_path: Path) -> BaseTool:
         """Get a single news article from the database by `article_id`.
 
         Use this when retrieved chunks are about the query but more context,
-        hence the full article, is needed before answering a question. 
+        hence the full article, is needed before answering a question.
         `search_news` returns article id for each retrieved chunk. When you cannot
         answer a question from the retrived chunk texts, you can use this tool to
         get the full article text. Use it on one article at a time, once you find the
@@ -82,7 +83,7 @@ def create_get_article_tool(store_path: Path) -> BaseTool:
             return {
                 "article_id": article_id,
                 "error": f"No article with id {article_id!r}. "
-                "Use an article_id returned by search_news."
+                "Use an article_id returned by search_news.",
             }
 
         return {
@@ -93,8 +94,8 @@ def create_get_article_tool(store_path: Path) -> BaseTool:
             "text": frame_article_text(article.text[:MAX_ARTICLE_CHARS]),
             "truncated": len(article.text) > MAX_ARTICLE_CHARS,
         }
-    return get_article
 
+    return get_article
 
 
 def main() -> list[dict[str, Any]]:
