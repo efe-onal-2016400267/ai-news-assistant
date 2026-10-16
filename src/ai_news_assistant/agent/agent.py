@@ -9,7 +9,7 @@ from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.config import CHAT_MODEL
 from ai_news_assistant.agent.prompts import SYSTEM_PROMPT
-from ai_news_assistant.agent.tools import create_search_tool
+from ai_news_assistant.agent.tools import create_search_tool, create_get_article_tool
 from ai_news_assistant.rag.bm25_retriever import BM25Retriever
 from ai_news_assistant.rag.config import (
     DEFAULT_CHUNKING_CONFIG,
@@ -30,7 +30,10 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
 
     retriever = HybridRetriever([vector_retriever, bm25_retriever])
 
-    tools = [create_search_tool(retriever=retriever, store_path=DEFAULT_DB)]
+    tools = [
+            create_search_tool(retriever=retriever, store_path=DEFAULT_DB),
+            create_get_article_tool(store_path=DEFAULT_DB),
+             ]
 
     return create_agent(
         model=ChatOpenAI(
