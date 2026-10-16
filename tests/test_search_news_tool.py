@@ -6,7 +6,12 @@ from conftest import CORPUS
 from langchain.tools import BaseTool
 
 from ai_news_assistant.agent.tools import MAX_K, create_search_tool
-from ai_news_assistant.rag.article_search import MAX_CHUNKS_PER_ARTICLE, OVERFETCH, SEPARATOR
+from ai_news_assistant.rag.article_search import (
+    MAX_CHUNKS_PER_ARTICLE,
+    OVERFETCH,
+    SEPARATOR,
+    search_articles,
+)
 from ai_news_assistant.rag.base import Hit
 from ai_news_assistant.rag.store import RagStore
 
@@ -94,31 +99,52 @@ def test_k_is_capped_at_max(rag_db: Path) -> None:
     assert retriever.calls == [(QUERY, MAX_K * OVERFETCH)]
 
 
-@pytest.mark.parametrize("k", [0, -3])
-def test_k_below_one_becomes_one(rag_db: Path, k: int) -> None:
+@pytest.mark.parametrize("k", [4, 1, 0, -3])
+def test_k_below_minimum_is_raised_to_5(rag_db: Path, k: int) -> None:
     tool, retriever = make_tool(rag_db, ONE_HIT_EACH)
 
     results = run(tool, k=k)
 
-    assert retriever.calls == [(QUERY, 1 * OVERFETCH)]
-    assert [r["article_id"] for r in results] == ["ai-act"]
+    # 5 articles wanted * OVERFETCH 3 = 15 chunks asked of the retriever
+    assert retriever.calls == [(QUERY, 15)]
+    # Only 4 articles exist, so all of them come back, in ranking order.
+    assert [r["article_id"] for r in results] == list(CORPUS)
+
+
+def test_k_in_range_is_passed_through(rag_db: Path) -> None:
+    tool, retriever = make_tool(rag_db, ONE_HIT_EACH)
+
+    run(tool, k=7)
+
+    # 7 * OVERFETCH 3 = 21
+    assert retriever.calls == [(QUERY, 21)]
+
+
+@pytest.mark.parametrize(("k", "chunks_asked"), [(5, 15), (MAX_K, MAX_K * OVERFETCH)])
+def test_k_at_bounds_is_kept(rag_db: Path, k: int, chunks_asked: int) -> None:
+    tool, retriever = make_tool(rag_db, ONE_HIT_EACH)
+
+    run(tool, k=k)
+
+    assert retriever.calls == [(QUERY, chunks_asked)]
 
 
 def test_k_limits_number_of_articles(rag_db: Path) -> None:
-    tool, _ = make_tool(rag_db, ONE_HIT_EACH)
+    # Called directly: the tool never asks for fewer than 5 articles, and the fixture has 4.
+    retriever = FakeRetriever(ONE_HIT_EACH)
 
-    results = run(tool, k=2)
+    results = search_articles(retriever=retriever, store_path=rag_db, query=QUERY, k=2)
 
-    assert [r["article_id"] for r in results] == ["ai-act", "iphone"]
+    assert [r.article_id for r in results] == ["ai-act", "iphone"]
 
 
 def test_query_is_passed_through(rag_db: Path) -> None:
     tool, retriever = make_tool(rag_db, [])
     query = "What did Mistral announce about Large 3?"
 
-    tool.invoke({"query": query, "k": 2})
+    tool.invoke({"query": query})
 
-    assert retriever.calls == [(query, 2 * OVERFETCH)]
+    assert retriever.calls == [(query, 5 * OVERFETCH)]
 
 
 def test_no_hits_returns_empty_list(rag_db: Path) -> None:
