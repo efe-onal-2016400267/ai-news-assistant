@@ -2,6 +2,7 @@ import uuid
 
 from dotenv import load_dotenv
 from langchain.messages import HumanMessage
+from langchain_core.runnables import RunnableConfig
 
 from ai_news_assistant.agent.agent import build_agent
 
@@ -9,7 +10,7 @@ from ai_news_assistant.agent.agent import build_agent
 def main() -> None:
     load_dotenv()
     agent = build_agent()
-    config = {"configurable": {"thread_id": str(uuid.uuid4())}}
+    config: RunnableConfig = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
     print("News assistant. Type 'exit' to quit.")
     while True:

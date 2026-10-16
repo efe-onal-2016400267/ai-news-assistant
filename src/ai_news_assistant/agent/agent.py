@@ -2,6 +2,7 @@ from typing import Any
 
 from langchain.agents import create_agent
 from langchain.messages import HumanMessage
+from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.state import CompiledStateGraph
@@ -44,7 +45,7 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
 
 def main() -> None:
     agent = build_agent()
-    thread_config = {"configurable": {"thread_id": "efe_1"}}
+    thread_config: RunnableConfig = {"configurable": {"thread_id": "efe_1"}}
     result = agent.invoke(
         {"messages": [HumanMessage(content="What does new OpenAI personal agent do?")]},
         config=thread_config,
