@@ -25,3 +25,27 @@ class Article(BaseModel):
         if self.extraction_successful is True and (self.text is None or not self.text.strip()):
             raise ValueError("non-empty text is required when extraction_successful is True")
         return self
+
+
+# Citation models
+# Source and Answer will deterministically validate model output
+# before creating the actual citation.
+NonEmptyStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
+
+class Source(BaseModel):
+    """One entry in the Sources block, filled from the store (never by the model)."""
+
+    marker: int = Field(ge=1)  # the [n] in the answer text this source backs
+    article_id: NonEmptyStr  # internal only; render() will never print it
+    title: NonEmptyStr
+    source: str  # e.g. Ars Technica
+    published_at: AwareDatetime | None = None
+
+
+class Answer(BaseModel):
+    """The checked answer that the CLI, API, and evals receive."""
+
+    text: str
+    sources: list[Source] = Field(default_factory=list)
+    grouded: bool
