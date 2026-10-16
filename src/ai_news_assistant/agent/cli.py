@@ -33,7 +33,7 @@ def main() -> None:
 
         result = agent.invoke({"messages": [HumanMessage(content=question)]}, config=config)
         print_result_messages(result)
-        print(f"\nAssistant> {result['messages'][-1].content}")
+        print(f"\nAssistant> {result['messages'][-1].text}")
 
 
 if __name__ == "__main__":

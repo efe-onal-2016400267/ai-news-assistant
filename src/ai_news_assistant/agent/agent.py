@@ -37,8 +37,8 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
 
     return create_agent(
         model=ChatOpenAI(
-            name=CHAT_MODEL,
-            temperature=0,
+            model=CHAT_MODEL,
+            reasoning={"effort": "medium"},
         ),
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
