@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.state import CompiledStateGraph
 
+from ai_news_assistant.agent.answer import ModelAnswer
 from ai_news_assistant.agent.config import CHAT_MODEL
 from ai_news_assistant.agent.prompts import SYSTEM_PROMPT
 from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
@@ -43,6 +44,7 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
         checkpointer=InMemorySaver(),
+        response_format=ModelAnswer,
     )
 
 
