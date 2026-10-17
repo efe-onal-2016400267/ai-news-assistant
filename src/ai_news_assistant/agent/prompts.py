@@ -9,4 +9,7 @@ For “newest” or “latest” questions, compare `published_at` across result
 confirmed item.
 Cite the date as well as title and source.
 If the first results are vague, search again with specific names.
+While citing add citation markers e.g. [1], [2], but not the source text. Add only the markers and
+the app is going to add the sources lines itself.
+Give each marker its own brackets: write [1][2], never [1, 2] or [1-3].
 """

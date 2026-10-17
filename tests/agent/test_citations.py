@@ -4,7 +4,8 @@ from typing import Any
 from langchain.tools import BaseTool
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, ToolMessage
 
-from ai_news_assistant.agent.citations import retrieved_ids
+from ai_news_assistant.agent.answer import ModelAnswer
+from ai_news_assistant.agent.citations import CheckedCitations, check_citations, retrieved_ids
 from ai_news_assistant.agent.config import CITATION_TOOLS
 from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
 from ai_news_assistant.rag.base import Hit
@@ -147,3 +148,143 @@ def test_citation_tools_match_real_tool_names(rag_db: Path) -> None:
     article_tool = create_get_article_tool(store_path=rag_db)
 
     assert set(CITATION_TOOLS) == {search_tool.name, article_tool.name}
+
+
+# check_citations
+
+
+def check(text: str, citations: list[str], retrieved: set[str]) -> CheckedCitations:
+    answer = ModelAnswer(text=text, citations=citations, grounded=True)
+    return check_citations(answer, retrieved)
+
+
+def test_all_markers_valid_text_unchanged() -> None:
+    result = check("A [1]. B [2].", ["a", "b"], {"a", "b"})
+
+    assert result == CheckedCitations(
+        clean_text="A [1]. B [2].",
+        valid_citations={1: "a", 2: "b"},
+        dropped_ids=[],
+        dropped_markers=[],
+    )
+
+
+def test_mixed_answer_hand_checked() -> None:
+    # citations: [1] -> a (retrieved, used: kept), [2] -> x (not retrieved: dropped),
+    # [3] -> b (retrieved, used: kept); [4] has no entry (out of range: removed).
+    result = check("A [1]. B [2]. C [3]. D [4].", ["a", "x", "b"], {"a", "b"})
+
+    assert result.clean_text == "A [1]. B. C [3]. D."
+    assert result.valid_citations == {1: "a", 3: "b"}
+    assert result.dropped_ids == ["x"]
+    assert result.dropped_markers == [2, 4]
+
+
+def test_marker_beyond_citations_removed() -> None:
+    result = check("A [1]. B [3].", ["a", "b"], {"a", "b"})
+
+    assert result.clean_text == "A [1]. B."
+    assert result.valid_citations == {1: "a"}
+    assert result.dropped_ids == []  # no id behind [3]; [2] -> b is simply unused
+    assert result.dropped_markers == [3]
+
+
+def test_unretrieved_id_marker_removed_and_id_dropped() -> None:
+    result = check("Invented claim [1].", ["made-up"], {"a"})
+
+    assert result.clean_text == "Invented claim."
+    assert result.valid_citations == {}
+    assert result.dropped_ids == ["made-up"]
+    assert result.dropped_markers == [1]
+
+
+def test_retrieved_citation_without_marker_not_valid_not_dropped() -> None:
+    result = check("Only one claim [1].", ["a", "b"], {"a", "b"})
+
+    assert result.valid_citations == {1: "a"}
+    assert result.dropped_ids == []
+    assert result.dropped_markers == []
+
+
+def test_same_marker_twice_gives_one_entry() -> None:
+    result = check("A [1]. Again [1].", ["a"], {"a"})
+
+    assert result.clean_text == "A [1]. Again [1]."
+    assert result.valid_citations == {1: "a"}
+
+
+def test_same_bad_marker_twice_reported_once() -> None:
+    result = check("A [2]. Again [2].", ["a"], {"a"})
+
+    assert result.clean_text == "A. Again."
+    assert result.dropped_markers == [2]
+
+
+def test_no_markers_no_citations_unchanged() -> None:
+    result = check("I do not know.", [], {"a"})
+
+    assert result == CheckedCitations(
+        clean_text="I do not know.", valid_citations={}, dropped_ids=[], dropped_markers=[]
+    )
+
+
+def test_marker_zero_removed() -> None:
+    result = check("A [0]. B [1].", ["a"], {"a"})
+
+    assert result.clean_text == "A. B [1]."
+    assert result.dropped_markers == [0]
+
+
+def test_numbers_not_renumbered() -> None:
+    result = check("A [1]. B [2]. C [3].", ["a", "x", "c"], {"a", "c"})
+
+    assert result.clean_text == "A [1]. B. C [3]."
+    assert sorted(result.valid_citations) == [1, 3]
+
+
+def test_unretrieved_id_dropped_even_without_marker() -> None:
+    result = check("A [1].", ["a", "x"], {"a"})
+
+    assert result.clean_text == "A [1]."
+    assert result.dropped_ids == ["x"]
+    assert result.dropped_markers == []
+
+
+def test_empty_retrieved_drops_everything_in_citation_order() -> None:
+    result = check("A [2]. B [1].", ["first", "second"], set())
+
+    assert result.clean_text == "A. B."
+    assert result.valid_citations == {}
+    assert result.dropped_ids == ["first", "second"]
+    assert result.dropped_markers == [1, 2]
+
+
+def test_removed_marker_takes_its_spaces_but_not_newlines() -> None:
+    result = check("Line one  \t[2]\nLine two [1].", ["a"], {"a"})
+
+    assert result.clean_text == "Line one\nLine two [1]."
+
+
+def test_kept_marker_keeps_its_space() -> None:
+    result = check("Claim [1] and more.", ["a"], {"a"})
+
+    assert result.clean_text == "Claim [1] and more."
+
+
+def test_non_marker_brackets_kept() -> None:
+    # Known gap: only [n] is a marker. The prompt asks for [1][2], never [1, 2] or [1-3].
+    text = "See [a], [ 1 ] and [1, 2] or [1-3]."
+
+    result = check(text, ["a"], {"a"})
+
+    assert result.clean_text == text
+    assert result.valid_citations == {}
+    assert result.dropped_markers == []
+
+
+def test_adjacent_markers_checked_separately() -> None:
+    result = check("Claim [1][2].", ["a", "x"], {"a"})
+
+    assert result.clean_text == "Claim [1]."
+    assert result.valid_citations == {1: "a"}
+    assert result.dropped_markers == [2]

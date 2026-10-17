@@ -1,9 +1,25 @@
 import json
+import re
+from dataclasses import dataclass
 from typing import Any
 
 from langchain_core.messages import AnyMessage, ToolMessage
 
+from ai_news_assistant.agent.answer import ModelAnswer
 from ai_news_assistant.agent.config import CITATION_TOOLS
+
+MARKER = re.compile(r"\[(\d+)\]")
+# A marker plus the spaces before it, so removing "[2]" from "B [2]." gives "B.".
+# Only spaces and tabs: a removed marker never joins two lines.
+MARKER_WITH_SPACE = re.compile(r"[ \t]*\[(\d+)\]")
+
+
+@dataclass(frozen=True)
+class CheckedCitations:
+    clean_text: str  # Text after dropped ids are cleaned
+    valid_citations: dict[int, str]  # marker number: article id
+    dropped_ids: list[str]  # dropped ids due to made up citations
+    dropped_markers: list[int]  # marker numbers removed from the text, sorted, each once
 
 
 def retrieved_ids(messages: list[AnyMessage]) -> set[str]:
@@ -26,3 +42,39 @@ def retrieved_ids(messages: list[AnyMessage]) -> set[str]:
                 article_ids.add(item["article_id"])
 
     return article_ids
+
+
+def check_citations(model_answer: ModelAnswer, retrieved: set[str]) -> CheckedCitations:
+    """Check the citations in the answer against retrieved_ids at tools.
+
+    Return a CheckedCitations object with cleaned text, valid citations, and dropped ones.
+    """
+
+    # Get used marker numbers from the text.
+    # First go through the citations enumerating them
+    # For each citation check if its in the retrieved_ids
+    # If so check if the index was used as a marker
+    # If so, keep the citation in valid dict
+    # If not, add article_id to dropped.
+
+    used = [int(n) for n in MARKER.findall(model_answer.text)]
+    valid: dict[int, str] = {}
+    dropped: list[str] = []
+    for i, article_id in enumerate(model_answer.citations, start=1):
+        if article_id in retrieved:
+            if i in used:
+                valid[i] = article_id
+        else:
+            dropped.append(article_id)
+    text = MARKER_WITH_SPACE.sub(
+        lambda m: m.group(0) if int(m.group(1)) in valid else "", model_answer.text
+    )
+    # Out of range and unretrieved markers alike.
+    dropped_markers = sorted({n for n in used if n not in valid})
+
+    return CheckedCitations(
+        clean_text=text,
+        valid_citations=valid,
+        dropped_ids=dropped,
+        dropped_markers=dropped_markers,
+    )
