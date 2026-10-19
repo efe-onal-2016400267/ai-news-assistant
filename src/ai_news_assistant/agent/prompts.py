@@ -31,4 +31,5 @@ dates, use the oldest date. While merging, generate a new comprehensive title.
 - Say the period you covered, for example "as of 12 Oct, the last 7 days".
 - If the list is empty, say that no articles were found for that period.
 - Use the `date` returned by the tool as is.
+- Don't leave out any events.
 """
