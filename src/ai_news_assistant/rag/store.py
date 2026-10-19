@@ -207,9 +207,10 @@ class RagStore:
         return [row["config_id"] for row in rows]
 
     def newest_publish_date(self) -> str | None:
-        """Get the latest published_at from the corpus."""
+        """Get the latest published_at from the corpus, or None if no article has a date."""
         row = self._conn.execute(_NEWEST_PUBLISH_DATE).fetchone()
-        return str(row["published_at"])
+        published_at: str | None = row["published_at"]
+        return published_at
 
     def close(self) -> None:
         self._conn.close()

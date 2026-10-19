@@ -26,6 +26,8 @@ IPHONE = Source(marker=2, article_id="iphone", title="Title of iphone", source="
 # 2026-10-10 09:30 UTC -> "10 Oct 2026"; no date -> "Date not found".
 EXPECTED = (
     "The AI Act passed [1]. A new iPhone [2].\n"
+    "\n"
+    "**Sources:**\n"
     "[1]: Title of ai-act, Guardian, 10 Oct 2026\n"
     "[2]: Title of iphone, Verge, Date not found\n"
 )
@@ -60,8 +62,9 @@ def test_render_keeps_marker_gap() -> None:
 
     lines = render(answer([AI_ACT, third], text="A [1]. C [3].")).splitlines()
 
-    assert lines[1].startswith("[1]: ")
-    assert lines[2].startswith("[3]: ")
+    # lines: text, blank, "**Sources:**", then one line per source
+    assert lines[3].startswith("[1]: ")
+    assert lines[4].startswith("[3]: ")
 
 
 def test_render_end_to_end_with_store(rag_db: Path) -> None:

@@ -13,6 +13,7 @@ from ai_news_assistant.rag.config import DEFAULT_DB
 from ai_news_assistant.rag.store import RagStore
 
 MAX_K = 10
+MAX_DAYS = 30
 MAX_ARTICLE_CHARS = 12_000  # keeps one long article from filling the context window
 
 ARTICLE_OPEN = "<article_text>"
@@ -116,8 +117,12 @@ def create_get_latest_articles_tool(store_path: Path) -> BaseTool:
         Returns title, source, published date and a short teaser for each article.
         Returns an empty list if nothing was published in that period.
         """
+        days = max(1, min(days, MAX_DAYS))
         with RagStore(store_path) as store:
-            as_of = datetime.fromisoformat(str(store.newest_publish_date()))
+            newest = store.newest_publish_date()
+            if newest is None:
+                return []
+            as_of = datetime.fromisoformat(newest)
             cutoff = as_of - timedelta(days=days)
             articles = store.get_articles_since(cutoff, 100)
         return [

@@ -13,7 +13,11 @@ from ai_news_assistant.agent.citations import (
     retrieved_ids,
 )
 from ai_news_assistant.agent.config import CITATION_TOOLS
-from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
+from ai_news_assistant.agent.tools import (
+    create_get_article_tool,
+    create_get_latest_articles_tool,
+    create_search_tool,
+)
 from ai_news_assistant.models import ModelAnswer, Source
 from ai_news_assistant.rag.base import Hit
 
@@ -153,8 +157,16 @@ def test_items_without_article_id_or_not_dicts_are_skipped() -> None:
 def test_citation_tools_match_real_tool_names(rag_db: Path) -> None:
     search_tool = create_search_tool(retriever=FakeRetriever([]), store_path=rag_db)
     article_tool = create_get_article_tool(store_path=rag_db)
+    latest_tool = create_get_latest_articles_tool(store_path=rag_db)
 
-    assert set(CITATION_TOOLS) == {search_tool.name, article_tool.name}
+    assert set(CITATION_TOOLS) == {search_tool.name, article_tool.name, latest_tool.name}
+
+
+def test_latest_articles_give_their_ids(rag_db: Path) -> None:
+    message = call(create_get_latest_articles_tool(store_path=rag_db), {"days": 2})
+
+    # Newest corpus date 10-10 09:30, minus 2 days: ai-act and robotics (iphone has no date).
+    assert retrieved_ids([message]) == {"ai-act", "robotics"}
 
 
 # check_citations
