@@ -5,6 +5,7 @@ from langchain.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.config import CHAT_MODEL
@@ -43,7 +44,7 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
         ),
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
-        checkpointer=InMemorySaver(),
+        checkpointer=InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])),
         response_format=ModelAnswer,
     )
 
