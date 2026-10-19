@@ -1,24 +1,18 @@
-from pydantic import BaseModel, Field
-
-from ai_news_assistant.models import NonEmptyStr
+from ai_news_assistant.models import Answer
 
 
-class ModelAnswer(BaseModel):
-    """The answer as the model writes it. Nothing here is trusted yet."""
+def render(answer: Answer) -> str:
+    """Add the sources at the end of the answer."""
 
-    text: str = Field(
-        description=(
-            "The answer for the user. After each claim taken from the article, put a marker "
-            "like [1] or [2]. Never write the article ids in the text."
-        )
-    )
-    citations: list[NonEmptyStr] = Field(
-        default_factory=list,
-        description=(
-            "Article ids from tool results. The first id backs marker [1], the second "
-            "backs [2], and so on. Only ids that appeared in tool results."
-        ),
-    )
-    grounded: bool = Field(
-        description="True if the answer is based on retrieved articles, false otherwise."
-    )
+    if not answer.sources:
+        return answer.text
+
+    text = answer.text + "\n"
+    for source in answer.sources:
+        text += "[" + str(source.marker) + "]: " + source.title + ", " + source.source
+        if not source.published_at:
+            date_text = "Date not found"
+        else:
+            date_text = f"{source.published_at.day} {source.published_at:%b %Y}"
+        text += ", " + date_text + "\n"
+    return text

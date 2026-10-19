@@ -1,13 +1,20 @@
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import pytest
 from langchain.tools import BaseTool
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, ToolMessage
 
-from ai_news_assistant.agent.citations import CheckedCitations, check_citations, retrieved_ids
+from ai_news_assistant.agent.citations import (
+    CheckedCitations,
+    check_citations,
+    resolve_sources,
+    retrieved_ids,
+)
 from ai_news_assistant.agent.config import CITATION_TOOLS
 from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
-from ai_news_assistant.models import ModelAnswer
+from ai_news_assistant.models import ModelAnswer, Source
 from ai_news_assistant.rag.base import Hit
 
 
@@ -288,3 +295,55 @@ def test_adjacent_markers_checked_separately() -> None:
     assert result.clean_text == "Claim [1]."
     assert result.valid_citations == {1: "a"}
     assert result.dropped_markers == [2]
+
+
+# resolve_sources
+
+
+def test_resolve_sources_fills_from_store(rag_db: Path) -> None:
+    sources = resolve_sources({1: "ai-act", 2: "iphone"}, rag_db)
+
+    assert sources == [
+        Source(
+            marker=1,
+            article_id="ai-act",
+            title="Title of ai-act",
+            source="Guardian",
+            published_at=datetime(2026, 10, 10, 9, 30, tzinfo=UTC),
+        ),
+        Source(
+            marker=2,
+            article_id="iphone",
+            title="Title of iphone",
+            source="Verge",
+            published_at=None,
+        ),
+    ]
+
+
+def test_resolve_sources_keeps_marker_gaps(rag_db: Path) -> None:
+    sources = resolve_sources({1: "ai-act", 3: "robotics"}, rag_db)
+
+    assert [(s.marker, s.article_id) for s in sources] == [(1, "ai-act"), (3, "robotics")]
+
+
+def test_resolve_sources_sorted_by_marker(rag_db: Path) -> None:
+    sources = resolve_sources({3: "robotics", 1: "ai-act"}, rag_db)
+
+    assert [s.marker for s in sources] == [1, 3]
+
+
+def test_resolve_sources_empty_gives_empty(rag_db: Path) -> None:
+    assert resolve_sources({}, rag_db) == []
+
+
+def test_resolve_sources_same_article_two_markers(rag_db: Path) -> None:
+    sources = resolve_sources({1: "ai-act", 2: "ai-act"}, rag_db)
+
+    assert [(s.marker, s.article_id) for s in sources] == [(1, "ai-act"), (2, "ai-act")]
+
+
+def test_resolve_sources_unknown_id_raises(rag_db: Path) -> None:
+    # Valid ids were retrieved from this same store, so a miss is a bug, not a user error.
+    with pytest.raises(KeyError):
+        resolve_sources({1: "gone"}, rag_db)

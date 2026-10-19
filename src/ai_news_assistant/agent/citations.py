@@ -1,12 +1,15 @@
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from langchain_core.messages import AnyMessage, ToolMessage
 
 from ai_news_assistant.agent.config import CITATION_TOOLS
-from ai_news_assistant.models import ModelAnswer
+from ai_news_assistant.models import ModelAnswer, Source
+from ai_news_assistant.rag.store import RagStore
 
 MARKER = re.compile(r"\[(\d+)\]")
 # A marker plus the spaces before it, so removing "[2]" from "B [2]." gives "B.".
@@ -78,3 +81,29 @@ def check_citations(model_answer: ModelAnswer, retrieved: set[str]) -> CheckedCi
         dropped_ids=dropped,
         dropped_markers=dropped_markers,
     )
+
+
+def resolve_sources(valid: dict[int, str], store_path: Path) -> list[Source]:
+    """Create sources from valid citations.
+
+    Retrieve valid citations articles from the DB.
+    Return the list of sources for the valid citations.
+    """
+
+    sources: list[Source] = []
+    with RagStore(path=store_path) as store:
+        for marker, article_id in valid.items():
+            article = store.get_article(article_id)
+            published_at = (
+                datetime.fromisoformat(article.published_at) if article.published_at else None
+            )
+            sources.append(
+                Source(
+                    marker=marker,
+                    article_id=article_id,
+                    title=article.title,
+                    source=article.source,
+                    published_at=published_at,
+                )
+            )
+    return sorted(sources, key=lambda x: x.marker)
