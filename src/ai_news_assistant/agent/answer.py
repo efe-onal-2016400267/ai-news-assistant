@@ -18,7 +18,7 @@ def render(answer: Answer) -> str:
     if not answer.sources:
         return answer.text
 
-    text = answer.text + "\n"
+    text = answer.text + "\n\n**Sources:**\n"
     for source in answer.sources:
         text += "[" + str(source.marker) + "]: " + source.title + ", " + source.source
         if not source.published_at:
