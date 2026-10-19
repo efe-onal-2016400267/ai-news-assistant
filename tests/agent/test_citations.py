@@ -4,10 +4,10 @@ from typing import Any
 from langchain.tools import BaseTool
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, ToolMessage
 
-from ai_news_assistant.agent.answer import ModelAnswer
 from ai_news_assistant.agent.citations import CheckedCitations, check_citations, retrieved_ids
 from ai_news_assistant.agent.config import CITATION_TOOLS
 from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
+from ai_news_assistant.models import ModelAnswer
 from ai_news_assistant.rag.base import Hit
 
 

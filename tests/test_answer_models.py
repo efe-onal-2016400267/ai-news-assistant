@@ -4,8 +4,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from ai_news_assistant.agent.answer import ModelAnswer
-from ai_news_assistant.models import Answer, Source
+from ai_news_assistant.models import Answer, ModelAnswer, Source
 
 # The store writes dates as UTC ISO text (SQLiteStore._to_utc_text) and RagStore returns them as is.
 STORE_DATE = "2026-10-10T09:30:00+00:00"

@@ -5,8 +5,8 @@ from typing import Any
 
 from langchain_core.messages import AnyMessage, ToolMessage
 
-from ai_news_assistant.agent.answer import ModelAnswer
 from ai_news_assistant.agent.config import CITATION_TOOLS
+from ai_news_assistant.models import ModelAnswer
 
 MARKER = re.compile(r"\[(\d+)\]")
 # A marker plus the spaces before it, so removing "[2]" from "B [2]." gives "B.".
