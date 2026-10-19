@@ -2,10 +2,11 @@ import uuid
 from typing import Any
 
 from dotenv import load_dotenv
-from langchain.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
 
 from ai_news_assistant.agent.agent import build_agent
+from ai_news_assistant.agent.answer import ask, render
+from ai_news_assistant.rag.config import DEFAULT_DB
 
 
 def print_result_messages(results: dict[str, Any]) -> None:
@@ -31,9 +32,15 @@ def main() -> None:
         if not question:
             continue
 
-        result = agent.invoke({"messages": [HumanMessage(content=question)]}, config=config)
-        print_result_messages(result)
-        print(f"\nAssistant> {result['messages'][-1].content}")
+        answer = ask(
+            agent=agent,
+            question=question,
+            config=config,
+            store_path=DEFAULT_DB,
+        )
+
+        text_with_source = render(answer=answer)
+        print(f"\nAssistant> {text_with_source}")
 
 
 if __name__ == "__main__":

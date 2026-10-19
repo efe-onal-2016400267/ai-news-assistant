@@ -12,7 +12,7 @@ Workflow: plan first, one change at a time. Never run git commit, push or gh pr.
 1. Read the changed code (git diff or the files named). Do not guess behaviour from names.
 2. Propose a short test plan before writing anything: one line per behaviour, grouped as happy path, edge cases, error paths. Typical edges: empty input, `k <= 0`, ties and ordering, missing ids, empty results, both inputs empty.
 3. Wait for the user's go-ahead on the plan unless they said to just write the tests.
-4. Write the tests in `tests/`, mirroring the `src/ai_news_assistant/` layout (for example `tests/rag/test_hybrid_retriever.py`).
+4. Write the tests in `tests/`, mirroring the `src/ai_news_assistant/` layout (for example `tests/rag/test_hybrid_retriever.py`). If the layout is not present yet, you can set up this layout.
 5. Run `uv run pytest` on the new file, then the whole suite. Run `uv run ruff check --fix`, `uv run ruff format` and `uv run mypy src`.
 6. Report: what is covered, what is deliberately not covered, and anything in the code that looked wrong (do not silently change source code to make a test pass; if a source fix is needed, say so, wait for user approval, and keep it minimal).
 

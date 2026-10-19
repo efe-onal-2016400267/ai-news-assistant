@@ -168,7 +168,18 @@ Each item is its own issue, branch and PR.
 - [ ] Wrap `search_news` snippets and titles with `frame_article_text` too.
 - [ ] Eval cases for #45: the `k=1` wrong answer, a "latest" question with two dated articles, announced vs available, an article with injected instructions.
 - [ ] Put the CLI debug print (`print_result_messages`) behind a `--verbose` flag; today it prints the whole thread every turn.
-- [ ] Citations: answers cite article ids, validated after generation so every cited id was actually retrieved.
+- [ ] Citations: answers cite article ids, validated after generation so every cited id was actually retrieved (#48, plan in `scratch/citation_issue_plan.md`).
+    - [x] S1 types: `ModelAnswer` (`agent/answer.py`), `Source` and `Answer` (`models.py`). Tests in `tests/test_answer_models.py`.
+    - [x] S2 `retrieved_ids(messages)` (`agent/citations.py`): ids from `search_news` and successful `get_article` tool messages (`CITATION_TOOLS`); error results count as nothing. Tests in `tests/agent/test_citations.py`.
+        - Note: it checks every tool message in the thread. There is no context management yet (no trimming or summarizing), so it returns the ids for the whole chat, not only the current turn.
+    - [ ] S3 `check_citations(model_answer, retrieved)`: a marker `[n]` survives only if `citations[n-1]` exists and was retrieved; other markers are removed. No renumbering.
+    - [ ] S4 `resolve_sources(valid, store_path)` and `render(answer)`: metadata from `RagStore`, a Sources block, a note when something was dropped, no article ids in the text.
+    - [ ] S5 `ask(agent, question, thread_id) -> Answer` and the CLI prints `render(answer)`; fallback when `structured_response` is `None`.
+        - [x] `response_format=ModelAnswer` set in `build_agent`.
+    - [ ] S6 prompt rules for markers and citations; `PROMPT_VERSION`.
+    - [ ] S7 eval cases: the Gemini conversation, a no-evidence question, an article that plants a fake source, a follow-up that re-cites an earlier turn.
+    - [ ] S8 docs: `design.md` §5 types and §6 status, decision notes; tick this list.
+- [ ] Context management (trim or summarize old messages). Then revisit `retrieved_ids`: ids from summarized-away tool messages would stop validating, so it may need its own per-thread record of retrieved ids.
 - [ ] Refuse when there is no evidence; state publication dates explicitly (design §6).
 - [ ] Date and source filters on `search_news` (Chroma metadata is already there).
 - [ ] `summarize_topic` and `compare_sources` tools.
