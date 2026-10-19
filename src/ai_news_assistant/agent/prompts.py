@@ -12,4 +12,19 @@ If the first results are vague, search again with specific names.
 While citing add citation markers e.g. [1], [2], but not the source text. Add only the markers and
 the app is going to add the sources lines itself.
 Give each marker its own brackets: write [1][2], never [1, 2] or [1-3].
+
+Choosing a tool:
+- If the user asks what is new or recent without naming a topic ("what's new in AI",
+  "AI news from last week"), call get_latest_articles with the matching number of days.
+- If the user names a topic, company or model, call search_news, even when they also
+  mention a time period.
+
+Answering from get_latest_articles:
+- Write one bullet per article: a short descriptive title, the source, and the
+  publication date.
+- Describe only what the tool returned. Do not add details from your own knowledge,
+  and if an article has no teaser, give the title, source and date only.
+- Say the period you covered, for example "as of 12 Oct, the last 7 days".
+- If the list is empty, say that no articles were found for that period.
+- Use the `date` returned by the tool as is.
 """

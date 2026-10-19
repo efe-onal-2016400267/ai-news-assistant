@@ -1,10 +1,12 @@
 import re
 from dataclasses import asdict
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 from langchain.tools import BaseTool, tool
 
+from ai_news_assistant.agent.base import format_date
 from ai_news_assistant.rag.article_search import search_articles
 from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.config import DEFAULT_DB
@@ -96,6 +98,40 @@ def create_get_article_tool(store_path: Path) -> BaseTool:
         }
 
     return get_article
+
+
+# Get latest articles tool
+def create_get_latest_articles_tool(store_path: Path) -> BaseTool:
+    @tool
+    def get_latest_articles(days: int = 7) -> list[dict[str, Any]]:
+        """List the newest articles from the last `days` days, newest first.
+
+        Use this when the user asks what is new or recent without naming a topic,
+        for example "what's new in AI" or "AI news from last week". If the user
+        names a topic, company or model, use search_news instead.
+
+        days: how far back to look. Convert the user's period to days: a week is 7,
+        a month is 30. Values are limited to 1-30.
+
+        Returns title, source, published date and a short teaser for each article.
+        Returns an empty list if nothing was published in that period.
+        """
+        with RagStore(store_path) as store:
+            as_of = datetime.fromisoformat(str(store.newest_publish_date()))
+            cutoff = as_of - timedelta(days=days)
+            articles = store.get_articles_since(cutoff, 100)
+        return [
+            {
+                "article_id": a.id,
+                "title": a.title,
+                "source": a.source,
+                "published_at": a.published_at,
+                "date": format_date(a.published_at),
+            }
+            for a in articles
+        ]
+
+    return get_latest_articles
 
 
 def main() -> list[dict[str, Any]]:
