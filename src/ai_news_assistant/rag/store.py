@@ -1,6 +1,7 @@
 import sqlite3
 from collections.abc import Iterable
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from types import TracebackType
 from typing import Self
@@ -51,6 +52,31 @@ SELECT id, title, source, published_at, text
 FROM articles
 WHERE id = ?
 """
+
+_SELECT_ARTICLE_SINCE = """
+SELECT a.id, a.title, a.source, a.published_at
+FROM corpus c JOIN articles a ON a.id = c.article_id
+WHERE a.extraction_successful = 1
+  AND a.published_at >= ?
+ORDER BY a.published_at DESC, a.id
+LIMIT ?
+"""
+
+_NEWEST_PUBLISH_DATE = """
+SELECT MAX(a.published_at) as published_at
+FROM corpus c JOIN articles a on a.id = c.article_id
+WHERE a.extraction_successful = 1
+"""
+
+
+@dataclass(frozen=True)
+class ArticleListing:
+    """A corpus article without the text."""
+
+    id: str
+    title: str
+    source: str
+    published_at: str | None
 
 
 @dataclass(frozen=True)
@@ -111,6 +137,22 @@ class RagStore:
             text=row["text"],
         )
 
+    def get_articles_since(self, since: datetime, limit: int = 50) -> list[ArticleListing]:
+        """Return a list of articles that were published since `since`."""
+        if since.tzinfo is None:
+            raise ValueError("since must be timezone-aware")
+        cutoff = since.astimezone(UTC).isoformat(timespec="seconds")
+        rows = self._conn.execute(_SELECT_ARTICLE_SINCE, (cutoff, limit)).fetchall()
+        return [
+            ArticleListing(
+                id=row["id"],
+                title=row["title"],
+                source=row["source"],
+                published_at=row["published_at"],
+            )
+            for row in rows
+        ]
+
     def corpus_articles(self) -> list[CorpusArticle]:
         """Return the list of all articles in the corpus."""
         rows = self._conn.execute(_SELECT_CORPUS).fetchall()
@@ -163,6 +205,12 @@ class RagStore:
         ).fetchall()
 
         return [row["config_id"] for row in rows]
+
+    def newest_publish_date(self) -> str | None:
+        """Get the latest published_at from the corpus, or None if no article has a date."""
+        row = self._conn.execute(_NEWEST_PUBLISH_DATE).fetchone()
+        published_at: str | None = row["published_at"]
+        return published_at
 
     def close(self) -> None:
         self._conn.close()
