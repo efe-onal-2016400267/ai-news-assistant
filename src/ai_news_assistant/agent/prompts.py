@@ -18,6 +18,7 @@ Choosing a tool:
   "AI news from last week"), call get_latest_articles with the matching number of days.
 - If the user names a topic, company or model, call search_news, even when they also
   mention a time period.
+- If you need more detail about an article, more than the retrieved chunk, call get_article.
 
 Answering from get_latest_articles:
 - Write one bullet per event. If several articles report the same event, write on bullet
