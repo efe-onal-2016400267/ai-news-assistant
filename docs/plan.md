@@ -83,7 +83,7 @@ Keep the layers separate so each one can be tested alone:
 | Storage and ingest | `ArticleStore` protocol, `SQLiteStore`, `ai-news-ingest`, 12 feeds | #11, #14, #17 |
 | Extraction | Extraction fields in the store, shared capped `download`, `fetch_html`, `extract_text_from_html`, robots.txt and per-host throttle, `ai-news-extract` | #18, #23, #24, #25 |
 | RAG | Snapshot and corpus, two chunkers, retrieval interface, Chroma index, vector, BM25 and hybrid retrievers, eval runner | #27-#41 |
-| Agent | LangChain agent with `search_news`, `get_article` and `get_latest_articles`, conversation memory, CLI chat loop, checked citations | #44, #45, #46, #48 |
+| Agent | LangChain agent with `search_news`, `get_article` and `get_latest_articles`, conversation memory, CLI chat loop, checked citations, clearing of old tool results | #44, #45, #46, #48, #49 |
 
 ### Ingestion (#8-#17)
 - `Fetcher` protocol in `ingestion/base.py`; `RSSFetcher` downloads a feed (size-capped) and returns typed `Article`s with `text=None`.
@@ -109,7 +109,7 @@ Keep the layers separate so each one can be tested alone:
 - `VectorRetriever`, `BM25Retriever`, `HybridRetriever` (reciprocal rank fusion).
 - `rag/eval/build_rag_eval.py`: runs vector, BM25 and hybrid for both chunk configs; recall@5 and @10 per question; results written to `data/snapshots/eval_results/`.
 
-### Agent (#44, #45, #46, #48)
+### Agent (#44, #45, #46, #48, #49)
 - `agent/agent.py`: `create_agent` (LangChain) with `ChatOpenAI`, `InMemorySaver` for thread memory, system prompt in `agent/prompts.py`.
 - `agent/tools.py`: `create_search_tool(retriever, store_path)` builds `search_news` over the hybrid retriever; search logic in `rag/article_search.py`.
 - `agent/cli.py`: interactive chat loop with one thread per session.
@@ -117,6 +117,7 @@ Keep the layers separate so each one can be tested alone:
 - #45: `get_article` tool with a 12,000-character cap and `<article_text>` framing; `search_news` `k` clamped to [5, 10] (design D14).
 - #48: structured output (`response_format=ModelAnswer`) and checked citations: `agent/citations.py` (`retrieved_ids`, `check_citations`, `resolve_sources`), `agent/answer.py` (`ask`, `render`). The CLI calls `ask` and prints `render(answer)` (design D15).
 - #46: `get_latest_articles` tool over `RagStore.get_articles_since` for "what's new" questions without a topic (design D14).
+- #49: `ContextEditingMiddleware` with `ClearToolUsesEdit` in `build_agent`: above 10,000 approximate tokens, tool results older than the last 3 are replaced by a placeholder in the model request; the stored thread is unchanged (design D16).
 
 ---
 
@@ -205,12 +206,26 @@ Each item is its own issue, branch and PR.
     - [ ] S6 prompt rules for markers and citations; `PROMPT_VERSION`.
     - [ ] S7 eval cases: the Gemini conversation, a no-evidence question, an article that plants a fake source, a follow-up that re-cites an earlier turn.
     - [ ] S8 docs: `design.md` §5 types and §6 status, decision notes; tick this list.
-- [ ] Context management (trim or summarize old messages). Then revisit `retrieved_ids`: ids from summarized-away tool messages would stop validating, so it may need its own per-thread record of retrieved ids.
+- [ ] Context management: clear old tool results (#49, plan in `scratch/context_management_plan.md`, design D16).
+    - [x] M0 measure: two 4-turn runs; tool results 84-90% of characters; one `get_latest_articles` result of 26,136 characters (about 10.2k tokens) is carried by every later call.
+    - [x] M0b check the installed API: the middleware edits a deep copy of the request, never the stored thread.
+    - [x] M1 constants in `agent/config.py`: `KEEP_TOOL_RESULTS = 3`, `CONTEXT_TRIGGER_TOKENS = 10000`, `CLEARED_PLACEHOLDER`. Window looked up (1,050,000 tokens); approximate counter calibrated (0.65 to 0.99 of real message tokens).
+    - [x] M2 `ContextEditingMiddleware([ClearToolUsesEdit(...)])` in `build_agent`. Tests in `tests/agent/test_context_editing.py`, no model.
+    - [x] Prompt rule: call `get_article` when more detail than the retrieved chunk is needed.
+    - [x] M4 eval cases as data in `data/eval/agent_cases.toml` (4 of 5).
+        - [ ] Re-cite after clearing: the claims must match the article, since the id alone passes `check_citations`.
+        - [ ] Run each case twice (clearing off, trigger lowered) once the eval runner exists (part D).
+    - [x] M5 docs: design D16, component 11, D15 limits.
+    - [ ] Manual checks: repeat the M0 run with clearing on and compare the sum of `input_tokens`; a follow-up on a cleared article re-fetches; print one cleared message.
+    - `retrieved_ids` needed no change: the stored thread keeps every tool result.
 - [ ] Refuse when there is no evidence; state publication dates explicitly (design §6).
 - [ ] Date and source filters on `search_news` (Chroma metadata is already there).
 - [ ] `summarize_topic` and `compare_sources` tools.
 - [ ] Trajectory eval cases (right tools, no answer without sources) and adversarial cases (prompt injection inside article text, conflicting sources, stale news).
 - [ ] Register the chat CLI as a `[project.scripts]` entry.
+- [ ] Shrink `get_latest_articles` output (cap below 100, shorter ids). The cheapest token saving, but a tool change, so its own issue.
+- [ ] New issue for citation findings from the #49 M0 runs: a duplicate id in `citations`, and a model-written Sources line in the text.
+- [ ] Optional: summarize old messages if long threads still pass the trigger after clearing (design D16).
 - Design question to settle: `design.md` §9 names Anthropic as the default LLM provider; the code uses `ChatOpenAI`.
 
 ---

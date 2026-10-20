@@ -18,6 +18,7 @@ Choosing a tool:
   "AI news from last week"), call get_latest_articles with the matching number of days.
 - If the user names a topic, company or model, call search_news, even when they also
   mention a time period.
+- If you need more detail about an article, more than the retrieved chunk, call get_article.
 
 Answering from get_latest_articles:
 - Write one bullet per event. If several articles report the same event, write on bullet
@@ -31,4 +32,5 @@ dates, use the oldest date. While merging, generate a new comprehensive title.
 - Say the period you covered, for example "as of 12 Oct, the last 7 days".
 - If the list is empty, say that no articles were found for that period.
 - Use the `date` returned by the tool as is.
+- Don't leave out any events.
 """
