@@ -1,7 +1,7 @@
 from collections.abc import Iterable, Sequence
 from dataclasses import replace
 
-from ai_news_assistant.rag.base import Hit, Retriever
+from ai_news_assistant.rag.base import Hit, Retriever, SearchFilter
 
 
 def rrf_fuse(rankings: Iterable[list[Hit]], rrf_k: int = 60) -> list[Hit]:
@@ -24,12 +24,15 @@ class HybridRetriever:
         self.rrf_k = rrf_k
         self.depth = depth
 
-    def search(self, query: str, k: int) -> list[Hit]:
+    def search(self, query: str, k: int, search_filter: SearchFilter | None = None) -> list[Hit]:
         """Search the query for all retrievers, then rrf_fuse."""
         if k <= 0:
             return []
 
-        rankings = [retriever.search(query=query, k=self.depth) for retriever in self.retrievers]
+        rankings = [
+            retriever.search(query=query, k=self.depth, search_filter=search_filter)
+            for retriever in self.retrievers
+        ]
         fused = rrf_fuse(rankings=rankings, rrf_k=self.rrf_k)
         return fused[:k]
 

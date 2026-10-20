@@ -3,7 +3,7 @@ from pathlib import Path
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from ai_news_assistant.rag.base import Hit
+from ai_news_assistant.rag.base import Hit, SearchFilter
 from ai_news_assistant.rag.config import BGE_QUERY_PREFIX, EMBEDDING_MODEL
 
 
@@ -16,7 +16,7 @@ class VectorRetriever:
         # Get the relevant collection
         self.collection = self.client.get_collection(name=config_id)
 
-    def search(self, query: str, k: int) -> list[Hit]:
+    def search(self, query: str, k: int, search_filter: SearchFilter | None = None) -> list[Hit]:
         """Query one Chroma collection (one chunking config) with BGE embeddings."""
 
         # Check if k is valid

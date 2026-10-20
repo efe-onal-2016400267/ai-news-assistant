@@ -78,6 +78,12 @@ def test_non_positive_k_returns_empty(retriever: BM25Retriever, k: int) -> None:
     assert retriever.search(QUERY, k) == []
 
 
+def test_search_filter_none_matches_no_argument(retriever: BM25Retriever) -> None:
+    assert retriever.search(MULTI_QUERY, 100, search_filter=None) == retriever.search(
+        MULTI_QUERY, 100
+    )
+
+
 @pytest.mark.parametrize("query", ["quantum", "?!", ""])
 def test_query_without_known_terms_returns_empty(retriever: BM25Retriever, query: str) -> None:
     assert retriever.search(query, 5) == []

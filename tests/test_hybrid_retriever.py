@@ -1,10 +1,11 @@
 from collections.abc import Iterator
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 from conftest import AI_ACT_FIRST_CHUNK, CONFIG_ID
 
-from ai_news_assistant.rag.base import Hit, Retriever
+from ai_news_assistant.rag.base import Hit, Retriever, SearchFilter
 from ai_news_assistant.rag.bm25_retriever import BM25Retriever
 from ai_news_assistant.rag.hybrid_retriever import HybridRetriever, rrf_fuse
 
@@ -25,9 +26,11 @@ class FakeRetriever:
     def __init__(self, ranking: list[Hit]) -> None:
         self.ranking = ranking
         self.calls: list[tuple[str, int]] = []
+        self.search_filters: list[SearchFilter | None] = []
 
-    def search(self, query: str, k: int) -> list[Hit]:
+    def search(self, query: str, k: int, search_filter: SearchFilter | None = None) -> list[Hit]:
         self.calls.append((query, k))
+        self.search_filters.append(search_filter)
         return self.ranking[:k]
 
 
@@ -166,3 +169,51 @@ def test_works_with_bm25_retriever(rag_db: Path) -> None:
     assert top.article_id == "ai-act"
     assert top.text == AI_ACT_FIRST_CHUNK
     assert top.score == pytest.approx(1 / 61 + 1 / 62)
+
+
+# Search filter
+
+FILTER = SearchFilter(sources=frozenset({"TechCrunch"}), since=datetime(2026, 10, 8, tzinfo=UTC))
+
+
+def test_search_filter_is_passed_to_every_retriever() -> None:
+    first, second = FakeRetriever([hit("a")]), FakeRetriever([hit("b")])
+
+    HybridRetriever([first, second]).search(QUERY, 3, search_filter=FILTER)
+
+    assert first.search_filters == [FILTER]
+    assert second.search_filters == [FILTER]
+    assert first.search_filters[0] is FILTER
+
+
+def test_no_search_filter_passes_none() -> None:
+    first, second = FakeRetriever([hit("a")]), FakeRetriever([hit("b")])
+
+    HybridRetriever([first, second]).search(QUERY, 3)
+
+    assert first.search_filters == [None]
+    assert second.search_filters == [None]
+
+
+def test_search_filter_keeps_depth_and_fusion() -> None:
+    # A=[a,b,c], B=[b,d,a] with rrf_k=60:
+    # b = 1/62 + 1/61, a = 1/61 + 1/63, d = 1/62, c = 1/63  ->  b, a, d, c
+    first = FakeRetriever([hit("a"), hit("b"), hit("c")])
+    second = FakeRetriever([hit("b"), hit("d"), hit("a")])
+
+    hits = HybridRetriever([first, second]).search(QUERY, 4, search_filter=FILTER)
+
+    assert ids(hits) == ["b", "a", "d", "c"]
+    assert [h.score for h in hits] == pytest.approx(
+        [1 / 62 + 1 / 61, 1 / 61 + 1 / 63, 1 / 62, 1 / 63]
+    )
+    assert first.calls == [(QUERY, 50)]
+    assert second.calls == [(QUERY, 50)]
+
+
+@pytest.mark.parametrize("k", [0, -1])
+def test_non_positive_k_with_search_filter_does_not_search(k: int) -> None:
+    fake = FakeRetriever([hit("a")])
+
+    assert HybridRetriever([fake]).search(QUERY, k, search_filter=FILTER) == []
+    assert fake.search_filters == []

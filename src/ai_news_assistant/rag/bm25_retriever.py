@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from rank_bm25 import BM25Okapi
 
-from ai_news_assistant.rag.base import Hit
+from ai_news_assistant.rag.base import Hit, SearchFilter
 from ai_news_assistant.rag.store import RagStore
 
 _TOKEN_RE = re.compile(r"\d+(?:\.\d+)+|\w+")
@@ -24,7 +24,7 @@ class BM25Retriever:
                 raise ValueError(f"No chunks for config {config_id!r}")
             self.bm25 = BM25Okapi([simple_tokenize(c.text) for c in self.chunks])
 
-    def search(self, query: str, k: int) -> list[Hit]:
+    def search(self, query: str, k: int, search_filter: SearchFilter | None = None) -> list[Hit]:
         """Return top-k chunks based on bm25."""
         query_tokens = simple_tokenize(query)
         if k <= 0 or not query_tokens:
