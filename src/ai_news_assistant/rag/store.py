@@ -68,6 +68,13 @@ FROM corpus c JOIN articles a on a.id = c.article_id
 WHERE a.extraction_successful = 1
 """
 
+_SELECT_DISTINCT_SOURCES = """
+SELECT DISTINCT a.source as source
+FROM corpus c JOIN articles a on a.id = c.article_id
+WHERE a.extraction_successful = 1
+ORDER BY a.source
+"""
+
 
 @dataclass(frozen=True)
 class ArticleListing:
@@ -211,6 +218,11 @@ class RagStore:
         row = self._conn.execute(_NEWEST_PUBLISH_DATE).fetchone()
         published_at: str | None = row["published_at"]
         return published_at
+
+    def sources(self) -> list[str]:
+        """Get distinct sources from the corpus as a sorted list."""
+        rows = self._conn.execute(_SELECT_DISTINCT_SOURCES).fetchall()
+        return [row["source"] for row in rows]
 
     def close(self) -> None:
         self._conn.close()
