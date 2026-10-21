@@ -83,7 +83,7 @@ Keep the layers separate so each one can be tested alone:
 | Storage and ingest | `ArticleStore` protocol, `SQLiteStore`, `ai-news-ingest`, 12 feeds | #11, #14, #17 |
 | Extraction | Extraction fields in the store, shared capped `download`, `fetch_html`, `extract_text_from_html`, robots.txt and per-host throttle, `ai-news-extract` | #18, #23, #24, #25 |
 | RAG | Snapshot and corpus, two chunkers, retrieval interface, Chroma index, vector, BM25 and hybrid retrievers, eval runner | #27-#41 |
-| Agent | LangChain agent with `search_news`, `get_article` and `get_latest_articles`, conversation memory, CLI chat loop, checked citations, clearing of old tool results | #44, #45, #46, #48, #49 |
+| Agent | LangChain agent with `search_news`, `get_article` and `get_latest_articles`, conversation memory, CLI chat loop, checked citations, clearing of old tool results, source and date filters on `search_news` | #44, #45, #46, #47, #48, #49 |
 
 ### Ingestion (#8-#17)
 - `Fetcher` protocol in `ingestion/base.py`; `RSSFetcher` downloads a feed (size-capped) and returns typed `Article`s with `text=None`.
@@ -104,12 +104,12 @@ Keep the layers separate so each one can be tested alone:
 - `RagStore` (`rag/store.py`) adds `corpus` and `chunks` tables to the snapshot. Never delete rows from the live DB.
 - `scripts/build_corpus.py`: corpus = `extraction_successful = 1`, with Hugging Face limited to `published_at >= 2026-05-15` (99 articles) so it no longer dominates the corpus.
 - `rag/chunkers.py`: `chunk_words` (word-aligned `CharacterTextSplitter`, re-splits over-long words recursively) and `chunk_recursive`, both sized in model tokens; `rag/build_chunks.py --config`.
-- `rag/base.py`: `Hit` and the `Retriever` protocol (`search(query, k) -> list[Hit]`).
+- `rag/base.py`: `Hit` and the `Retriever` protocol (`search(query, k, search_filter=None) -> list[Hit]`; `SearchFilter` added in #47).
 - `rag/build_vectors.py`: one Chroma collection per chunk config (cosine), with `article_id`, `source`, `published_at`, `chunk_index` metadata.
 - `VectorRetriever`, `BM25Retriever`, `HybridRetriever` (reciprocal rank fusion).
 - `rag/eval/build_rag_eval.py`: runs vector, BM25 and hybrid for both chunk configs; recall@5 and @10 per question; results written to `data/snapshots/eval_results/`.
 
-### Agent (#44, #45, #46, #48, #49)
+### Agent (#44, #45, #46, #47, #48, #49)
 - `agent/agent.py`: `create_agent` (LangChain) with `ChatOpenAI`, `InMemorySaver` for thread memory, system prompt in `agent/prompts.py`.
 - `agent/tools.py`: `create_search_tool(retriever, store_path)` builds `search_news` over the hybrid retriever; search logic in `rag/article_search.py`.
 - `agent/cli.py`: interactive chat loop with one thread per session.
@@ -118,6 +118,7 @@ Keep the layers separate so each one can be tested alone:
 - #48: structured output (`response_format=ModelAnswer`) and checked citations: `agent/citations.py` (`retrieved_ids`, `check_citations`, `resolve_sources`), `agent/answer.py` (`ask`, `render`). The CLI calls `ask` and prints `render(answer)` (design D15).
 - #46: `get_latest_articles` tool over `RagStore.get_articles_since` for "what's new" questions without a topic (design D14).
 - #49: `ContextEditingMiddleware` with `ClearToolUsesEdit` in `build_agent`: above 10,000 approximate tokens, tool results older than the last 3 are replaced by a placeholder in the model request; the stored thread is unchanged (design D16).
+- #47: `search_news` takes `sources` (exact names) and `days` (from the newest corpus date); `SearchFilter` is applied inside the vector (Chroma `where`) and BM25 (score mask) retrievers before the top-`k` cut (design D17).
 
 ---
 
@@ -219,7 +220,20 @@ Each item is its own issue, branch and PR.
     - [ ] Manual checks: repeat the M0 run with clearing on and compare the sum of `input_tokens`; a follow-up on a cleared article re-fetches; print one cleared message.
     - `retrieved_ids` needed no change: the stored thread keeps every tool result.
 - [ ] Refuse when there is no evidence; state publication dates explicitly (design §6).
-- [ ] Date and source filters on `search_news` (Chroma metadata is already there).
+- [ ] Date and source filters on `search_news` (#47, plan in `scratch/metadata_filtering_search_news_tool.md`, design D17).
+    - [x] F1 `SearchFilter(sources, since)` and `search_filter` on `Retriever.search`; `HybridRetriever` passes it to every retriever.
+    - [x] F2 `RagStore.sources()`: distinct corpus sources, sorted.
+    - [x] F3 BM25: metadata lookup from `corpus_articles()`, non-matching scores set to 0 before the top-`k` cut.
+    - [x] F4 Vector: `chroma_where` (`$in`, `$gte` on Unix seconds, `$and` only for both).
+    - [x] F5 `search_news(sources, days)`: exact-match sources with an error listing the valid names; `days` minimum 1, no cap; source list in the description; `RagStore.date_cutoff` shared with `get_latest_articles`. Tests in `tests/test_search_news_tool.py` and `tests/rag/test_store.py`.
+    - [x] F6 Prompt rules for filters; eval cases 5-9 in `data/eval/agent_cases.toml`, labels checked against the snapshot.
+    - [x] F7 docs: design D17, components 7 and 8, §5 sketch, §6 status.
+    - [ ] Note in the result when the corpus has no dates and `days` is ignored, plus the prompt rule.
+    - [ ] Cap unknown source names echoed in the error; fix the double space.
+    - [ ] Description wording: trailing spaces, "leave them out" instead of "should be None", `days` counts from the newest article, a rule for outlets not in the list.
+    - [ ] Run eval cases 5-9 once the runner exists (part D). `data/` is gitignored, so the case file is not in the repo.
+    - [ ] Manual agent run: an outlet plus period question calls `search_news` with both filters and cites only that outlet.
+    - Optional: reject `SearchFilter(sources=frozenset())`; module-level `chroma_where` and `matches`; `sorted` sources in `$in`.
 - [ ] `summarize_topic` and `compare_sources` tools.
 - [ ] Trajectory eval cases (right tools, no answer without sources) and adversarial cases (prompt injection inside article text, conflicting sources, stale news).
 - [ ] Register the chat CLI as a `[project.scripts]` entry.
