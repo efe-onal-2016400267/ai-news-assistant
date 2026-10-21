@@ -14,6 +14,15 @@ class Hit:
 
 
 @dataclass(frozen=True)
+class ArticleMetadata:
+    """Holds article metadata for BM25 metadata filtering."""
+
+    article_id: str
+    source: str | None
+    published_at: datetime | None
+
+
+@dataclass(frozen=True)
 class SearchFilter:
     """Filter with sources and since arguments."""
 
