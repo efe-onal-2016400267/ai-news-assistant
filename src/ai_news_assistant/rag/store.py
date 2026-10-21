@@ -1,7 +1,7 @@
 import sqlite3
 from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import TracebackType
 from typing import Self
@@ -218,6 +218,14 @@ class RagStore:
         row = self._conn.execute(_NEWEST_PUBLISH_DATE).fetchone()
         published_at: str | None = row["published_at"]
         return published_at
+
+    def date_cutoff(self, days: int) -> datetime | None:
+        """Convert day offset to cutoff datetime"""
+        newest = self.newest_publish_date()
+        if newest is None:
+            return None
+        as_of = datetime.fromisoformat(newest)
+        return as_of - timedelta(days=days)
 
     def sources(self) -> list[str]:
         """Get distinct sources from the corpus as a sorted list."""

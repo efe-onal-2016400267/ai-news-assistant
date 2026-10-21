@@ -196,3 +196,33 @@ def test_sources_empty_corpus_gives_empty(rag_db: Path) -> None:
     with RagStore(rag_db) as store:
         store.replace_corpus([])
         assert store.sources() == []
+
+
+# date_cutoff
+
+
+def test_date_cutoff_counts_back_from_newest_corpus_date(rag_db: Path) -> None:
+    with RagStore(rag_db) as store:
+        cutoff = store.date_cutoff(days=3)
+
+    # Newest is ai-act 2026-10-10 09:30 UTC; minus 3 days = 2026-10-07 09:30 UTC.
+    assert cutoff == datetime(2026, 10, 7, 9, 30, tzinfo=UTC)
+    assert cutoff is not None and cutoff.tzinfo is not None
+
+
+def test_date_cutoff_zero_days_is_newest_date(rag_db: Path) -> None:
+    with RagStore(rag_db) as store:
+        assert store.date_cutoff(days=0) == datetime(2026, 10, 10, 9, 30, tzinfo=UTC)
+
+
+def test_date_cutoff_ignores_outside_and_failed(small_db: Path) -> None:
+    # Newest corpus date is 10-05 12:00; "outside" and "failed" are later but do not count.
+    with RagStore(small_db) as store:
+        assert store.date_cutoff(days=1) == datetime(2026, 10, 4, 12, 0, tzinfo=UTC)
+
+
+@pytest.mark.parametrize("corpus", [[], ["iphone"]])
+def test_date_cutoff_none_without_dates(rag_db: Path, corpus: list[str]) -> None:
+    with RagStore(rag_db) as store:
+        store.replace_corpus(corpus)
+        assert store.date_cutoff(days=3) is None

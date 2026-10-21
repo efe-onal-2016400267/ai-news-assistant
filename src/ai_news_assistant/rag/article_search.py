@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from ai_news_assistant.rag.base import Retriever
+from ai_news_assistant.rag.base import Retriever, SearchFilter
 from ai_news_assistant.rag.store import RagStore
 
 MAX_CHUNKS_PER_ARTICLE = 3
@@ -19,7 +19,11 @@ class ArticleSnippet:
 
 
 def search_articles(
-    retriever: Retriever, store_path: Path, query: str, k: int
+    retriever: Retriever,
+    store_path: Path,
+    query: str,
+    k: int,
+    search_filter: SearchFilter | None = None,
 ) -> list[ArticleSnippet]:
     """Searches the articles and returns the ArticleSnippet.
 
@@ -31,7 +35,7 @@ def search_articles(
     if k <= 0:
         return []
 
-    hits = retriever.search(query=query, k=k * OVERFETCH)
+    hits = retriever.search(query=query, k=k * OVERFETCH, search_filter=search_filter)
 
     texts_by_article: dict[str, list[str]] = {}
     for hit in hits:

@@ -19,7 +19,7 @@ from ai_news_assistant.agent.tools import (
     create_search_tool,
 )
 from ai_news_assistant.models import ModelAnswer, Source
-from ai_news_assistant.rag.base import Hit
+from ai_news_assistant.rag.base import Hit, SearchFilter
 
 
 class FakeRetriever:
@@ -30,7 +30,7 @@ class FakeRetriever:
             Hit(chunk_id=f"{a}-0", article_id=a, score=1.0, text=f"{a} chunk") for a in article_ids
         ]
 
-    def search(self, query: str, k: int) -> list[Hit]:
+    def search(self, query: str, k: int, search_filter: SearchFilter | None = None) -> list[Hit]:
         return self.ranking[:k]
 
 
