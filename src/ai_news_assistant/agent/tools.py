@@ -1,6 +1,6 @@
 import re
 from dataclasses import asdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -8,7 +8,7 @@ from langchain.tools import BaseTool, tool
 
 from ai_news_assistant.agent.base import format_date
 from ai_news_assistant.rag.article_search import search_articles
-from ai_news_assistant.rag.base import Retriever
+from ai_news_assistant.rag.base import Retriever, SearchFilter
 from ai_news_assistant.rag.config import DEFAULT_DB
 from ai_news_assistant.rag.store import RagStore
 
@@ -21,6 +21,26 @@ ARTICLE_CLOSE = "</article_text>"
 # Anything in the article that looks like our delimiter: any case, spaces, attributes.
 _DELIMITER_LIKE = re.compile(r"<\s*/?\s*article_text\b[^>]*>", re.IGNORECASE)
 REMOVED_TAG = "[removed tag]"
+
+SEARCH_NEWS_DESCRIPTION = """Search the news archive for articles relevant to a question.
+
+Use this before answering any question about news, AI models, companies or events;
+do not answer such questions from memory.
+Write `query` as a self-contained search with the names filled in, e.g. "Claude Haiku 5.5
+release", not "what about the other one?". `k` is the number of distinct articles to
+return (default 5, min 5, max 10).
+Set `sources` only when the user names an outlet; use the exact names below. 
+If the user asks for results in the last N days, use `days` argument
+to filter the data accordingly. Convert the user's period to days: for example,
+a week is 7, a month is 30. If the user does not mention these filters, they should be None.
+Sources in the DB are: {sources}.
+Map what the user says to a name from the list, e.g. 'the Verge' → 'The Verge', 
+'DeepMind' → 'Google DeepMind'.
+IF a filtered search result does not return anything, say so.
+Each result has article_id, title, source, published_at (may be null), and snippet
+(excerpts from the article, separated by [...]). Use get_article with an article_id
+to read the full text. Cite the title and source of what you use.
+"""
 
 
 def frame_article_text(text: str) -> str:
@@ -35,23 +55,52 @@ def frame_article_text(text: str) -> str:
 
 # RAG tool
 def create_search_tool(retriever: Retriever, store_path: Path) -> BaseTool:
-    @tool
-    def search_news(query: str, k: int = 5) -> list[dict[str, Any]]:
+    with RagStore(store_path) as store:
+        gold_source_list: list[str] = store.sources()
+    tool_description = SEARCH_NEWS_DESCRIPTION.format(sources=", ".join(gold_source_list))
+
+    @tool(description=tool_description)
+    def search_news(
+        query: str, k: int = 5, sources: list[str] | None = None, days: int | None = None
+    ) -> list[dict[str, Any]] | dict[str, Any]:
         """Search the news archive for articles relevant to a question.
 
-        Use this before answering any question about news, AI models, companies or events;
-        do not answer such questions from memory.
-        Write `query` as a self-contained search with the names filled in, e.g. "Claude Haiku 5.5
-        release", not "what about the other one?". `k` is the number of distinct articles to
-        return (default 5, min 5, max 10).
-        Each result has article_id, title, source, published_at (may be null), and snippet
-        (excerpts from the article, separated by [...]). Use get_article with an article_id
-        to read the full text. Cite the title and source of what you use.
+        This is the main search tool when the user mentions a model, event, person...
+        Can filter on sources ('From Wired, Hugging Face...') and days (last week...)
         """
+        unknown_sources: str = "Unknown source(s): "
+        valid_sources: str = f"Valid source(s): {', '.join(gold_source_list)}"
+        unknown_found = False
+        if sources is not None:
+            for source in sources:
+                if source not in gold_source_list:
+                    unknown_sources += f" {source}"
+                    unknown_found = True
+
+        if unknown_found:
+            return {"error": f"{unknown_sources}, {valid_sources}"}
+
         k = max(5, min(k, MAX_K))
+        cutoff: datetime | None = None
+        if days is not None:
+            days = max(1, days)
+            with RagStore(store_path) as store:
+                cutoff = store.date_cutoff(days=days)
+        source_set = frozenset(sources) if sources else None
+        search_filter: SearchFilter | None = (
+            SearchFilter(sources=source_set, since=cutoff)
+            if source_set is not None or cutoff is not None
+            else None
+        )
         return [
             asdict(s)
-            for s in search_articles(retriever=retriever, store_path=store_path, query=query, k=k)
+            for s in search_articles(
+                retriever=retriever,
+                store_path=store_path,
+                query=query,
+                k=k,
+                search_filter=search_filter,
+            )
         ]
 
     return search_news
@@ -119,11 +168,9 @@ def create_get_latest_articles_tool(store_path: Path) -> BaseTool:
         """
         days = max(1, min(days, MAX_DAYS))
         with RagStore(store_path) as store:
-            newest = store.newest_publish_date()
-            if newest is None:
+            cutoff = store.date_cutoff(days)
+            if cutoff is None:
                 return []
-            as_of = datetime.fromisoformat(newest)
-            cutoff = as_of - timedelta(days=days)
             articles = store.get_articles_since(cutoff, 100)
         return [
             {

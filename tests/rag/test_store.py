@@ -15,12 +15,14 @@ def ids(listings: list[ArticleListing]) -> list[str]:
     return [a.id for a in listings]
 
 
-def article(article_id: str, published_at: datetime, extracted: bool = True) -> Article:
+def article(
+    article_id: str, published_at: datetime | None, extracted: bool = True, source: str = "Src"
+) -> Article:
     return Article(
         id=article_id,
         url=f"https://example.com/{article_id}",
         title=f"Title of {article_id}",
-        source="Src",
+        source=source,
         published_at=published_at,
         text="Body." if extracted else None,
         extraction_successful=extracted,
@@ -141,3 +143,86 @@ def test_articles_since_ties_ordered_by_id(small_db: Path) -> None:
 
     # Same published_at: a-tie before b-tie. "outside" and "failed" are excluded.
     assert result == ["a-tie", "b-tie"]
+
+
+# sources
+
+
+@pytest.fixture
+def sources_db(tmp_path: Path) -> Path:
+    """Sources saved out of order, a duplicate, an undated article, and two that must not count."""
+    db = tmp_path / "sources.db"
+    day = datetime(2026, 10, 5, tzinfo=UTC)
+    with SQLiteStore(db) as store:
+        store.save(
+            [
+                article("w1", day, source="Wired"),
+                article("w2", day, source="Wired"),
+                article("ars", day, source="Ars Technica"),
+                article("undated", None, source="Verge"),
+                article("outside", day, source="Outsider"),
+                article("failed", day, extracted=False, source="Failed Source"),
+            ]
+        )
+    with RagStore(db) as store:
+        store.replace_corpus(["w1", "w2", "ars", "undated", "failed"])
+    return db
+
+
+def test_sources_of_rag_db(rag_db: Path) -> None:
+    # CORPUS sources: Guardian, Verge (undated), TechCrunch, Food Blog -> sorted.
+    with RagStore(rag_db) as store:
+        assert store.sources() == ["Food Blog", "Guardian", "TechCrunch", "Verge"]
+
+
+def test_sources_are_distinct_and_sorted(sources_db: Path) -> None:
+    # Saved as Wired, Wired, Ars Technica, Verge; Wired appears once.
+    with RagStore(sources_db) as store:
+        assert store.sources() == ["Ars Technica", "Verge", "Wired"]
+
+
+def test_sources_skip_article_outside_corpus(sources_db: Path) -> None:
+    with RagStore(sources_db) as store:
+        assert "Outsider" not in store.sources()
+
+
+def test_sources_skip_failed_extraction(sources_db: Path) -> None:
+    # "failed" is in the corpus table but extraction_successful = 0.
+    with RagStore(sources_db) as store:
+        assert "Failed Source" not in store.sources()
+
+
+def test_sources_empty_corpus_gives_empty(rag_db: Path) -> None:
+    with RagStore(rag_db) as store:
+        store.replace_corpus([])
+        assert store.sources() == []
+
+
+# date_cutoff
+
+
+def test_date_cutoff_counts_back_from_newest_corpus_date(rag_db: Path) -> None:
+    with RagStore(rag_db) as store:
+        cutoff = store.date_cutoff(days=3)
+
+    # Newest is ai-act 2026-10-10 09:30 UTC; minus 3 days = 2026-10-07 09:30 UTC.
+    assert cutoff == datetime(2026, 10, 7, 9, 30, tzinfo=UTC)
+    assert cutoff is not None and cutoff.tzinfo is not None
+
+
+def test_date_cutoff_zero_days_is_newest_date(rag_db: Path) -> None:
+    with RagStore(rag_db) as store:
+        assert store.date_cutoff(days=0) == datetime(2026, 10, 10, 9, 30, tzinfo=UTC)
+
+
+def test_date_cutoff_ignores_outside_and_failed(small_db: Path) -> None:
+    # Newest corpus date is 10-05 12:00; "outside" and "failed" are later but do not count.
+    with RagStore(small_db) as store:
+        assert store.date_cutoff(days=1) == datetime(2026, 10, 4, 12, 0, tzinfo=UTC)
+
+
+@pytest.mark.parametrize("corpus", [[], ["iphone"]])
+def test_date_cutoff_none_without_dates(rag_db: Path, corpus: list[str]) -> None:
+    with RagStore(rag_db) as store:
+        store.replace_corpus(corpus)
+        assert store.date_cutoff(days=3) is None
