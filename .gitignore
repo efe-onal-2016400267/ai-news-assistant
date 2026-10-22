@@ -22,3 +22,6 @@ scratch/
 # Local database and logs from the ingest command
 data/
 logs/
+
+# DS_Store
+.DS_Store
