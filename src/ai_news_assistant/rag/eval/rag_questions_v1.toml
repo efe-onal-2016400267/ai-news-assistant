@@ -1,5 +1,5 @@
 # RAG eval questions.
-# dataset_version: 1   (bump when any label changes; log the change below)
+dataset_version = 1  # bump when any label changes; log the change below
 # snapshot: data/snapshots/news-2026-10-12.db
 # split: made by "dev" (13 question) and "test" (9 questions)
 # gold_mode: "any" = one gold article is enough (equivalent copies); "all" = every gold article is
