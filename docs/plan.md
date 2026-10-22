@@ -132,7 +132,7 @@ Keep the layers separate so each one can be tested alone:
 | Vector store | Chroma, persistent at `data/snapshots/chroma-2026-10-12`, one collection per config, cosine | Metadata filters for the agent tools, no server. |
 | Keyword retriever | `rank-bm25` (BM25Okapi) in memory, built from the `chunks` table | Own tokenization; no FTS5 query escaping. |
 | Hybrid | RRF, `score = sum 1/(60 + rank)`, each retriever queried at depth 50 | Simple, no score calibration needed. |
-| Gold labels | Article ids; a hit is any chunk of a gold article in the top k | Fair across chunkers with different chunk counts. |
+| Gold labels | Article ids; a hit is any chunk of a gold article in the top k. Since #57 each question also has `gold_mode` (`any` or `all`), stale and hard-negative ids, and an evidence quote per gold article (design D18) | Fair across chunkers with different chunk counts. |
 | Agent default | `recursive-tok256-32` with the hybrid retriever (`rag/config.py`) | |
 
 Watch-outs:
@@ -146,7 +146,11 @@ Watch-outs:
 ## Open items from completed work
 
 - [ ] Grow the eval set from 13 to 30-50 questions; include 2-3 with no answer in the corpus.
+    - v1 (#57): 22 questions, 13 dev and 9 test, 2 with no answer.
+    - [ ] rag-020 needs an `until` date filter in `SearchFilter`; today it has only `sources` and `since` (design D18).
 - [ ] Move questions from `rag/eval/question_list.py` to a JSONL file with `stale` and `evidence` fields.
+    - Done as TOML, not JSONL: `rag/eval/rag_questions_v1.toml`, with `rag/eval/rag_run.toml` for `config_ids` (#57).
+    - [ ] Switch `build_rag_eval.py` to read the TOML; it still reads `question_list.py`.
 - [ ] Add metrics: MRR, best rank of a gold article at k=50, stale-hit rate.
 - [ ] Unit tests for the metric functions on fake hits (no model), including the empty-gold case.
 - [ ] Run the full grid (2 configs x 3 retrievers), read the failures, and write the results up in `design.md`.

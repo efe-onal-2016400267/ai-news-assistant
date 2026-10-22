@@ -206,6 +206,24 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 - **Known limits:** the model must use exact names; "Guardian" or "the verge" returns the error. With no corpus date, `days` is ignored without telling the model (a note in the result is planned, not built). Unknown names are echoed in the error without a length cap. `SearchFilter(sources=frozenset())` is not rejected; the tool never builds one. The days eval case depends on the snapshot's newest date (2026-10-11 23:01). Retrieval metrics (`build_rag_eval.py`) are unfiltered and were not re-run.
 - **Revisit when:** the eval cases show wrong source names or missed filters (map names case-insensitively, or put the names in the schema as an enum), questions need fixed date ranges (add `until`), or the corpus gets undated articles (add the note).
 
+### D18. RAG eval set: versioned TOML, split by article
+The retrieval questions live in `rag/eval/rag_questions_v1.toml` (#57), labeled against `data/snapshots/news-2026-10-12.db`. Run settings (`config_ids`) are in a separate `rag/eval/rag_run.toml`. v1 has 22 questions: 13 dev, 9 test.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Format | TOML, one `[[question]]` table per question, `dataset_version` in the header, changelog in comments | Readable and diffable by hand; comments hold labeling notes. Replaces the planned JSONL. |
+| Versioning | Bump `dataset_version` when any label changes; log it in the changelog | Results stay tied to the labels they were measured on. |
+| Split | `dev` or `test` per question; no article is gold, stale or hard negative in both splits | Tuning on dev cannot leak test articles. Test is for the final comparison only. |
+| `gold_mode` | `any`: one gold article is enough (copies of one story). `all`: recall is the fraction of gold articles found | Duplicate coverage and multi-article questions need different scoring. |
+| Extra ids | `stale_article_ids` (superseded articles), `hard_negative_article_ids` (look-alikes that give a wrong answer) | Lets the runner report stale and distractor hits, not only gold hits. |
+| Evidence | One verbatim `quote` per gold article | Each label can be checked against the snapshot text. |
+| Filters | Optional `[question.filter]` table on `filtered` questions | The gold set is correct only under the filter. |
+
+**Label check (n=22, 2026-10-22).** All 33 referenced article ids exist in the snapshot, every evidence quote is a substring of its article text, and no article appears in both splits. Types: specific_detail 3, paraphrase 3, multi_article 2, rare_term 2, multi_chunk 2, time_sensitive 2, filtered 2, no_answer 2, number_or_date 1, entity_version 1, duplicate 1, hard_negative 1. `gold_mode = "all"` on 3 questions (rag-003, rag-004, rag-012).
+
+- **Known limits:** rag-020 uses `filter.published_before = "2026-01-01"`, but `SearchFilter` has only `sources` and `since` (D17), so the filter cannot be applied until an `until` bound exists. The split is 13/9 (59/41), not the 70/30 in #57, and the set has 22 of the 27 planned questions. rag-001 and rag-002 still carry a `CHECK` on `gold_mode`. In rag-002 the gold articles disagree (TechCrunch: 4,000 GPUs; Mistral AI and Simon Willison: 3,800), so `any` accepts the article with the other figure. `build_rag_eval.py` still reads `rag/eval/question_list.py`; nothing reads the TOML yet.
+- **Revisit when:** an `until` filter is added (rag-020 becomes runnable), or labels change (bump to v2).
+
 ## 5. Interfaces and data models
 
 Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array, `extraction_successful` as an INTEGER that is NULL, 0 or 1). The shared capped `download` and `USER_AGENT` live in `src/ai_news_assistant/downloads.py`; `fetch_html` lives in `src/ai_news_assistant/extraction/fetch.py` and `extract_text_from_html` in `extraction/text.py`. The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; `ingestion/feeds.py` maps feed names (the mapping keys) to `Feed(url, source)`, where `source` is the configured publisher name stored on the feed's articles.
@@ -323,7 +341,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 | Layer | How |
 |-------|-----|
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
-| Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. |
+| Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18). |
 | Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
 | Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |
