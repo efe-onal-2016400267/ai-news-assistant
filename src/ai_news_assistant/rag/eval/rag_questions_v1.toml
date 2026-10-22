@@ -447,15 +447,19 @@ type = "filtered"
 split = "dev"
 question = "What is Mistral's most capable model to date?"
 gold_article_ids = [
-  "2a480d2ccfa32d5324e25f5b79af52a00a02f63d422b5789013d3befde1e259e",
+  "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173",
 ]
 gold_mode = "any"
 stale_article_ids = []
+# Large 3 announcement says "our most capable model to date" too; the date filter must exclude it
+hard_negative_article_ids = [
+  "2a480d2ccfa32d5324e25f5b79af52a00a02f63d422b5789013d3befde1e259e",
+]
 [question.filter]
-published_before = "2026-01-01"
+since = "2026-10-01"
 [[question.evidence]]
-article_id = "2a480d2ccfa32d5324e25f5b79af52a00a02f63d422b5789013d3befde1e259e"
-quote = '''our most capable model to date'''
+article_id = "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173"
+quote = '''It is our largest and most capable model to date'''
 
 
 [[question]]
