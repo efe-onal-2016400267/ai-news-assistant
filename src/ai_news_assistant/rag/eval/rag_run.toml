@@ -1,0 +1,2 @@
+# How to run the RAG eval (not data about the questions).
+config_ids = ["words-tok256-32", "recursive-tok256-32"]

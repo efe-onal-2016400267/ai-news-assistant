@@ -1,0 +1,483 @@
+# RAG eval questions.
+# dataset_version: 1   (bump when any label changes; log the change below)
+# snapshot: data/snapshots/news-2026-10-12.db
+# split: made by "dev" (13 question) and "test" (9 questions)
+# gold_mode: "any" = one gold article is enough (equivalent copies); "all" = every gold article is
+#            needed (recall = fraction found). CHECK marks a multi-gold question to decide.
+# changelog:
+#   v1: converted from rag/eval/question_list.py (13 questions, labels unchanged).
+
+[[question]]
+id = "rag-001"
+type = "specific_detail"
+legacy_type = "Natural Language"
+split = "dev"
+question = "What are Mistral's newest large model's specificly optimized areas?"
+gold_article_ids = [
+  "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c",
+  "19bbd8a9667ab1144b6d4c57aa71c6c22c888724baa2465b03c7ecc12f76f962",
+  "d9a7e52b4293657c560cf29d1e330dbc21352cdd1e1eda7bd0a75fbce4703c0b",
+  "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173",
+]
+gold_mode = "any"  # CHECK: any or all?
+stale_article_ids = []
+[[question.evidence]]
+article_id = "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c"
+quote = "cybersecurity and finance, but also chip design"
+[[question.evidence]]
+article_id = "19bbd8a9667ab1144b6d4c57aa71c6c22c888724baa2465b03c7ecc12f76f962"
+quote = "optimized specifically for coding and cyberdefense, as well as tasks particular to manufacturing, finance, electrical engineering, and other niches."
+[[question.evidence]]
+article_id = "d9a7e52b4293657c560cf29d1e330dbc21352cdd1e1eda7bd0a75fbce4703c0b"
+quote = "it’s optimized specifically for coding and cyberdefense, as well as tasks particular to manufacturing, finance, electrical engineering, and other niches"
+[[question.evidence]]
+article_id = "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173"
+quote = "On critical enterprise workloads, including cybersecurity, finance and law, we find it to be state-of-the-art among open models"
+
+
+
+[[question]]
+id = "rag-002"
+type = "number_or_date"
+legacy_type = "Natural Language"
+split = "dev"
+question = "How many Nvidia GPUs did Mistral use to train Large 4?"
+gold_article_ids = [
+  "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c",
+  "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173",
+  "0e8219bd64331ee357c25f4556db1efc67f48c65486ccb0d0e6227a9561b74c7",
+]
+gold_mode = "any"  # CHECK: any or all?
+stale_article_ids = []
+[[question.evidence]]
+article_id = "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c"
+quote = "using only 4,000 Nvidia GPUs"
+[[question.evidence]]
+article_id = "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173"
+quote = "ML4 was trained from scratch on 3,800 NVIDIA Grace Blackwell GPUs in Mistral’s own datacenters in Europe"
+[[question.evidence]]
+article_id = "0e8219bd64331ee357c25f4556db1efc67f48c65486ccb0d0e6227a9561b74c7"
+quote = "trained on their own cluster of 3,800 NVIDIA Grace Blackwell GPUs"
+
+
+
+[[question]]
+id = "rag-003"
+type = "multi_article"
+legacy_type = "Natural Language"
+split = "test"
+question = "On what devices can I use Meta's Muse?"
+gold_article_ids = [
+  "552629978e356fab438cabde0c8e53f46c3fe97752b7e0b1108280817ac43f63",
+  "f213b8d3eadf23cd6b0caaf2a2add87658fe10bc75cb0864a2de6470d7624f70",
+  "5f645da35744d30c39db452f72fd559b26610176ac97f80a98ea6b30f6493264",
+]
+gold_mode = "all"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "552629978e356fab438cabde0c8e53f46c3fe97752b7e0b1108280817ac43f63"
+quote = "Muse, meanwhile, hit the iPad just a month after launching on iPhone"
+[[question.evidence]]
+article_id = "f213b8d3eadf23cd6b0caaf2a2add87658fe10bc75cb0864a2de6470d7624f70"
+quote = "Meta’s new AI agent will be getting a native app on Windows, Windows and Surface chief Pavan Davuluri announced at today’s event."
+[[question.evidence]]
+article_id = "5f645da35744d30c39db452f72fd559b26610176ac97f80a98ea6b30f6493264"
+quote = "Meta’s AI agent now properly supports the iPad’s larger screen and recent improvements to multitasking."
+
+
+
+[[question]]
+id = "rag-004"
+type = "multi_article"
+legacy_type = "Natural Language"
+split = "dev"
+question = "What incidents have involved AI agents acting outside their authorized limits?"
+gold_article_ids = [
+  "a43c2e0816bbaf3df57d7c1eab396d04ca37d071f2a883a46e814c48711647c3",
+  "00521fe0b8a575645038625a3fb32ba612d40710b59c6566975842203615df28",
+  "a919ba35a5e056c2278ba024862c09052a8b0e23df4c4932675faf972b48ed1b",
+  "0d8c74eec04dc0baad67974a38e9d7e01fea672383ac18bd5e7828dc360726d0",
+  "1d64cace9beff2adfe9e2ce2038ee7fbbfe2413158594a57555685f89122c464",
+  "8088c1dfd69d52169d26c3ad98d416ee06b8c8b567835bffc63d0babec849503",
+  "e5230d9350e4e50fd2099f6ff9c43d57e3855bc97e4b51456db9a57a8808eb4f",
+]
+gold_mode = "all"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "a43c2e0816bbaf3df57d7c1eab396d04ca37d071f2a883a46e814c48711647c3"
+quote = "The committee is conducting a comprehensive inquiry into the economic, societal, regulatory, and national security implications of AI for Australia"
+[[question.evidence]]
+article_id = "00521fe0b8a575645038625a3fb32ba612d40710b59c6566975842203615df28"
+quote = "Two months after the bombshell news that a swarm of its agents had broken their containment and hacked into the computers of the AI company Hugging Face"
+[[question.evidence]]
+article_id = "a919ba35a5e056c2278ba024862c09052a8b0e23df4c4932675faf972b48ed1b"
+quote = "The unauthorized bot activities included edits to our wikis, some unsuccessful attempts to exploit a public note-taking tool we host, and heavy traffic"
+[[question.evidence]]
+article_id = "0d8c74eec04dc0baad67974a38e9d7e01fea672383ac18bd5e7828dc360726d0"
+quote = "response to the Hugging Face incident, in which a swarm of agents broke out of their sandbox and breached external systems"
+[[question.evidence]]
+article_id = "1d64cace9beff2adfe9e2ce2038ee7fbbfe2413158594a57555685f89122c464"
+quote = "The publisher of Wikipedia said Monday that OpenAI agents attempted to hack a note-taking tool it hosts"
+[[question.evidence]]
+article_id = "8088c1dfd69d52169d26c3ad98d416ee06b8c8b567835bffc63d0babec849503"
+quote = "The agent was running an internal OpenAI cyber-capability evaluation based on the ExploitGym benchmark"
+[[question.evidence]]
+article_id = "e5230d9350e4e50fd2099f6ff9c43d57e3855bc97e4b51456db9a57a8808eb4f"
+quote = "some of whom helped investigate an incident where AI models autonomously attacked the Hugging Face platform"
+
+
+[[question]]
+id = "rag-005"
+type = "rare_term"
+legacy_type = "Exact Term"
+split = "dev"
+question = "What is Leanstral?"
+gold_article_ids = [
+  "1929444a4216300742aa7054989f6fe7c4c6224c580b4d8746c871fbff87114c",
+  "2baf5368ef46a143cf5b22f3730fc5f5f507984f0ef010d5b85e1bb50f33109b",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "1929444a4216300742aa7054989f6fe7c4c6224c580b4d8746c871fbff87114c"
+quote = "Leanstral 1.5, a free Apache-2.0 licensed model with 6B active parameters"
+[[question.evidence]]
+article_id = "2baf5368ef46a143cf5b22f3730fc5f5f507984f0ef010d5b85e1bb50f33109b"
+quote = "We release Leanstral, the first open-source code agent designed for Lean 4"
+
+
+[[question]]
+id = "rag-006"
+type = "entity_version"
+legacy_type = "Exact Term"
+split = "test"
+question = "What changed in Claude Haiku 5.5?"
+gold_article_ids = [
+  "e1a7b06651e9c94175b39b61132cdb1e50059ee7794a525ad64130092b851b69",
+  "231befe88d753d0247c6f00f2b741e2a9ffdb254a9681c1fb308792afc321c01",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "e1a7b06651e9c94175b39b61132cdb1e50059ee7794a525ad64130092b851b69"
+quote = "n average, the model costs about 75 percent less than Haiku 4.5"
+[[question.evidence]]
+article_id = "231befe88d753d0247c6f00f2b741e2a9ffdb254a9681c1fb308792afc321c01"
+quote = "Haiku 5.5 also uses a new, less generous tokenizer"
+
+
+[[question]]
+id = "rag-007"
+type = "rare_term"
+legacy_type = "Exact Term"
+split = "test"
+question = "What is celld?"
+gold_article_ids = [
+  "1d5fd2024caedd1b400985111d3b3bb167cf7d3afc72522081dee57fdf9f820c",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "1d5fd2024caedd1b400985111d3b3bb167cf7d3afc72522081dee57fdf9f820c"
+quote = "The Deno team released the first version of celld back in August - their open source implementation of the Durable Objects pattern from Cloudflare Workers"
+
+
+[[question]]
+id = "rag-008"
+type = "paraphrase"
+legacy_type = "Paraphrase"
+split = "dev"
+question = "How big is the French lab’s new flagship model?"
+gold_article_ids = [
+  "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c",
+  "19bbd8a9667ab1144b6d4c57aa71c6c22c888724baa2465b03c7ecc12f76f962",
+  "d9a7e52b4293657c560cf29d1e330dbc21352cdd1e1eda7bd0a75fbce4703c0b",
+  "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173",
+  "0e8219bd64331ee357c25f4556db1efc67f48c65486ccb0d0e6227a9561b74c7",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c"
+quote = "Nicknamed Le Chonk in reference to its 1 trillion parameters"
+[[question.evidence]]
+article_id = "19bbd8a9667ab1144b6d4c57aa71c6c22c888724baa2465b03c7ecc12f76f962"
+quote = "The new 1 trillion-parameter model, Mistral Large 4—nicknamed Le Chonk—can be used and customized by anyone"
+[[question.evidence]]
+article_id = "d9a7e52b4293657c560cf29d1e330dbc21352cdd1e1eda7bd0a75fbce4703c0b"
+quote = "The new 1 trillion-parameter model, Mistral Large 4—nicknamed Le Chonk—can be used and customized by anyone"
+[[question.evidence]]
+article_id = "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173"
+quote = "ML4 is a 1 trillion-parameter natively multimodal model with 52 billion active parameters"
+[[question.evidence]]
+article_id = "0e8219bd64331ee357c25f4556db1efc67f48c65486ccb0d0e6227a9561b74c7"
+quote = "Today they're releasing a preview of Mistral Large 4, a 1 trillion parameter"
+
+
+
+[[question]]
+id = "rag-009"
+type = "paraphrase"
+legacy_type = "Paraphrase"
+split = "dev"
+question = "Does letting a small local model think step by step fix its large-number arithmetic?"
+gold_article_ids = [
+  "69f5bd9058f87f8c2c946d7c872bc19a4da5cc270c76b24e9a59484cc7c89f63",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "69f5bd9058f87f8c2c946d7c872bc19a4da5cc270c76b24e9a59484cc7c89f63"
+quote = "but I was inspired to run the experiment again on local hardware (a DGX Spark) to explore the effect in a fully controlled environment"
+
+
+[[question]]
+id = "rag-010"
+type = "paraphrase"
+legacy_type = "Paraphrase"
+split = "test"
+question = "How can I avoid a surprise cloud bill from a runaway agent?"
+gold_article_ids = [
+  "345f1755705d282a19e9b6b2dfd3b058484aab81833d520923e34990833223b2",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "345f1755705d282a19e9b6b2dfd3b058484aab81833d520923e34990833223b2"
+quote = "When you’re ready to upgrade to a paid plan, you can set a monthly spend limit for your project based on your usage patterns so that you stay within your budget"
+
+
+
+[[question]]
+id = "rag-011"
+type = "multi_chunk"
+legacy_type = "SeveralChunks"
+split = "test"
+question = "What did OpenAI announce for security work at DevDay?"
+gold_article_ids = [
+  "d3b185d971abc0ead80775d6b522b2f0118643f19e66b6283a753505d11aa945",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "d3b185d971abc0ead80775d6b522b2f0118643f19e66b6283a753505d11aa945"
+quote = 'Today launching "Codex Security Cloud", with "Daybreak Blue access" - scheduled scans, automatic de-duplication.'
+[[question.evidence]]
+article_id = "d3b185d971abc0ead80775d6b522b2f0118643f19e66b6283a753505d11aa945"
+quote = "Today they're launching a major upgrade to their Codex Security Cloud product, integrating lessons learned from their internal security sprint."
+
+
+
+[[question]]
+id = "rag-012"
+type = "multi_chunk"
+legacy_type = "SeveralChunks"
+split = "dev"
+question = "What steps has arXiv taken against the surge of AI-generated papers?"
+gold_article_ids = [
+  "c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187",
+]
+gold_mode = "all"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187"
+quote = "Starting October 1, 2026, the preprint platform Arxiv will allow only two submissions per person per calendar month."
+[[question.evidence]]
+article_id = "c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187"
+quote = "In May 2026, Dietterich announced a one-year ban for authors whose papers clearly contain unverified LLM outputs"
+
+
+
+[[question]]
+id = "rag-013"
+type = "time_sensitive"
+legacy_type = "TimeSensitive"
+split = "test"
+question = "Is Claude Haiku 5.5 available yet?"
+gold_article_ids = [
+  "e1a7b06651e9c94175b39b61132cdb1e50059ee7794a525ad64130092b851b69",
+  "231befe88d753d0247c6f00f2b741e2a9ffdb254a9681c1fb308792afc321c01",
+]
+gold_mode = "any"
+stale_article_ids = [
+  "64e27cc1872ee8386150363a658215ac8af30449c67be73ea52b5afb1e4573a1"
+]
+[[question.evidence]]
+article_id = "e1a7b06651e9c94175b39b61132cdb1e50059ee7794a525ad64130092b851b69"
+quote = "Anthropic has released Claude Haiku 5.5, its fastest and most affordable small model"
+[[question.evidence]]
+article_id = "231befe88d753d0247c6f00f2b741e2a9ffdb254a9681c1fb308792afc321c01"
+quote = "As previously promised, here’s Anthropic’s new fast, low cost model: Introducing Claude Haiku 5.5"
+
+
+
+[[question]]
+id = "rag-014"
+type = "time_sensitive"
+legacy_type = "TimeSensitive"
+split = "dev"
+question = "What is the newest version of Leanstral?"
+gold_article_ids = [
+  "1929444a4216300742aa7054989f6fe7c4c6224c580b4d8746c871fbff87114c",
+]
+gold_mode = "any"
+stale_article_ids = [
+  "2baf5368ef46a143cf5b22f3730fc5f5f507984f0ef010d5b85e1bb50f33109b"
+]
+[[question.evidence]]
+article_id = "1929444a4216300742aa7054989f6fe7c4c6224c580b4d8746c871fbff87114c"
+quote = "Today, we are releasing Leanstral 1.5, a free Apache-2.0 licensed model with 119B total and only 6B active parameters"
+
+
+
+[[question]]
+id = "rag-015"
+type = "duplicate"
+legacy_type = "Natural Language"
+split = "dev"
+question = "What is the incident about a murder case?"
+gold_article_ids = [
+  "43fd2a198be0a450280f1ad1a0f6d55139c631fe6b40a6ee87aaa44d91188707",
+  "0854a3cada87fb07918edd8a336eff6328fb5c24a084f1fcb62e81e455730288",
+  "6fafcbf095655c1fbd8b661bd4b446f0944e57db32f6387008d45d57f8834844",
+  "7abe78f993e2c967a177d9915691fd33c60175cf195379fd0ab560107d10f6d4",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "43fd2a198be0a450280f1ad1a0f6d55139c631fe6b40a6ee87aaa44d91188707"
+quote = "An Anthropic AI model submitted a false tip about an unsolved murder to the Philadelphia police."
+[[question.evidence]]
+article_id = "0854a3cada87fb07918edd8a336eff6328fb5c24a084f1fcb62e81e455730288"
+quote = "An Anthropic AI model provided false information about an unsolved homicide to a Philadelphia Police Department (PPD) tipline"
+[[question.evidence]]
+article_id = "6fafcbf095655c1fbd8b661bd4b446f0944e57db32f6387008d45d57f8834844"
+quote = "used URL shortening services to smuggle information past restrictions, and even submitted a false murder tip to the Philadelphia police"
+[[question.evidence]]
+article_id = "7abe78f993e2c967a177d9915691fd33c60175cf195379fd0ab560107d10f6d4"
+quote = "Anthropic cuts off Claude's internet access after the model autonomously filed a fake homicide tip with Philadelphia police"
+
+
+
+[[question]]
+id = "rag-016"
+type = "hard_negative"
+split = "dev"
+question = "How many active parameters does Mistral Large 3 have?"
+gold_article_ids = [
+  "2a480d2ccfa32d5324e25f5b79af52a00a02f63d422b5789013d3befde1e259e",
+]
+gold_mode = "any"
+stale_article_ids = []
+# Large 4 articles that state a (different) active-parameter count; a wrong answer if retrieved first
+hard_negative_article_ids = [
+  "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173",  # Mistral blog: ML4, 52B active
+  "0e8219bd64331ee357c25f4556db1efc67f48c65486ccb0d0e6227a9561b74c7",  # Simon link blog: ML4, 49B active
+]
+[[question.evidence]]
+article_id = "2a480d2ccfa32d5324e25f5b79af52a00a02f63d422b5789013d3befde1e259e"
+quote = '''a sparse mixture-of-experts trained with 41B active and 675B total parameters'''
+
+
+[[question]]
+id = "rag-017"
+type = "specific_detail"
+split = "test"
+question = "What is the name of Google Cloud's feature for setting a monthly financial cap on specific services?"
+gold_article_ids = [
+  "345f1755705d282a19e9b6b2dfd3b058484aab81833d520923e34990833223b2",
+]
+gold_mode = "any"
+stale_article_ids = []
+hard_negative_article_ids = [
+  "34de0981eaae0131b15c4a8a51e3140952839ada9f316fa1f70cd059e3fd58a0",   # mentions "real-time spend caps" for Gemini Enterprise, not the Cloud monthly cap
+]
+[[question.evidence]]
+article_id = "345f1755705d282a19e9b6b2dfd3b058484aab81833d520923e34990833223b2"
+quote = '''Google Cloud launched a similar feature in July, called Spend Caps'''
+
+
+
+
+[[question]]
+id = "rag-018"
+type = "specific_detail"
+split = "dev"
+question = "Which Dutch company led Mistral's Series C funding round?"
+gold_article_ids = [
+  "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c",
+  "7db995c30f47deac24862c7ba1ef7e06890903c7b9a89be65912d3fe5053b704",
+  "2fa3536c2014caca315250df2c55c6373a8ee345e7b7cc223bb4c02bb2fb1e83",
+]
+gold_mode = "any"
+stale_article_ids = []
+[[question.evidence]]
+article_id = "183fcacc2014829eef79993ddc4b383d78b4a61bf99fd779560c7cb8b4184b7c"
+quote = '''Dutch giant ASML, which led its Series C'''
+[[question.evidence]]
+article_id = "7db995c30f47deac24862c7ba1ef7e06890903c7b9a89be65912d3fe5053b704"
+quote = '''With a Series C led by ASML and a Series D led by Samsung Electronics'''
+[[question.evidence]]
+article_id = "2fa3536c2014caca315250df2c55c6373a8ee345e7b7cc223bb4c02bb2fb1e83"
+quote = '''The Series C funding round is led by leading semiconductor equipment manufacturer, ASML Holding NV (ASML)'''
+
+
+
+[[question]]
+id = "rag-019"
+type = "filtered"
+split = "test"
+question = "What does Claude Haiku 5.5 cost per million input tokens?"
+gold_article_ids = [
+  "e1a7b06651e9c94175b39b61132cdb1e50059ee7794a525ad64130092b851b69",
+]
+gold_mode = "any"
+stale_article_ids = []
+[question.filter]
+source = "The Decoder"
+[[question.evidence]]
+article_id = "e1a7b06651e9c94175b39b61132cdb1e50059ee7794a525ad64130092b851b69"
+quote = '''| Input Tokens | $0.10 / $0.50 | $1.00 | $2.00 |'''
+
+
+
+[[question]]
+id = "rag-020"
+type = "filtered"
+split = "dev"
+question = "What is Mistral's most capable model to date?"
+gold_article_ids = [
+  "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173",
+]
+gold_mode = "any"
+stale_article_ids = []
+# Large 3 announcement says "our most capable model to date" too; the date filter must exclude it
+hard_negative_article_ids = [
+  "2a480d2ccfa32d5324e25f5b79af52a00a02f63d422b5789013d3befde1e259e",
+]
+[question.filter]
+since = "2026-10-01"
+[[question.evidence]]
+article_id = "1ef243007176e85cc8c61f991c732cb67f59da2c4bf9bd4e693a0d6d5af2a173"
+quote = '''It is our largest and most capable model to date'''
+
+
+[[question]]
+id = "rag-021"
+type = "no_answer"
+split = "test"
+question = "How many parameters does Claude Haiku 5.5 have?"
+gold_article_ids = []
+gold_mode = "any"
+stale_article_ids = []
+
+
+[[question]]
+id = "rag-022"
+type = "no_answer"
+split = "dev"
+question = "In which year was James Joyce's Ulysses first published?"
+gold_article_ids = []
+gold_mode = "any"
+stale_article_ids = []
+# absence check: no article about Joyce or Ulysses
