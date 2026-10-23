@@ -203,7 +203,7 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 
 **Label check (eval cases 5-8, n=4, 2026-10-21).** The real `search_news` on `news-2026-10-12.db` with each case's expected arguments returned every gold article and none of the forbidden ones (7 forbidden in total). Without the filter, all 7 forbidden articles came back, so each case depends on the filter. This checks retrieval given the right arguments. It does not measure whether the model chooses them; the cases have not been run (eval part D).
 
-- **Known limits:** the model must use exact names; "Guardian" or "the verge" returns the error. With no corpus date, `days` is ignored without telling the model (a note in the result is planned, not built). Unknown names are echoed in the error without a length cap. `SearchFilter(sources=frozenset())` is not rejected; the tool never builds one. The days eval case depends on the snapshot's newest date (2026-10-11 23:01). Retrieval metrics (`build_rag_eval.py`) are unfiltered and were not re-run.
+- **Known limits:** the model must use exact names; "Guardian" or "the verge" returns the error. With no corpus date, `days` is ignored without telling the model (a note in the result is planned, not built). Unknown names are echoed in the error without a length cap. `SearchFilter(sources=frozenset())` is not rejected; the tool never builds one. The days eval case depends on the snapshot's newest date (2026-10-11 23:01). The retrieval eval applies question filters since #59 (D19): rag-020 (`since`) on dev, rag-019 (`source`) on test, which has not been run.
 - **Revisit when:** the eval cases show wrong source names or missed filters (map names case-insensitively, or put the names in the schema as an enum), questions need fixed date ranges (add `until`), or the corpus gets undated articles (add the note).
 
 ### D18. RAG eval set: versioned TOML, split by article
@@ -221,8 +221,49 @@ The retrieval questions live in `rag/eval/rag_questions_v1.toml` (#57), labeled 
 
 **Label check (n=22, 2026-10-22).** All 33 referenced article ids exist in the snapshot, every evidence quote is a substring of its article text, and no article appears in both splits. Types: specific_detail 3, paraphrase 3, multi_article 2, rare_term 2, multi_chunk 2, time_sensitive 2, filtered 2, no_answer 2, number_or_date 1, entity_version 1, duplicate 1, hard_negative 1. `gold_mode = "all"` on 3 questions (rag-003, rag-004, rag-012).
 
-- **Known limits:** rag-020 uses `filter.published_before = "2026-01-01"`, but `SearchFilter` has only `sources` and `since` (D17), so the filter cannot be applied until an `until` bound exists. The split is 13/9 (59/41), not the 70/30 in #57, and the set has 22 of the 27 planned questions. rag-001 and rag-002 still carry a `CHECK` on `gold_mode`. In rag-002 the gold articles disagree (TechCrunch: 4,000 GPUs; Mistral AI and Simon Willison: 3,800), so `any` accepts the article with the other figure. `build_rag_eval.py` still reads `rag/eval/question_list.py`; nothing reads the TOML yet.
-- **Revisit when:** an `until` filter is added (rag-020 becomes runnable), or labels change (bump to v2).
+- **Known limits:** The split is 13/9 (59/41), not the 70/30 in #57, and the set has 22 of the 27 planned questions. rag-001 and rag-002 still carry a `CHECK` on `gold_mode`. In rag-002 the gold articles disagree (TechCrunch: 4,000 GPUs; Mistral AI and Simon Willison: 3,800), so `any` accepts the article with the other figure. The old runner `build_rag_eval.py` and `rag/eval/question_list.py` are still in the repo but no longer used (D19).
+- **Revisit when:** labels change (bump to v2).
+
+### D19. RAG eval harness: save raw hits, score separately, rank by article
+Two scripts (#59). `rag/eval/run_retrieval.py` asks every question of one split with every (chunking config, retriever) pair and saves the raw chunk hits. `rag/eval/evaluate.py` scores a saved run against the labels (D18) and writes the report. Settings are in `rag/eval/rag_run.toml`.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Two scripts | `run_retrieval` searches and saves hits, no scoring; `evaluate` scores, never searches | A label fix or a new metric re-scores old runs without searching again. The retriever never sees gold ids. |
+| Run output | `data/snapshots/eval_results/<YYYYmmdd-HHMMSS>_<experiment>/`: `run.json` (full run config, `dataset_version`, question ids, embedding model), one `<retriever>__<config_id>.jsonl` per pair (one line per question), then `report.md` and `metrics.json` from `evaluate` | One folder holds everything about a run. |
+| Ranking unit | Articles, in the order of their first chunk | Matches what `search_articles` shows the agent. Chunks of one article cannot fill the top k. Chunk-ranked results from `build_rag_eval.py` are not comparable. |
+| Depth | Ranking cut at `max_articles` = 50; each retriever is asked for 50 x `chunk_overfetch` (3) = 150 chunks | Leaves room for the best gold rank at 50 after chunks collapse into articles. |
+| Hybrid | `rrf_k` = 60, `depth` = 50, as the agent default | Measures the retriever the agent uses. |
+| Metrics | R@5, R@10 and MRR per question. `any`: 1 if one gold article is in the top k; `all`: fraction found. Plus first gold rank, stale in top 5 and gold above stale, hard negative above gold, gold copies in top 5, and evidence coverage at 5 (quote found in a retrieved chunk) | Each question type has a failure the plain recall does not show. |
+| no_answer | Not scored at retrieval level; top article and score recorded | Retrieval always returns something. Abstaining is checked in the agent eval. |
+| Filters | Question filters become a `SearchFilter`; `since` is UTC midnight, inclusive | Same filter path as `search_news` (D17). |
+| Split | The run config accepts only `dev` | Test is scored once, after choices are made on dev. |
+| Experiments | One change per run. A chunking change is a new config id built with `build_chunks` and `build_vectors`; a retriever change is a `rag_run.toml` edit. The decision rule is written here before the run | Two runs then differ only in what changed, and the rule cannot follow the result. |
+
+**Baseline (dev, n=13, 12 scored, dataset v1, run `20261022-172640_baseline`).** Both chunking configs × three retrievers. No decision rule was written before this run, so it is a baseline: no choice is made from it, and the agent default (`recursive-tok256-32`, hybrid) is unchanged.
+
+| Retriever | Config | R@5 | R@10 | MRR | Gold in top 5 | Gold in top 50 | Articles returned (min) |
+|---|---|---|---|---|---|---|---|
+| vector | `words-tok256-32` | 0.76 | 0.77 | 0.74 | 10/12 | 12/12 | 50 |
+| bm25 | `words-tok256-32` | 0.85 | 0.86 | 0.83 | 11/12 | 11/12 | 50 |
+| hybrid | `words-tok256-32` | 0.77 | 0.86 | 0.71 | 10/12 | 12/12 | 37 |
+| vector | `recursive-tok256-32` | 0.76 | 0.87 | 0.74 | 10/12 | 12/12 | 50 |
+| bm25 | `recursive-tok256-32` | 0.85 | 0.86 | 0.77 | 11/12 | 11/12 | 50 |
+| hybrid | `recursive-tok256-32` | 0.86 | 0.86 | 0.71 | 11/12 | 12/12 | 32 |
+
+All pairs are within one question of each other at 5 (10 or 11 of 12). With n=12 that is a tie: one question is 0.08 of mean recall. R@k mixes `any` questions (0 or 1) and `all` questions (a fraction: rag-004 counts 1/7 or 2/7). The test split was not run.
+
+What the failures are:
+- **rag-009** (paraphrase): no pair finds the gold article in the top 10. Vector ranks it 19-20, hybrid 39-41, and BM25 not in the top 50. The question's words ("think step by step", "large-number arithmetic") do not appear in the article ("reasoning enabled", "addition in words").
+- **rag-004** (multi_article, `all`, 7 gold): 1 or 2 of the 7 in the top 5 for every pair. The gold articles cover different incidents.
+- **rag-001**: BM25 ranks gold first with both configs. Vector ranks it 6 (recursive) or 11 (words), below older Mistral announcements (Mistral 3, Large Enough). Hybrid ranks it 2 (recursive) or 7 (words).
+- **rag-014** (time_sensitive): vector ranks Leanstral 1.5 above the stale Leanstral article. BM25 and hybrid rank the stale one first, with gold at rank 2, with both configs.
+- **rag-020** (filtered, `since` 2026-10-01): gold at rank 1 to 5 for every pair; the Large 3 hard negative never ranks above gold.
+- **Hybrid depth:** at `depth` = 50 the hybrid returned as few as 32 (recursive) and 37 (words) articles, against 50 for vector and BM25. Gold was still in the ranking for 12 of 12.
+- **rag-022** (no_answer): top-1 scores were 0.50-0.51 (vector cosine), 13.9-14.3 (BM25) and 0.029-0.031 (hybrid RRF). RRF scores have no fixed scale, so they cannot drive an abstain threshold.
+
+- **Known limits:** n=12 scored; per type n is 1 to 2, so per-type numbers are anecdotes. Evidence coverage counts a quote cut by a chunk border as missed, and only searches retrieved chunks. Search time is saved per question but not reported. `build_retrievers` loads the embedding model once per config id.
+- **Revisit when:** a comparison is planned (write its decision rule here first), the dev set grows, or the test split is enabled.
 
 ## 5. Interfaces and data models
 
@@ -341,7 +382,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 | Layer | How |
 |-------|-----|
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
-| Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18). |
+| Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18); `run_retrieval` and `evaluate` with article-level R@5, R@10, MRR and per-type checks (D19); dev baseline run, test not run. |
 | Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
 | Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |

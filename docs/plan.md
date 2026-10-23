@@ -107,7 +107,8 @@ Keep the layers separate so each one can be tested alone:
 - `rag/base.py`: `Hit` and the `Retriever` protocol (`search(query, k, search_filter=None) -> list[Hit]`; `SearchFilter` added in #47).
 - `rag/build_vectors.py`: one Chroma collection per chunk config (cosine), with `article_id`, `source`, `published_at`, `chunk_index` metadata.
 - `VectorRetriever`, `BM25Retriever`, `HybridRetriever` (reciprocal rank fusion).
-- `rag/eval/build_rag_eval.py`: runs vector, BM25 and hybrid for both chunk configs; recall@5 and @10 per question; results written to `data/snapshots/eval_results/`.
+- `rag/eval/build_rag_eval.py`: runs vector, BM25 and hybrid for both chunk configs; recall@5 and @10 per question; results written to `data/snapshots/eval_results/`. No longer used since #59.
+- #57, #59: eval set `rag/eval/rag_questions_v1.toml` (`dataset.py` loads and checks it, design D18); `run_retrieval.py` saves raw hits per (retriever, config) into a run folder, and `evaluate.py` scores it (`metrics.py`, `scoring.py`, `report.py`) into `report.md` and `metrics.json`; settings in `rag/eval/rag_run.toml` (design D19).
 
 ### Agent (#44, #45, #46, #47, #48, #49)
 - `agent/agent.py`: `create_agent` (LangChain) with `ChatOpenAI`, `InMemorySaver` for thread memory, system prompt in `agent/prompts.py`.
@@ -147,13 +148,16 @@ Watch-outs:
 
 - [ ] Grow the eval set from 13 to 30-50 questions; include 2-3 with no answer in the corpus.
     - v1 (#57): 22 questions, 13 dev and 9 test, 2 with no answer.
-    - [ ] rag-020 needs an `until` date filter in `SearchFilter`; today it has only `sources` and `since` (design D18).
 - [ ] Move questions from `rag/eval/question_list.py` to a JSONL file with `stale` and `evidence` fields.
     - Done as TOML, not JSONL: `rag/eval/rag_questions_v1.toml`, with `rag/eval/rag_run.toml` for `config_ids` (#57).
     - [ ] Switch `build_rag_eval.py` to read the TOML; it still reads `question_list.py`.
+        - Replaced by `run_retrieval.py` and `evaluate.py` (#59), which read the TOML; the old runner is unused.
 - [ ] Add metrics: MRR, best rank of a gold article at k=50, stale-hit rate.
+    - #59: MRR, first gold rank in the top 50 articles, stale in top 5 and gold above stale, plus hard negative above gold, gold copies in top 5, evidence coverage at 5 (`rag/eval/metrics.py`).
 - [ ] Unit tests for the metric functions on fake hits (no model), including the empty-gold case.
+    - #59: `tests/rag/eval/test_metrics.py`, empty gold included.
 - [ ] Run the full grid (2 configs x 3 retrievers), read the failures, and write the results up in `design.md`.
+    - Dev run `20261022-172640_baseline`, written up in design D19. Test split not run.
 - [ ] Record the corpus cutoff (Hugging Face from 2026-05-15) and the reason in `design.md`.
 - [ ] Narrow the bare `except Exception` around `delete_collection` in `rag/build_vectors.py`.
 - [ ] Optional: semantic chunker as a third config (min chunk size, re-split oversized chunks, at most two thresholds, cached).

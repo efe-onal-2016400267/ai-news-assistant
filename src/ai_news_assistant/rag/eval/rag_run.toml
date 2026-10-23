@@ -1,2 +1,15 @@
-# How to run the RAG eval (not data about the questions).
+# How to run the RAG eval (not data about the questions). Paths are relative to the repo root.
+experiment = "baseline"  # goes into the run folder name and run.json
+split = "dev"  # only "dev" for now
+dataset = "src/ai_news_assistant/rag/eval/rag_questions_v1.toml"
+db = "data/snapshots/news-2026-10-12.db"
+vector_store = "data/snapshots/chroma-2026-10-12"
+out_dir = "data/snapshots/eval_results"
 config_ids = ["words-tok256-32", "recursive-tok256-32"]
+retrievers = ["vector", "bm25", "hybrid"]
+max_articles = 50  # article ranking depth scored by evaluate
+chunk_overfetch = 3  # ask for max_articles * 3 chunks; chunks repeat articles
+
+[hybrid]  # same as the agent default (HybridRetriever)
+rrf_k = 60
+depth = 50
