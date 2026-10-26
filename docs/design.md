@@ -182,7 +182,7 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 
 **Tests** (`tests/agent/test_context_editing.py`, no model): our configuration, not the library. At the trigger nothing changes; above it all but the last 3 results hold the placeholder and the `context_editing.cleared` flag; tool call id, name and arguments are kept; Human and AI messages are unchanged; applying twice is stable; parallel tool calls are matched by id; a tool message without a matching call is left alone; the middleware edits a copy, so the thread state keeps every id for `retrieved_ids`.
 
-**Eval cases** (M4): written as data in `data/eval/agent_cases.toml` with `trigger = 3000` so 4 turns are enough: early-detail recall, topic switch, name and version survival, follow-up on an unmentioned article. The re-cite-after-clearing case is not written. None has been run; the runner is eval part D.
+**Eval cases** (M4): written as data in `agent/eval/agent_cases.toml` (schema in D20) with `trigger = 3000` so 4 turns are enough: early-detail recall, topic switch, name and version survival, follow-up on an unmentioned article. The re-cite-after-clearing case is not written. None has been run; the runner is eval part D.
 
 - **Known limits:** clearing loses article details the answer did not use; the model must notice and re-fetch, which depends on model behavior and is checked only by the eval cases. `check_citations` accepts ids retrieved earlier in the thread even when their text is cleared, so a citation can pass without the model seeing the article. The trigger is an approximate count and a hand-picked constant; it does not adapt to the model. The stored thread is never shortened, which matters for storage once `InMemorySaver` is replaced by SQLite.
 - **Revisit when:** long threads still grow past the trigger after clearing (add summarization), the eval cases show invented details after clearing, or `get_latest_articles` output is shrunk (the trigger and `keep` were chosen around its 10k result).
@@ -201,7 +201,7 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 | Source names | Exact match against `RagStore.sources()`; any unknown name returns `{"error": "Unknown source(s): ... Valid source(s): ..."}` and no search runs | A wrong name would otherwise give an empty list, and the model could not tell why. Case-insensitive matching was considered and not built. |
 | Source list | Filled into the tool description from `RagStore.sources()` when the tool is built | Stays correct when feeds or the snapshot change. |
 
-**Label check (eval cases 5-8, n=4, 2026-10-21).** The real `search_news` on `news-2026-10-12.db` with each case's expected arguments returned every gold article and none of the forbidden ones (7 forbidden in total). Without the filter, all 7 forbidden articles came back, so each case depends on the filter. This checks retrieval given the right arguments. It does not measure whether the model chooses them; the cases have not been run (eval part D).
+**Label check (eval cases 5-8 in `agent/eval/agent_cases.toml`, n=4, 2026-10-21).** The real `search_news` on `news-2026-10-12.db` with each case's expected arguments (`tool_args`, D20) returned every gold article and none of the forbidden ones (7 forbidden in total). Without the filter, all 7 forbidden articles came back, so each case depends on the filter. This checks retrieval given the right arguments. It does not measure whether the model chooses them; the cases have not been run (eval part D).
 
 - **Known limits:** the model must use exact names; "Guardian" or "the verge" returns the error. With no corpus date, `days` is ignored without telling the model (a note in the result is planned, not built). Unknown names are echoed in the error without a length cap. `SearchFilter(sources=frozenset())` is not rejected; the tool never builds one. The days eval case depends on the snapshot's newest date (2026-10-11 23:01). The retrieval eval applies question filters since #59 (D19): rag-020 (`since`) on dev, rag-019 (`source`) on test, which has not been run.
 - **Revisit when:** the eval cases show wrong source names or missed filters (map names case-insensitively, or put the names in the schema as an enum), questions need fixed date ranges (add `until`), or the corpus gets undated articles (add the note).
@@ -264,6 +264,32 @@ What the failures are:
 
 - **Known limits:** n=12 scored; per type n is 1 to 2, so per-type numbers are anecdotes. Evidence coverage counts a quote cut by a chunk border as missed, and only searches retrieved chunks. Search time is saved per question but not reported. `build_retrievers` loads the embedding model once per config id.
 - **Revisit when:** a comparison is planned (write its decision rule here first), the dev set grows, or the test split is enabled.
+
+### D20. Agent eval cases: TOML schema, any/all/none checks, graded abstention
+The agent eval cases live in `agent/eval/agent_cases.toml` (#63), labeled against `news-2026-10-12.db`. `agent/eval/dataset.py` loads and checks them (`load_cases`, `parse_case`); any problem raises `ValueError` naming the case id. The runner is not built yet (#62).
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Location | In the package next to the loader, not under the gitignored `data/` | The cases are reviewed and versioned with the code. |
+| Header | `dataset_version`, `snapshot`, `abstain_phrases`, then `[[case]]` tables | Filter cases depend on the snapshot's articles and newest date; the runner can check it. |
+| Case keys | `id`, `type`, `split`, `turns`, `gold_article_ids`, `[case.expect]`; optional `[case.setup]` (`trigger`, `fixture_store`, `canary`) and `[case.precondition]` | Run settings, case-validity checks and graded checks are kept apart. Each table has its own allowed keys. |
+| Checks | `tools_*`, `cite_*` and `facts_*`, each with `_all`, `_any`, `_none`; every key set must hold | One mode per kind cannot say "cite gold and never cite these" or "call `search_news`, not `get_latest_articles`". |
+| Fact wordings | `facts_all` is a list of groups: every group must match, one wording per group is enough | One fact can be worded several ways; flat lists cannot combine that with a second required fact. |
+| Empty list | Same as a missing key; "no tool calls" is `max_tool_calls = 0` | One meaning per spelling. |
+| Abstention | `must_abstain = true` exactly when gold is empty; abstaining is pass, stating facts is fail | Questions with no answer in the corpus. |
+| Fallback | `allow_fallback = true`: an answer that abstains (matches `abstain_phrases`) instead of the facts is graded fallback, not pass or fail | "Don't have" is better than a wrong answer but is not correct. Pass, fallback and fail are reported apart, so fallbacks never raise accuracy. |
+| Precondition | `target_not_cited_in_turn`: a turn before the last | A failure means the case did not test what it was meant to, not that the agent failed. |
+| Tool arguments | `[case.expect.tool_args]`: `tool`, `sources`, `days`, `args_absent`; applies to the first call of `tool` | Replaces "`[]` or `0` means absent" with an explicit list. |
+| Graded turn | Every `expect` check grades the last turn | Enough for the current cases; per-turn checks can be added when a case needs them. |
+| Split | No article is gold or `cite_none` in both splits; checked before filtering by split | Same rule as D18. |
+| Matching | Answer text: case-insensitive substring (implemented by the runner) | Simple and reviewable; a judge covers wording later. |
+
+Validation rules beyond types and keys: `cite_any` and `cite_all` must be gold ids and `cite_none` must not; the three `tools_*` lists share no tool and the `tool_args` tool is not in `tools_none`; `tool_args` cannot set and forbid the same argument; `trigger` and `precondition` only on `follow-ups-and-context-management` cases; no fact string may be part of an abstain phrase (else any abstention would pass the fact check).
+
+**Label state (n=9, 2026-10-26).** All 9 cases are dev: 4 `follow-ups-and-context-management` (D16 M4) and 5 `filter-requests` (D17). `allow_fallback` on 2 (cases 1 and 4), `must_abstain` on 1 (case 9), `tool_args` on 4 (cases 5-8). `cite_any` is set to the gold ids on all 8 cases with gold. `load_cases` loads the file; 76 tests in `tests/agent/eval/test_agent_dataset.py`, no model or network.
+
+- **Known limits:** no test split and no runner, so no case has been graded. `cite_any` on every gold case is stricter than the cases were first written: a right answer without a gold citation fails. `"not in"` is a broad abstain phrase ("not included" matches), and curly apostrophes (`don’t have`) do not match. Substring checks cannot catch an invented answer that happens to contain the expected string; `grounded` is stored for the judge but not graded.
+- **Revisit when:** the runner exists (check the grading against a few hand-read answers), test cases are added, or abstain phrases misgrade answers (narrow the list).
 
 ## 5. Interfaces and data models
 
@@ -384,7 +410,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
 | Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18); `run_retrieval` and `evaluate` with article-level R@5, R@10, MRR and per-type checks (D19); dev baseline run, test not run. |
 | Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
-| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. |
+| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner not built. |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |
 | CI gating | Fast eval subset on every PR; full suite nightly; threshold failures block merge. |
 
