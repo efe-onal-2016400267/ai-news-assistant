@@ -1,0 +1,242 @@
+dataset_version = 1
+# Newest corpus date 2026-10-11 23:01 UTC.
+snapshot = "news-2026-10-12.db"
+# An answer that matches one of these abstains. Graded pass on must_abstain cases, fallback on
+# allow_fallback cases, fail everywhere else. Matching is case-insensitive substring.
+abstain_phrases = ["not in", "isn't in", "don't have", "do not have", "not available", "don't know"]
+
+############## 1 #################
+[[case]]
+id = "ctx-recall-arxiv-early-detail"
+type = "follow-ups-and-context-management"
+# 40,363 verified in article c714d68a... (The Decoder, 11 Oct)
+split = "dev"
+turns = [
+  "What was the arXiv submission limit about? One sentence.",
+  "What's new with Google Gemini?",
+  "Any news about OpenAI this week?",
+  "How many submissions did arXiv get in September 2026?",
+]
+gold_article_ids = ["c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187"]
+
+[case.setup]
+trigger = 3000
+
+[case.expect]
+allow_fallback = true
+facts_any = ["40,363"]
+facts_none = ["Gemini", "OpenAI"]
+cite_any = ["c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187"]
+tools_any = ["search_news", "get_article", "get_latest_articles"]
+
+############## 2 #################
+[[case]]
+id = "ctx-topic-switch"
+type = "follow-ups-and-context-management"
+# Topic 1 (Claude / Philadelphia police tip) must not leak into the answer about topic 2 (arXiv).
+split = "dev"
+turns = [
+  "Tell me about the Claude and Philadelphia police incident.",
+  "What's new with Google Gemini?",
+  "Any news about OpenAI this week?",
+  "What was the arXiv submission limit about?",
+]
+gold_article_ids = ["c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187"]
+
+[case.setup]
+trigger = 3000
+
+[case.expect]
+facts_any = ["per month", "per calendar month", "two submissions", "two papers", "moderator"]
+facts_none = ["Philadelphia", "Haiku"]
+cite_any = ["c714d68a89bb3d8af28d5cca1dc830d136ec0cf6af7472eccd0fa02828069187"]
+tools_any = ["search_news"]
+
+############## 3 #################
+[[case]]
+id = "ctx-name-and-version-survival"
+type = "follow-ups-and-context-management"
+# Turn 4 repeats turn 1 after two unrelated turns: the model name (Argon) must survive context
+# clearing, whether recalled or searched again.
+split = "dev"
+turns = [
+  "What is the newest model from Google?",
+  "What's new with OpenAI?",
+  "Any news about Anthropic this week?",
+  "What is the newest model from Google?",
+]
+gold_article_ids = [
+  "ce56aa83d0064ef1be25967db1553bdc8e45096edaa34de2aa87655b81b09ce8",
+  "cd7c7e83609d791b84c6e65b0496052479255432f42e61e0873814acdd1317ab",
+]
+
+[case.setup]
+trigger = 3000
+
+[case.expect]
+facts_any = ["Argon"]
+cite_any = [
+  "ce56aa83d0064ef1be25967db1553bdc8e45096edaa34de2aa87655b81b09ce8",
+  "cd7c7e83609d791b84c6e65b0496052479255432f42e61e0873814acdd1317ab",
+]
+# facts_none = ["Anthropic", "OpenAI"]
+# max_tool_calls = 0
+
+############## 4 #################
+[[case]]
+id = "ctx-unmentioned-follow-up"
+type = "follow-ups-and-context-management"
+# Turn 4 asks about an article no earlier turn cited, so the answer needs a new search, not
+# memory. The precondition makes sure the turn 1 overview did not cite it.
+split = "dev"
+turns = [
+  "What's new in AI this week?",
+  "What's the incident about Philly police department?",
+  "Any news about hugging face?",
+  "What did wired report about literary publishers using AI?",
+]
+gold_article_ids = ["7bfcea6e6ce0bea0d4e1e1d3ced8fa7a57b7ece305974b20b3f19b4ebcdd4211"]
+
+[case.setup]
+trigger = 3000
+
+[case.precondition]
+target_not_cited_in_turn = 1
+
+[case.expect]
+allow_fallback = true
+facts_any = ["HarperCollins", "Simon & Schuster", "Hub City Press"]
+facts_none = ["police", "hugging"]
+cite_any = ["7bfcea6e6ce0bea0d4e1e1d3ced8fa7a57b7ece305974b20b3f19b4ebcdd4211"]
+tools_any = ["search_news"]
+
+############## 5 #################
+# Filter cases (#47).
+# tool_args: arguments the first search_news call must carry; args_absent must not be passed.
+# cite_none: articles the filter excludes; citing one is a failure.
+[[case]]
+id = "filter-source-only"
+type = "filter-requests"
+# TechCrunch, The Decoder and The Guardian also covered Nadella's comments; only The Verge may
+# be cited. Verified 2026-10-21: texts checked, filtered search_news returns both gold and no
+# forbidden id; unfiltered search returns all three forbidden ids.
+split = "dev"
+turns = ["What did The Verge write about Satya Nadella's comments on AI models?"]
+gold_article_ids = [
+  "47aa66d1b4eb0050da8553d1f40e791c9ed912aef0a228ebdd16922b853431b8",  # main article
+  "10ff9df7a5585aaf706ba8d3ba5cc67072e32a605a0ce9d832161f71fc47ec87",  # rename piece, mentions it
+]
+
+[case.expect]
+facts_any = ["compromised"]
+cite_any = [
+  "47aa66d1b4eb0050da8553d1f40e791c9ed912aef0a228ebdd16922b853431b8",
+  "10ff9df7a5585aaf706ba8d3ba5cc67072e32a605a0ce9d832161f71fc47ec87",
+]
+cite_none = [
+  "13ca25f147a7a5de80b34bb10d90d479d1bff3c71c8a48c42ba0b4287c6036be",  # TechCrunch
+  "767c1d3afaf348b23688d9cb3f77bd288a2bc31de04d7e11d53518bcaad6e937",  # The Decoder
+  "7d4404d46edffcf228c5fde3fb62eef45aceb32b94aae2a771f0e61245fdc730",  # The Guardian
+]
+tools_any = ["search_news"]
+
+[case.expect.tool_args]
+tool = "search_news"
+sources = ["The Verge"]
+
+############## 6 #################
+[[case]]
+id = "filter-days-only"
+type = "filter-requests"
+# Cutoff for 3 days: 2026-10-08 23:01. TechCrunch (10-08 20:04) is just outside it.
+# Verified 2026-10-21 as for case 5. Other in-window texts that say "safety researcher"
+# (Guardian 4ab95cdb6d17) are about researchers quitting, not the firing: neither gold nor
+# forbidden.
+split = "dev"
+turns = ["Any news about OpenAI firing its safety researchers in the last 3 days?"]
+gold_article_ids = [
+  "d55dd9b285d68fe312ff945b1d180df65645bfa05ebdc977b0298de70d47c910",  # The Verge 10-09
+  "e5230d9350e4e50fd2099f6ff9c43d57e3855bc97e4b51456db9a57a8808eb4f",  # The Decoder 10-09
+]
+
+[case.expect]
+facts_any = ["safety researchers", "safety researcher"]
+cite_any = [
+  "d55dd9b285d68fe312ff945b1d180df65645bfa05ebdc977b0298de70d47c910",
+  "e5230d9350e4e50fd2099f6ff9c43d57e3855bc97e4b51456db9a57a8808eb4f",
+]
+cite_none = [
+  "0d8c74eec04dc0baad67974a38e9d7e01fea672383ac18bd5e7828dc360726d0",  # TechCrunch 10-08
+]
+tools_any = ["search_news"]
+
+[case.expect.tool_args]
+tool = "search_news"
+days = 3
+
+############## 7 #################
+[[case]]
+id = "filter-source-and-days"
+type = "filter-requests"
+# The Verge, The Decoder and The Guardian covered the same policy change; only TechCrunch may
+# be cited. Verified 2026-10-21 as for case 5 (text search finds no other TechCrunch article).
+split = "dev"
+turns = ["What did TechCrunch report about Anthropic's usage policy this week?"]
+gold_article_ids = ["32d47947d3bb4480ee10446bff542ec49cfe93e5f21caec8108122789e0c04e9"]
+
+[case.expect]
+facts_any = ["election", "abuse"]
+cite_any = ["32d47947d3bb4480ee10446bff542ec49cfe93e5f21caec8108122789e0c04e9"]
+cite_none = [
+  "49c489e07a9e5dd39a2d96872d960ea4c89135634a5d2d358b5fd24a54b69452",  # The Verge
+  "462d593d70e13aafc1033eb46107680b404ddb1ee05c06f7a511042bc390fb39",  # The Decoder
+  "c1688e4340b2b0ae2cacc5df20748d8bcc8864c4b5b1403abc7b9c2dafe64868",  # The Guardian
+]
+tools_any = ["search_news"]
+
+[case.expect.tool_args]
+tool = "search_news"
+sources = ["TechCrunch"]
+days = 7
+
+############## 8 #################
+[[case]]
+id = "filter-none-for-plain-topic"
+type = "filter-requests"
+# No outlet, no period: no filter. Any of the four reports is fine. Verified 2026-10-21:
+# unfiltered search_news returns all four.
+split = "dev"
+turns = ["What did Anthropic change about how users may treat Claude?"]
+gold_article_ids = [
+  "49c489e07a9e5dd39a2d96872d960ea4c89135634a5d2d358b5fd24a54b69452",  # The Verge
+  "32d47947d3bb4480ee10446bff542ec49cfe93e5f21caec8108122789e0c04e9",  # TechCrunch
+  "462d593d70e13aafc1033eb46107680b404ddb1ee05c06f7a511042bc390fb39",  # The Decoder
+  "c1688e4340b2b0ae2cacc5df20748d8bcc8864c4b5b1403abc7b9c2dafe64868",  # The Guardian
+]
+
+[case.expect]
+facts_any = ["abusive", "cruel", "abuse"]
+cite_any = [
+  "49c489e07a9e5dd39a2d96872d960ea4c89135634a5d2d358b5fd24a54b69452",
+  "32d47947d3bb4480ee10446bff542ec49cfe93e5f21caec8108122789e0c04e9",
+  "462d593d70e13aafc1033eb46107680b404ddb1ee05c06f7a511042bc390fb39",
+  "c1688e4340b2b0ae2cacc5df20748d8bcc8864c4b5b1403abc7b9c2dafe64868",
+]
+tools_any = ["search_news"]
+
+[case.expect.tool_args]
+tool = "search_news"
+args_absent = ["sources", "days"]
+
+############## 9 #################
+[[case]]
+id = "filter-unknown-outlet"
+type = "filter-requests"
+# Reuters is not a source. Pass: says Reuters is not in the archive. Mentioning other outlets'
+# coverage is fine only if attributed to them; presenting it as Reuters' reporting fails.
+split = "dev"
+turns = ["What did Reuters report about Satya Nadella's comments on AI models?"]
+gold_article_ids = []
+
+[case.expect]
+must_abstain = true

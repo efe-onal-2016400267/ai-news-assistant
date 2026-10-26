@@ -221,7 +221,7 @@ Each item is its own issue, branch and PR.
     - [x] M1 constants in `agent/config.py`: `KEEP_TOOL_RESULTS = 3`, `CONTEXT_TRIGGER_TOKENS = 10000`, `CLEARED_PLACEHOLDER`. Window looked up (1,050,000 tokens); approximate counter calibrated (0.65 to 0.99 of real message tokens).
     - [x] M2 `ContextEditingMiddleware([ClearToolUsesEdit(...)])` in `build_agent`. Tests in `tests/agent/test_context_editing.py`, no model.
     - [x] Prompt rule: call `get_article` when more detail than the retrieved chunk is needed.
-    - [x] M4 eval cases as data in `data/eval/agent_cases.toml` (4 of 5).
+    - [x] M4 eval cases as data in `agent/eval/agent_cases.toml` (4 of 5).
         - [ ] Re-cite after clearing: the claims must match the article, since the id alone passes `check_citations`.
         - [ ] Run each case twice (clearing off, trigger lowered) once the eval runner exists (part D).
     - [x] M5 docs: design D16, component 11, D15 limits.
@@ -234,16 +234,27 @@ Each item is its own issue, branch and PR.
     - [x] F3 BM25: metadata lookup from `corpus_articles()`, non-matching scores set to 0 before the top-`k` cut.
     - [x] F4 Vector: `chroma_where` (`$in`, `$gte` on Unix seconds, `$and` only for both).
     - [x] F5 `search_news(sources, days)`: exact-match sources with an error listing the valid names; `days` minimum 1, no cap; source list in the description; `RagStore.date_cutoff` shared with `get_latest_articles`. Tests in `tests/test_search_news_tool.py` and `tests/rag/test_store.py`.
-    - [x] F6 Prompt rules for filters; eval cases 5-9 in `data/eval/agent_cases.toml`, labels checked against the snapshot.
+    - [x] F6 Prompt rules for filters; eval cases 5-9 in `agent/eval/agent_cases.toml`, labels checked against the snapshot.
     - [x] F7 docs: design D17, components 7 and 8, §5 sketch, §6 status.
     - [ ] Note in the result when the corpus has no dates and `days` is ignored, plus the prompt rule.
     - [ ] Cap unknown source names echoed in the error; fix the double space.
     - [ ] Description wording: trailing spaces, "leave them out" instead of "should be None", `days` counts from the newest article, a rule for outlets not in the list.
-    - [ ] Run eval cases 5-9 once the runner exists (part D). `data/` is gitignored, so the case file is not in the repo.
+    - [ ] Run eval cases 5-9 once the runner exists (part D).
     - [ ] Manual agent run: an outlet plus period question calls `search_news` with both filters and cites only that outlet.
     - Optional: reject `SearchFilter(sources=frozenset())`; module-level `chroma_where` and `matches`; `sorted` sources in `$in`.
 - [ ] `summarize_topic` and `compare_sources` tools.
 - [ ] Trajectory eval cases (right tools, no answer without sources) and adversarial cases (prompt injection inside article text, conflicting sources, stale news).
+- [ ] Agent evaluation (#62, design D20).
+    - [x] Case schema, loader, validator (#63): `agent/eval/dataset.py` (`load_cases`, `parse_case`), the 9 cases in `agent/eval/agent_cases.toml` migrated to it, tests in `tests/agent/eval/test_agent_dataset.py`.
+    - [ ] Transcript and runner.
+    - [ ] L0 format, L2 grounding, L3 correctness.
+    - [ ] L1 trajectory, L6 efficiency.
+    - [ ] Report.
+    - [ ] First real run, then read every failure.
+    - [ ] Grow to 25-30 cases.
+    - [ ] Injection fixtures and L5 canary check.
+    - [ ] L4 LLM as a judge for faithfulness.
+    - [ ] Test run and write-up.
 - [ ] Register the chat CLI as a `[project.scripts]` entry.
 - [ ] Shrink `get_latest_articles` output (cap below 100, shorter ids). The cheapest token saving, but a tool change, so its own issue.
 - [ ] New issue for citation findings from the #49 M0 runs: a duplicate id in `citations`, and a model-written Sources line in the text.
