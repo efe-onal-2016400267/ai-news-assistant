@@ -4,8 +4,9 @@ from typing import Any
 from dotenv import load_dotenv
 from langchain_core.runnables import RunnableConfig
 
-from ai_news_assistant.agent.agent import build_agent
+from ai_news_assistant.agent.agent import build_agent, build_retriever
 from ai_news_assistant.agent.answer import ask, render
+from ai_news_assistant.agent.config import CONTEXT_TRIGGER_TOKENS
 from ai_news_assistant.rag.config import DEFAULT_DB
 
 
@@ -18,7 +19,12 @@ def print_result_messages(results: dict[str, Any]) -> None:
 
 def main() -> None:
     load_dotenv()
-    agent = build_agent()
+    retriever = build_retriever()
+    agent = build_agent(
+        retriever=retriever,
+        trigger_tokens=CONTEXT_TRIGGER_TOKENS,
+        store_path=DEFAULT_DB,
+    )
     config: RunnableConfig = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
     print("News assistant. Type 'exit' to quit.")

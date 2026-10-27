@@ -1,15 +1,31 @@
 import logging
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import AnyMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.state import CompiledStateGraph
 
-from ai_news_assistant.agent.citations import check_citations, resolve_sources, retrieved_ids
+from ai_news_assistant.agent.citations import (
+    CheckedCitations,
+    check_citations,
+    resolve_sources,
+    retrieved_ids,
+)
 from ai_news_assistant.models import Answer, ModelAnswer
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class AskResult:
+    """The whole run result for eval"""
+
+    answer: Answer
+    model_answer: ModelAnswer | None  # None = no structured output
+    checked: CheckedCitations | None
+    messages: list[AnyMessage]  # The whole thread so far, including earlier turns
 
 
 def render(answer: Answer) -> str:
@@ -29,13 +45,13 @@ def render(answer: Answer) -> str:
     return text
 
 
-def ask(
+def ask_detailed(
     agent: CompiledStateGraph[Any, None, Any, Any],
     question: str,
     config: RunnableConfig,
     store_path: Path,
-) -> Answer:
-    """Orchestrate citation logic.
+) -> AskResult:
+    """Return the trace to a question, orchestrate citation logic.
 
     1. invoke the agent to get the initial ModelAnswer with structured output.
     2. Call `retrieve_ids` to get the article_ids from tool calls.
@@ -49,6 +65,7 @@ def ask(
     thread_id = config.get("configurable", {}).get("thread_id")
     result = agent.invoke({"messages": [HumanMessage(content=question)]}, config=config)
     structured_response = result.get("structured_response")
+    messages = result["messages"]
     if not isinstance(structured_response, ModelAnswer):
         logger.warning(
             "Thread %s: no structured response, answering without sources",
@@ -61,11 +78,13 @@ def ask(
             grounded=False,
         )
         checked = check_citations(no_structure, set())
-        return Answer(
-            text=checked.clean_text,
-            sources=[],
-            grounded=False,
+        return AskResult(
+            answer=Answer(text=checked.clean_text, sources=[], grounded=False),
+            model_answer=None,
+            checked=checked,
+            messages=messages,
         )
+
     retrieved = retrieved_ids(result["messages"])
     checked = check_citations(model_answer=structured_response, retrieved=retrieved)
     sources = resolve_sources(valid=checked.valid_citations, store_path=store_path)
@@ -92,4 +111,20 @@ def ask(
         sources=sources,
         grounded=structured_response.grounded and len(sources) > 0,
     )
-    return answer
+    ask_result = AskResult(
+        answer=answer,
+        model_answer=structured_response,
+        checked=checked,
+        messages=messages,
+    )
+    return ask_result
+
+
+def ask(
+    agent: CompiledStateGraph[Any, None, Any, Any],
+    question: str,
+    config: RunnableConfig,
+    store_path: Path,
+) -> Answer:
+    """Return answer from ask_detailed(...)."""
+    return ask_detailed(agent=agent, question=question, config=config, store_path=store_path).answer

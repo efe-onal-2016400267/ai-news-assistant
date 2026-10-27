@@ -1,5 +1,7 @@
+from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain.agents.middleware import ClearToolUsesEdit, ContextEditingMiddleware
 from langchain.messages import HumanMessage
@@ -22,6 +24,7 @@ from ai_news_assistant.agent.tools import (
     create_search_tool,
 )
 from ai_news_assistant.models import ModelAnswer
+from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.bm25_retriever import BM25Retriever
 from ai_news_assistant.rag.config import (
     DEFAULT_CHUNKING_CONFIG,
@@ -32,26 +35,36 @@ from ai_news_assistant.rag.hybrid_retriever import HybridRetriever
 from ai_news_assistant.rag.vector_retriever import VectorRetriever
 
 
-def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
-    """Build the agent using the tool factories."""
+def build_retriever() -> Retriever:
+    """Build HybridRetriever"""
     vector_retriever = VectorRetriever(
         vector_store=DEFAULT_VECTOR_STORE, config_id=DEFAULT_CHUNKING_CONFIG
     )
 
     bm25_retriever = BM25Retriever(db=DEFAULT_DB, config_id=DEFAULT_CHUNKING_CONFIG)
 
-    retriever = HybridRetriever([vector_retriever, bm25_retriever])
+    return HybridRetriever([vector_retriever, bm25_retriever])
+
+
+def build_agent(
+    retriever: Retriever,
+    trigger_tokens: int = CONTEXT_TRIGGER_TOKENS,
+    store_path: Path = DEFAULT_DB,
+) -> CompiledStateGraph[Any, None, Any, Any]:
+    """Build the agent using the tool factories."""
 
     tools = [
-        create_search_tool(retriever=retriever, store_path=DEFAULT_DB),
-        create_get_article_tool(store_path=DEFAULT_DB),
-        create_get_latest_articles_tool(store_path=DEFAULT_DB),
+        create_search_tool(retriever=retriever, store_path=store_path),
+        create_get_article_tool(store_path=store_path),
+        create_get_latest_articles_tool(store_path=store_path),
     ]
 
     return create_agent(
         model=ChatOpenAI(
             model=CHAT_MODEL,
             reasoning={"effort": "medium"},
+            max_retries=2,
+            timeout=240,
         ),
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
@@ -61,7 +74,7 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
             ContextEditingMiddleware(
                 edits=[
                     ClearToolUsesEdit(
-                        trigger=CONTEXT_TRIGGER_TOKENS,
+                        trigger=trigger_tokens,
                         keep=KEEP_TOOL_RESULTS,
                         placeholder=CLEARED_PLACEHOLDER,
                     )
@@ -72,7 +85,11 @@ def build_agent() -> CompiledStateGraph[Any, None, Any, Any]:
 
 
 def main() -> None:
-    agent = build_agent()
+    load_dotenv()
+    retriever = build_retriever()
+    agent = build_agent(
+        retriever=retriever, trigger_tokens=CONTEXT_TRIGGER_TOKENS, store_path=DEFAULT_DB
+    )
     thread_config: RunnableConfig = {"configurable": {"thread_id": "efe_1"}}
     result = agent.invoke(
         {"messages": [HumanMessage(content="What does new OpenAI personal agent do?")]},
