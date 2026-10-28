@@ -28,7 +28,7 @@ class ToolCall:
 class TurnResult:
     """Trace information for a single turn."""
 
-    user: str
+    user_query: str
     tool_calls: tuple[ToolCall, ...]
     retrieved_ids: tuple[str, ...]  # Cumulative: retrieved ids in the thread so far, sorted
     text: str  # Answer.text without the sources block
@@ -49,7 +49,7 @@ class TurnResult:
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> "TurnResult":
         return cls(
-            user=d["user"],
+            user_query=d["user_query"],
             tool_calls=tuple(ToolCall.from_dict(c) for c in d["tool_calls"]),
             retrieved_ids=tuple(d["retrieved_ids"]),
             text=d["text"],

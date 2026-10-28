@@ -21,9 +21,9 @@ def tool_call(
     )
 
 
-def turn_result(user: str = "u1", **overrides: Any) -> TurnResult:
+def turn_result(user_query: str = "u1", **overrides: Any) -> TurnResult:
     base = TurnResult(
-        user=user,
+        user_query=user_query,
         tool_calls=(tool_call(),),
         retrieved_ids=("a1", "a2"),
         text="A [1].",
@@ -94,7 +94,7 @@ def test_to_dict_hand_checked_shape() -> None:
         "run_idx": 0,
         "turns": (
             {
-                "user": "u1",
+                "user_query": "u1",
                 "tool_calls": (
                     {
                         "name": "search_news",
@@ -178,13 +178,13 @@ def test_from_dict_missing_required_key_raises_key_error() -> None:
 
 
 def test_last_returns_final_turn() -> None:
-    assert three_turns().last.user == "u3"
+    assert three_turns().last.user_query == "u3"
 
 
 def test_turn_is_one_based() -> None:
     t = three_turns()
 
-    assert [t.turn(n).user for n in (1, 2, 3)] == ["u1", "u2", "u3"]
+    assert [t.turn(n).user_query for n in (1, 2, 3)] == ["u1", "u2", "u3"]
 
 
 def test_turn_out_of_range_raises_index_error() -> None:
