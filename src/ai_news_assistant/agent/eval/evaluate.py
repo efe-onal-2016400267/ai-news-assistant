@@ -83,13 +83,7 @@ def evaluate(run_dir: Path) -> list[ScoredTranscript]:
         case = cases_by_id.get(transcript.case_id)
         if case is None:
             raise ValueError(f"case {transcript.case_id!r} is not in the run's cases file")
-        eval_results.append(
-            run_check(
-                transcript=transcript,
-                case=case,
-                abstain_phrases=dataset.abstain_phrases,
-            )
-        )
+        eval_results.append(run_check(transcript=transcript, case=case))
     return eval_results
 
 

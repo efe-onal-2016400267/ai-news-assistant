@@ -4,12 +4,13 @@ from dataclasses import dataclass
 from typing import Literal
 
 from ai_news_assistant.agent.eval.dataset import Case
-from ai_news_assistant.agent.eval.transcript import RunError, Transcript
+from ai_news_assistant.agent.eval.transcript import RunError, Transcript, TurnResult
 
 # A case can have 4 outcomes:
 Outcome = Literal["pass", "fail", "fallback", "invalid"]
 FORMAT_ERRORS = frozenset({"StructuredOutputValidationError"})
 SOURCES_LINE = re.compile(r"^[\s*_#>-]*sources?[\s*_]*:", re.IGNORECASE | re.MULTILINE)
+DIGIT_COMMA = re.compile(r"(?<=\d),(?=\d)")
 
 
 @dataclass(frozen=True)
@@ -84,14 +85,13 @@ def check_format(transcript: Transcript, case: Case) -> CheckResult:
     return CheckResult(layer="L0", id=case.id, outcome="pass", detail="Output format is correct.")
 
 
-def check_grounding(
-    transcript: Transcript, case: Case, abstain_phrases: tuple[str, ...]
-) -> CheckResult:
+def check_grounding(transcript: Transcript, case: Case) -> CheckResult:
     """L2: Check if the answer is correctly grounded.
 
     - Every cited id is in the retrieved ids of the conversation.
     - grounded = True requires at least one citation that mathces the marker.
     - must_cite_gold: at least one gold id is cited.
+        - Skipped when an allow_fallback case abstains; L3 grades that as fallback.
     """
     if len(transcript.turns) < 1:
         return CheckResult(
@@ -113,24 +113,9 @@ def check_grounding(
 
     gold = case.gold_article_ids
     last = transcript.turns[-1]
-    for abs in abstain_phrases:
-        if abs in last.text.strip() and len(last.cited_ids) > 0:
-            causes.append("Abstention with citation error.")
-            return CheckResult(
-                layer="L2",
-                id=case.id,
-                outcome="fallback",
-                detail="; ".join(causes),
-            )
-        elif abs in last.text.strip() and not last.cited_ids:
-            return CheckResult(
-                layer="L2",
-                id=case.id,
-                outcome="fallback",
-                detail="; ".join(causes),
-            )
+    fallback = case.expect.allow_fallback and abstained(last)
 
-    if gold and not set(last.cited_ids) & set(gold):
+    if gold and not fallback and not set(last.cited_ids) & set(gold):
         causes.append(f"Turn {len(transcript.turns)}, no cited article is gold.")
 
     if causes:
@@ -144,11 +129,67 @@ def check_grounding(
     return CheckResult(layer="L2", id=case.id, outcome="pass", detail="Output format is correct.")
 
 
-def run_check(
-    transcript: Transcript,
-    case: Case,
-    abstain_phrases: tuple[str, ...],
-) -> ScoredTranscript:
+def check_correctness(transcript: Transcript, case: Case) -> CheckResult:
+    """L3: Check the last answer's text against the case's facts.
+
+    - facts_all: every group has a match; facts_any: one wording matches.
+        - Case-insensitive substring, commas stripped from numbers ("40,363" = "40363").
+    - facts_none: none of the forbidden strings appears, whatever else holds.
+    - Abstention is read from the answer, not from phrases: no citations, grounded = False.
+        - must_abstain: abstaining passes.
+        - allow_fallback: abstaining instead of the facts is fallback.
+    """
+    if not transcript.turns:
+        return CheckResult(
+            layer="L3", id=case.id, outcome="fail", detail="No turns in the transcript."
+        )
+
+    last = transcript.turns[-1]
+    facts = case.expect.facts
+    text = _norm(last.text)
+    forbidden = [f for f in facts.none if _norm(f) in text]
+    forbidden_cause = f"Forbidden facts found: {forbidden}" if forbidden else ""
+
+    if case.expect.must_abstain:
+        causes = [forbidden_cause] if forbidden else []
+        if last.cited_ids:
+            causes.append(f"Cited {len(last.cited_ids)} source(s) instead of abstaining.")
+        if last.grounded:
+            causes.append("grounded = true instead of abstaining.")
+        if causes:
+            return CheckResult(layer="L3", id=case.id, outcome="fail", detail="; ".join(causes))
+        return CheckResult(layer="L3", id=case.id, outcome="pass", detail="Abstained.")
+
+    missing = [
+        i for i, group in enumerate(facts.all, start=1) if not any(_norm(f) in text for f in group)
+    ]
+    any_missed = bool(facts.any) and not any(_norm(f) in text for f in facts.any)
+
+    if forbidden:
+        return CheckResult(layer="L3", id=case.id, outcome="fail", detail=forbidden_cause)
+    if not missing and not any_missed:
+        return CheckResult(layer="L3", id=case.id, outcome="pass", detail="Facts found.")
+    if case.expect.allow_fallback and abstained(last):
+        return CheckResult(
+            layer="L3", id=case.id, outcome="fallback", detail="Abstained instead of the facts."
+        )
+
+    causes = [f"No wording of facts_all group {i} found." for i in missing]
+    if any_missed:
+        causes.append("No facts_any wording found.")
+    return CheckResult(layer="L3", id=case.id, outcome="fail", detail="; ".join(causes))
+
+
+def abstained(turn: TurnResult) -> bool:
+    """The answer abstains: no sources and not grounded (no phrase matching)."""
+    return not turn.cited_ids and not turn.grounded
+
+
+def _norm(text: str) -> str:
+    return DIGIT_COMMA.sub("", text.lower())
+
+
+def run_check(transcript: Transcript, case: Case) -> ScoredTranscript:
     """Runs all checks and returns a ScoredTranscript."""
 
     if transcript.error is not None:
@@ -159,9 +200,10 @@ def run_check(
         )
 
     l0 = check_format(transcript, case)
-    l2 = check_grounding(transcript, case, abstain_phrases)
+    l2 = check_grounding(transcript, case)
+    l3 = check_correctness(transcript, case)
 
-    return ScoredTranscript(case_id=case.id, run_idx=transcript.run_idx, results=(l0, l2))
+    return ScoredTranscript(case_id=case.id, run_idx=transcript.run_idx, results=(l0, l2, l3))
 
 
 def error_result(error: RunError) -> CheckResult:
