@@ -35,7 +35,7 @@ def test_real_file_loads() -> None:
         repeats=3,
         workers=3,
         recursion_limit=25,
-        out_dir=Path("data/agent_eval/runs/agent"),
+        out_dir=Path("data/agent_eval/"),
         db=DEFAULT_DB,  # the db line is commented out
     )
 

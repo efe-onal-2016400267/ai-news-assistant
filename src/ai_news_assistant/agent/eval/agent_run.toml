@@ -4,7 +4,7 @@ split = "dev"                    # test is not enabled yet
 dataset = "src/ai_news_assistant/agent/eval/agent_cases.toml"
 repeats = 3
 workers = 3
-out_dir = "data/agent_eval/runs/agent"
+out_dir = "data/agent_eval/"
 recursion_limit = 25
 # Optional, defaults come from the code:
 # db = "data/snapshots/news-2026-10-12.db"

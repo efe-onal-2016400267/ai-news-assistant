@@ -63,9 +63,9 @@ def load_run_config(config_path: Path) -> AgentRunConfig:
 
 
 def _positive_int(n: int, default: int) -> int:
-    if n < 1:
+    if int(n) < 1:
         return default
-    return n
+    return int(n)
 
 
 if __name__ == "__main__":
