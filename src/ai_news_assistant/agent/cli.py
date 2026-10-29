@@ -6,8 +6,6 @@ from langchain_core.runnables import RunnableConfig
 
 from ai_news_assistant.agent.agent import build_agent
 from ai_news_assistant.agent.answer import ask, render
-from ai_news_assistant.rag.config import DEFAULT_DB
-from ai_news_assistant.rag.base import Retriever
 from ai_news_assistant.rag.bm25_retriever import BM25Retriever
 from ai_news_assistant.rag.config import (
     DEFAULT_CHUNKING_CONFIG,
