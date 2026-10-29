@@ -7,6 +7,15 @@ from langchain_core.runnables import RunnableConfig
 from ai_news_assistant.agent.agent import build_agent
 from ai_news_assistant.agent.answer import ask, render
 from ai_news_assistant.rag.config import DEFAULT_DB
+from ai_news_assistant.rag.base import Retriever
+from ai_news_assistant.rag.bm25_retriever import BM25Retriever
+from ai_news_assistant.rag.config import (
+    DEFAULT_CHUNKING_CONFIG,
+    DEFAULT_DB,
+    DEFAULT_VECTOR_STORE,
+)
+from ai_news_assistant.rag.hybrid_retriever import HybridRetriever
+from ai_news_assistant.rag.vector_retriever import VectorRetriever
 
 
 def print_result_messages(results: dict[str, Any]) -> None:
@@ -18,7 +27,16 @@ def print_result_messages(results: dict[str, Any]) -> None:
 
 def main() -> None:
     load_dotenv()
-    agent = build_agent()
+    vector_retriever = VectorRetriever(
+        vector_store=DEFAULT_VECTOR_STORE, config_id=DEFAULT_CHUNKING_CONFIG
+    )
+
+    bm25_retriever = BM25Retriever(db=DEFAULT_DB, config_id=DEFAULT_CHUNKING_CONFIG)
+
+    retriever = HybridRetriever([vector_retriever, bm25_retriever])
+    agent = build_agent(
+        retriever=retriever,
+    )
     config: RunnableConfig = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
     print("News assistant. Type 'exit' to quit.")
