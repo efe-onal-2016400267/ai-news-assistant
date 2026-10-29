@@ -1,4 +1,4 @@
-CHAT_MODEL = "gpt-6-luna"
+CHAT_MODEL = "gpt-6.1-sol"
 CITATION_TOOLS = ["search_news", "get_article", "get_latest_articles"]
 KEEP_TOOL_RESULTS = 3
 CONTEXT_TRIGGER_TOKENS = 10000

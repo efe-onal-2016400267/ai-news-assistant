@@ -266,7 +266,7 @@ What the failures are:
 - **Revisit when:** a comparison is planned (write its decision rule here first), the dev set grows, or the test split is enabled.
 
 ### D20. Agent eval cases: TOML schema, any/all/none checks, graded abstention
-The agent eval cases live in `agent/eval/agent_cases.toml` (#63), labeled against `news-2026-10-12.db`. `agent/eval/dataset.py` loads and checks them (`load_cases`, `parse_case`); any problem raises `ValueError` naming the case id. The runner is not built yet (#62).
+The agent eval cases live in `agent/eval/agent_cases.toml` (#63), labeled against `news-2026-10-12.db`. `agent/eval/dataset.py` loads and checks them (`load_cases`, `parse_case`); any problem raises `ValueError` naming the case id. The runner is described in D21 (#65).
 
 | Decision | Choice | Reason |
 |---|---|---|
@@ -288,8 +288,38 @@ Validation rules beyond types and keys: `cite_any` and `cite_all` must be gold i
 
 **Label state (n=9, 2026-10-26).** All 9 cases are dev: 4 `follow-ups-and-context-management` (D16 M4) and 5 `filter-requests` (D17). `allow_fallback` on 2 (cases 1 and 4), `must_abstain` on 1 (case 9), `tool_args` on 4 (cases 5-8). `cite_any` is set to the gold ids on all 8 cases with gold. `load_cases` loads the file; 76 tests in `tests/agent/eval/test_agent_dataset.py`, no model or network.
 
-- **Known limits:** no test split and no runner, so no case has been graded. `cite_any` on every gold case is stricter than the cases were first written: a right answer without a gold citation fails. `"not in"` is a broad abstain phrase ("not included" matches), and curly apostrophes (`don’t have`) do not match. Substring checks cannot catch an invented answer that happens to contain the expected string; `grounded` is stored for the judge but not graded.
+- **Known limits:** no test split and no grading yet, so no case has been graded. `cite_any` on every gold case is stricter than the cases were first written: a right answer without a gold citation fails. `"not in"` is a broad abstain phrase ("not included" matches), and curly apostrophes (`don’t have`) do not match. Substring checks cannot catch an invented answer that happens to contain the expected string; `grounded` is stored for the judge but not graded.
 - **Revisit when:** the runner exists (check the grading against a few hand-read answers), test cases are added, or abstain phrases misgrade answers (narrow the list).
+
+### D21. Agent eval runner: one transcript per run, records appended as runs finish
+`agent/eval/run_case.py` (#65) runs every selected case `repeats` times and saves one `Transcript` per run. It does not grade; the checks read the saved transcripts later. Settings are in `agent/eval/agent_run.toml`, loaded by `agent/eval/run_config.py`.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Contract | `Transcript(case_id, run_idx, turns, error)` with one `TurnResult` per turn (`agent/eval/transcript.py`): tool calls with args and result ids, cumulative retrieved ids, answer text, cited, raw and dropped citations, `grounded`, tokens, model calls, latency | Every check reads the same record; `from_dict` loads saved runs back. |
+| Turn extraction | `extract_turn` (`agent/eval/extract.py`) reads `messages[start:]`, where `start` is the thread length after the previous turn | The thread holds all earlier turns; the offset keeps each turn's tool calls and tokens apart. |
+| Memory | Fresh `thread_id` per (case, repeat); turns of one case share it. `InMemorySaver` checkpointer from `build_agent` | Repeats never share memory; no SQLite across threads. |
+| Errors | Any exception becomes `RunError(turn, kind, error_message)`; turn 0 means before the first turn; message cut to 200 characters. Earlier turns are kept | An error counts as a failure and does not stop the run. |
+| Concurrency | `ThreadPoolExecutor`, `workers` = 3. The retriever is wrapped in `LockedRetriever`, so one search runs at a time | The embedding model aborts the process when two threads use it (Apple GPU backend). Searches take milliseconds, model calls seconds. |
+| Output | `<out_dir>/<YYYYmmdd-HHMMSS>_<experiment>/` (`out_dir` = `data/agent_eval/`, gitignored): `records.jsonl`, one line per run, appended as each run finishes; `run.json` at the end with the full config, dataset version and snapshot, `CHAT_MODEL`, record and error counts | A crash keeps the finished runs. Ids, tool arguments and answer text only; no article text. |
+| Preflight | Before any model call: the db exists, its file name equals the cases' `snapshot`, and it is `DEFAULT_DB` | `build_retriever` reads `DEFAULT_DB`; another db in the config would be silently ignored. |
+| Flags | `--config`, `--case` and `--type` (repeatable; both set = intersection; unknown id is an error), `--repeats` and `--workers` (override the toml, at least 1), `--dry-run` | Run one case or one type without editing the config. |
+| Dry run | Prints cases x repeats and at least (sum of turns) x repeats model calls; loads no model | Shows the cost before a run; real runs use 2 or more calls per turn. |
+| Defaults | `experiment` = `baseline`, `split` = `dev` (the only one enabled), `repeats` = 3, `recursion_limit` = 25 | Same split rule as D19. |
+
+**First runs (2026-10-29).** Two complete runs (`20261029-095151_baseline`, `20261029-102647_baseline`), each the 5 `filter-requests` cases x 1 repeat, n=5 records: 0 errors. Per turn: 2-3 model calls, 5,200-9,991 input tokens, 213-505 output tokens, 6.1-8.4 s (both runs together). Not graded. Six more folders from the same day have no `run.json` and 0-5 records: runs that stopped before the end.
+
+Tests: 14 in `tests/agent/eval/test_transcript.py`, 15 in `test_agent_extract.py`, 16 in `test_agent_run_config.py`, 33 in `test_run_case.py`; fakes replace the agent, model and retriever, no network.
+
+- **Known limits:**
+    - Differs from the #65 text: output is a folder under `data/agent_eval/`, not `runs/agent/<timestamp>_<label>.json`; no `--split` flag (the split comes from the toml); `run.json` has no prompt hash, tool-description hash, git SHA or dataset hash.
+    - No per-run timeout; only `ChatOpenAI(timeout=240, max_retries=2)` per model call.
+    - `run.json` reports `agent.trigger` as `CONTEXT_TRIGGER_TOKENS` even when a case sets its own `trigger`.
+    - The folder name uses local time; `started_at` and `finished_at` are UTC.
+    - A run that crashes leaves a folder with `records.jsonl` and no `run.json`.
+    - `run_config` turns `repeats = 2.7` into 2 and `true` into 1.
+- **Open problem:** `fixture_store` reaches `ask_detailed` (citation sources) but not `build_agent`, which gets `cfg.db`. The tools read the snapshot, not the fixture store, so a fixture case (injection canaries) would not see its fixture articles. No case sets `fixture_store` yet.
+- **Revisit when:** grading is added (L0-L3), the first fixture case is written, or a comparison needs the prompt and tool hashes in `run.json`.
 
 ## 5. Interfaces and data models
 
@@ -410,7 +440,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
 | Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18); `run_retrieval` and `evaluate` with article-level R@5, R@10, MRR and per-type checks (D19); dev baseline run, test not run. |
 | Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
-| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner not built. |
+| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner `agent/eval/run_case.py` (D21), not graded yet. |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |
 | CI gating | Fast eval subset on every PR; full suite nightly; threshold failures block merge. |
 

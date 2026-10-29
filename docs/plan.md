@@ -246,7 +246,11 @@ Each item is its own issue, branch and PR.
 - [ ] Trajectory eval cases (right tools, no answer without sources) and adversarial cases (prompt injection inside article text, conflicting sources, stale news).
 - [ ] Agent evaluation (#62, design D20).
     - [x] Case schema, loader, validator (#63): `agent/eval/dataset.py` (`load_cases`, `parse_case`), the 9 cases in `agent/eval/agent_cases.toml` migrated to it, tests in `tests/agent/eval/test_agent_dataset.py`.
-    - [ ] Transcript and runner.
+    - [ ] Transcript and runner (#65, design D21).
+        - `agent/eval/transcript.py` (`Transcript`, `TurnResult`, `ToolCall`, `RunError`), `agent/eval/extract.py` (`extract_turn`), `agent/eval/run_config.py` with `agent_run.toml`, `agent/eval/run_case.py` (flags `--config`, `--case`, `--type`, `--repeats`, `--workers`, `--dry-run`).
+        - Tests in `tests/agent/eval/`: `test_transcript.py`, `test_agent_extract.py`, `test_agent_run_config.py`, `test_run_case.py`.
+        - Two complete runs on 2026-10-29: 5 `filter-requests` cases x 1 repeat, 0 errors, not graded.
+        - [ ] Pass `fixture_store` to `build_agent` (D21 open problem).
     - [ ] L0 format, L2 grounding, L3 correctness.
     - [ ] L1 trajectory, L6 efficiency.
     - [ ] Report.
