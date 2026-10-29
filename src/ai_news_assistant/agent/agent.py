@@ -36,6 +36,17 @@ from ai_news_assistant.rag.hybrid_retriever import HybridRetriever
 from ai_news_assistant.rag.vector_retriever import VectorRetriever
 
 
+def build_retriever() -> Retriever:
+    """Build HybridRetriever"""
+    vector_retriever = VectorRetriever(
+        vector_store=DEFAULT_VECTOR_STORE, config_id=DEFAULT_CHUNKING_CONFIG
+    )
+
+    bm25_retriever = BM25Retriever(db=DEFAULT_DB, config_id=DEFAULT_CHUNKING_CONFIG)
+
+    return HybridRetriever([vector_retriever, bm25_retriever])
+
+
 def build_agent(
     retriever: Retriever,
     model: str = CHAT_MODEL,
@@ -46,9 +57,9 @@ def build_agent(
     """Build the agent using the tool factories."""
     kwargs = {**default_model_kwargs(model), **(model_kwargs or {})}
     tools = [
-        create_search_tool(retriever=retriever, store_path=DEFAULT_DB),
-        create_get_article_tool(store_path=DEFAULT_DB),
-        create_get_latest_articles_tool(store_path=DEFAULT_DB),
+        create_search_tool(retriever=retriever, store_path=store_path),
+        create_get_article_tool(store_path=store_path),
+        create_get_latest_articles_tool(store_path=store_path),
     ]
 
     return create_agent(
@@ -61,7 +72,7 @@ def build_agent(
             ContextEditingMiddleware(
                 edits=[
                     ClearToolUsesEdit(
-                        trigger=CONTEXT_TRIGGER_TOKENS,
+                        trigger=trigger_tokens,
                         keep=KEEP_TOOL_RESULTS,
                         placeholder=CLEARED_PLACEHOLDER,
                     )

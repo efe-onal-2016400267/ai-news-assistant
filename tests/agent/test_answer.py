@@ -8,8 +8,8 @@ from langchain.tools import BaseTool
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 
-from ai_news_assistant.agent.answer import ask, render
-from ai_news_assistant.agent.citations import resolve_sources
+from ai_news_assistant.agent.answer import AskResult, ask, ask_detailed, render
+from ai_news_assistant.agent.citations import CheckedCitations, resolve_sources
 from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
 from ai_news_assistant.models import Answer, ModelAnswer, Source
 from ai_news_assistant.rag.base import Hit, SearchFilter
@@ -299,3 +299,115 @@ def test_ask_drop_warning_has_ids_markers_not_text(
     assert "[1]" in message  # dropped_markers rendered as a list
     assert "Secret claim" not in message
     assert "Kept" not in message
+
+
+# ask_detailed
+
+
+def run_detailed(agent: FakeAgent, rag_db: Path, question: str = "What happened?") -> AskResult:
+    return ask_detailed(agent=agent, question=question, config=config(), store_path=rag_db)  # type: ignore[arg-type]
+
+
+def test_ask_detailed_hand_checked_result(rag_db: Path) -> None:
+    # citations: [1] -> ai-act (retrieved: kept), [2] -> made-up (not retrieved: dropped),
+    # [3] -> iphone (retrieved: kept).
+    structured = model_answer("A [1]. B [2]. C [3].", ["ai-act", "made-up", "iphone"])
+    agent = FakeAgent([search(rag_db, ["ai-act", "iphone"])], structured)
+
+    result = run_detailed(agent, rag_db)
+
+    assert result.model_answer is structured
+    assert result.checked == CheckedCitations(
+        clean_text="A [1]. B. C [3].",
+        valid_citations={1: "ai-act", 3: "iphone"},
+        dropped_ids=["made-up"],
+        dropped_markers=[2],
+    )
+    assert result.answer.text == "A [1]. B. C [3]."
+    assert [s.article_id for s in result.answer.sources] == ["ai-act", "iphone"]
+    assert [s.marker for s in result.answer.sources] == [1, 3]
+    assert result.answer.grounded is True
+
+
+def test_ask_detailed_messages_are_the_whole_thread(rag_db: Path) -> None:
+    thread: list[AnyMessage] = [
+        HumanMessage(content="Earlier question"),
+        AIMessage(content="Earlier answer"),
+        HumanMessage(content="What happened?"),
+        search(rag_db, ["ai-act"]),
+        AIMessage(content=""),
+    ]
+    agent = FakeAgent(thread, model_answer("A [1].", ["ai-act"]))
+
+    result = run_detailed(agent, rag_db)
+
+    assert result.messages is agent.result["messages"]
+    assert [m.text for m in result.messages[:3]] == [
+        "Earlier question",
+        "Earlier answer",
+        "What happened?",
+    ]
+
+
+def test_ask_returns_ask_detailed_answer(rag_db: Path) -> None:
+    agent = FakeAgent(
+        [search(rag_db, ["ai-act"])], model_answer("A [1]. B [2].", ["ai-act", "made-up"])
+    )
+
+    assert run(agent, rag_db) == run_detailed(agent, rag_db).answer
+
+
+def test_ask_detailed_no_structured_response_has_no_model_answer(rag_db: Path) -> None:
+    messages: list[AnyMessage] = [AIMessage(content="Maybe [1] something.")]
+    agent = FakeAgent(messages, structured_response=None)
+
+    result = run_detailed(agent, rag_db)
+
+    # With no citations every [n] is out of range, so [1] is dropped.
+    assert result.model_answer is None
+    assert result.checked == CheckedCitations("Maybe something.", {}, [], [1])
+    assert result.answer == Answer(text="Maybe something.", sources=[], grounded=False)
+    assert result.messages is messages
+
+
+def test_ask_detailed_missing_structured_response_key(rag_db: Path) -> None:
+    agent = FakeAgent([AIMessage(content="Plain answer [2].")])
+
+    result = run_detailed(agent, rag_db)
+
+    assert result.model_answer is None
+    assert result.checked == CheckedCitations("Plain answer.", {}, [], [2])
+    assert result.answer == Answer(text="Plain answer.", sources=[], grounded=False)
+
+
+def test_ask_detailed_no_citations_checked_is_empty(rag_db: Path) -> None:
+    agent = FakeAgent([search(rag_db, [])], model_answer("I do not know.", [], grounded=False))
+
+    result = run_detailed(agent, rag_db)
+
+    assert result.checked == CheckedCitations("I do not know.", {}, [], [])
+    assert result.answer == Answer(text="I do not know.", sources=[], grounded=False)
+
+
+def test_ask_detailed_retrieved_id_missing_from_store_raises(rag_db: Path) -> None:
+    ghost = ToolMessage(content='[{"article_id": "ghost"}]', name="search_news", tool_call_id="c1")
+    agent = FakeAgent([ghost], model_answer("A [1].", ["ghost"]))
+
+    with pytest.raises(KeyError):
+        run_detailed(agent, rag_db)
+
+
+def test_ask_detailed_injected_tool_text_does_not_add_citation(rag_db: Path) -> None:
+    # Adversarial: a failed tool result names an id; the trace keeps it, the citation does not.
+    error = get_article(rag_db, "made-up")
+    agent = FakeAgent(
+        [search(rag_db, ["ai-act"]), error],
+        model_answer("A [1]. B [2].", ["ai-act", "made-up"]),
+    )
+
+    result = run_detailed(agent, rag_db)
+
+    assert result.checked is not None
+    assert result.checked.dropped_ids == ["made-up"]
+    assert result.checked.valid_citations == {1: "ai-act"}
+    assert result.messages[-1] is error
