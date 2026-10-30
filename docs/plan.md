@@ -251,7 +251,11 @@ Each item is its own issue, branch and PR.
         - Tests in `tests/agent/eval/`: `test_transcript.py`, `test_agent_extract.py`, `test_agent_run_config.py`, `test_run_case.py`.
         - Two complete runs on 2026-10-29: 5 `filter-requests` cases x 1 repeat, 0 errors, not graded.
         - [ ] Pass `fixture_store` to `build_agent` (D21 open problem).
-    - [ ] L0 format, L2 grounding, L3 correctness.
+    - [ ] L0 format, L2 grounding, L3 correctness (#69, design D22).
+        - `agent/eval/checks.py` (`check_format`, `check_grounding`, `check_correctness`, `run_check`), `agent/eval/evaluate.py` (scores a run folder; newest finished run by default).
+        - Abstention read from the answer (no sources, `grounded = false`), not from `abstain_phrases`.
+        - Tests in `tests/agent/eval/`: `test_agent_checks.py`, `test_agent_evaluate.py`.
+        - First grading of `20261029-102647_baseline`: 4 of 5 pass; `filter-unknown-outlet` fails L3 (cited 2 sources). Not read yet.
     - [ ] L1 trajectory, L6 efficiency.
     - [ ] Report.
     - [ ] First real run, then read every failure.

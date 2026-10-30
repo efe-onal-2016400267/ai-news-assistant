@@ -277,19 +277,19 @@ The agent eval cases live in `agent/eval/agent_cases.toml` (#63), labeled agains
 | Fact wordings | `facts_all` is a list of groups: every group must match, one wording per group is enough | One fact can be worded several ways; flat lists cannot combine that with a second required fact. |
 | Empty list | Same as a missing key; "no tool calls" is `max_tool_calls = 0` | One meaning per spelling. |
 | Abstention | `must_abstain = true` exactly when gold is empty; abstaining is pass, stating facts is fail | Questions with no answer in the corpus. |
-| Fallback | `allow_fallback = true`: an answer that abstains (matches `abstain_phrases`) instead of the facts is graded fallback, not pass or fail | "Don't have" is better than a wrong answer but is not correct. Pass, fallback and fail are reported apart, so fallbacks never raise accuracy. |
+| Fallback | `allow_fallback = true`: an answer that abstains instead of the facts is graded fallback, not pass or fail. Abstaining is read from the answer (no cited sources, `grounded = false`), not from `abstain_phrases` (D22) | "Don't have" is better than a wrong answer but is not correct. Pass, fallback and fail are reported apart, so fallbacks never raise accuracy. |
 | Precondition | `target_not_cited_in_turn`: a turn before the last | A failure means the case did not test what it was meant to, not that the agent failed. |
 | Tool arguments | `[case.expect.tool_args]`: `tool`, `sources`, `days`, `args_absent`; applies to the first call of `tool` | Replaces "`[]` or `0` means absent" with an explicit list. |
 | Graded turn | Every `expect` check grades the last turn | Enough for the current cases; per-turn checks can be added when a case needs them. |
 | Split | No article is gold or `cite_none` in both splits; checked before filtering by split | Same rule as D18. |
-| Matching | Answer text: case-insensitive substring (implemented by the runner) | Simple and reviewable; a judge covers wording later. |
+| Matching | Answer text: case-insensitive substring, commas between digits removed (L3, D22) | Simple and reviewable; a judge covers wording later. |
 
 Validation rules beyond types and keys: `cite_any` and `cite_all` must be gold ids and `cite_none` must not; the three `tools_*` lists share no tool and the `tool_args` tool is not in `tools_none`; `tool_args` cannot set and forbid the same argument; `trigger` and `precondition` only on `follow-ups-and-context-management` cases; no fact string may be part of an abstain phrase (else any abstention would pass the fact check).
 
 **Label state (n=9, 2026-10-26).** All 9 cases are dev: 4 `follow-ups-and-context-management` (D16 M4) and 5 `filter-requests` (D17). `allow_fallback` on 2 (cases 1 and 4), `must_abstain` on 1 (case 9), `tool_args` on 4 (cases 5-8). `cite_any` is set to the gold ids on all 8 cases with gold. `load_cases` loads the file; 76 tests in `tests/agent/eval/test_agent_dataset.py`, no model or network.
 
-- **Known limits:** no test split and no grading yet, so no case has been graded. `cite_any` on every gold case is stricter than the cases were first written: a right answer without a gold citation fails. `"not in"` is a broad abstain phrase ("not included" matches), and curly apostrophes (`don’t have`) do not match. Substring checks cannot catch an invented answer that happens to contain the expected string; `grounded` is stored for the judge but not graded.
-- **Revisit when:** the runner exists (check the grading against a few hand-read answers), test cases are added, or abstain phrases misgrade answers (narrow the list).
+- **Known limits:** no test split. `cite_any` on every gold case is stricter than the cases were first written: a right answer without a gold citation fails. `abstain_phrases` is still required and checked by the loader (no fact inside a phrase), but grading no longer uses it (D22). Substring checks cannot catch an invented answer that happens to contain the expected string; `grounded` is stored for the judge but not graded.
+- **Revisit when:** grading is checked against a few hand-read answers (D22), test cases are added, or `abstain_phrases` is dropped from the schema.
 
 ### D21. Agent eval runner: one transcript per run, records appended as runs finish
 `agent/eval/run_case.py` (#65) runs every selected case `repeats` times and saves one `Transcript` per run. It does not grade; the checks read the saved transcripts later. Settings are in `agent/eval/agent_run.toml`, loaded by `agent/eval/run_config.py`.
@@ -307,7 +307,7 @@ Validation rules beyond types and keys: `cite_any` and `cite_all` must be gold i
 | Dry run | Prints cases x repeats and at least (sum of turns) x repeats model calls; loads no model | Shows the cost before a run; real runs use 2 or more calls per turn. |
 | Defaults | `experiment` = `baseline`, `split` = `dev` (the only one enabled), `repeats` = 3, `recursion_limit` = 25 | Same split rule as D19. |
 
-**First runs (2026-10-29).** Two complete runs (`20261029-095151_baseline`, `20261029-102647_baseline`), each the 5 `filter-requests` cases x 1 repeat, n=5 records: 0 errors. Per turn: 2-3 model calls, 5,200-9,991 input tokens, 213-505 output tokens, 6.1-8.4 s (both runs together). Not graded. Six more folders from the same day have no `run.json` and 0-5 records: runs that stopped before the end.
+**First runs (2026-10-29).** Two complete runs (`20261029-095151_baseline`, `20261029-102647_baseline`), each the 5 `filter-requests` cases x 1 repeat, n=5 records: 0 errors. Per turn: 2-3 model calls, 5,200-9,991 input tokens, 213-505 output tokens, 6.1-8.4 s (both runs together). Grading of these runs is in D22. Six more folders from the same day have no `run.json` and 0-5 records: runs that stopped before the end.
 
 Tests: 14 in `tests/agent/eval/test_transcript.py`, 15 in `test_agent_extract.py`, 16 in `test_agent_run_config.py`, 33 in `test_run_case.py`; fakes replace the agent, model and retriever, no network.
 
@@ -319,7 +319,37 @@ Tests: 14 in `tests/agent/eval/test_transcript.py`, 15 in `test_agent_extract.py
     - A run that crashes leaves a folder with `records.jsonl` and no `run.json`.
     - `run_config` turns `repeats = 2.7` into 2 and `true` into 1.
 - **Open problem:** `fixture_store` reaches `ask_detailed` (citation sources) but not `build_agent`, which gets `cfg.db`. The tools read the snapshot, not the fixture store, so a fixture case (injection canaries) would not see its fixture articles. No case sets `fixture_store` yet.
-- **Revisit when:** grading is added (L0-L3), the first fixture case is written, or a comparison needs the prompt and tool hashes in `run.json`.
+- **Revisit when:** the first fixture case is written, or a comparison needs the prompt and tool hashes in `run.json`.
+
+### D22. Agent eval checks: L0, L2, L3; abstention read from the answer
+`agent/eval/checks.py` (#69) grades one `Transcript` against its case. `agent/eval/evaluate.py` scores a saved run folder (D21) and prints one line per run, plus the detail of every check that did not pass. It writes no report file yet.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Outcomes | Each check gives `pass`, `fallback`, `fail` or `invalid`; a run takes the worst, in the order invalid, fail, fallback, pass | One bad layer is enough to fail a run; fallbacks never count as passes. |
+| Run errors | A run with a `RunError` gets one result and no other check runs. `StructuredOutputValidationError` is an L0 `fail`; any other error is `invalid` | The agent failing to produce an answer is its fault; timeouts and rate limits say nothing about answer quality. |
+| L0 format | Every turn: structured output, non-empty text, no model-written "Sources:" line, no dropped markers, no repeated id in `citations` | Format faults are cheap to find and break the CLI output. |
+| L2 grounding | Every turn: every id in `citations` was retrieved in the thread so far; the model's `grounded = true` needs at least one surviving source. Last turn: at least one gold id is cited | Citations must point at what the agent read. |
+| L3 correctness | Last turn only: every `facts_all` group has a wording in the text; one `facts_any` wording appears; no `facts_none` string appears. A case with no fact keys passes | Same graded turn as D20. A forbidden string fails the run even when every fact is present. |
+| Text matching | Lowercase substring on both sides, with commas between digits removed (`40,363` = `40363`) | Number formatting should not decide a fact. Commas in ordinary text still count. |
+| Abstention | The last answer abstains when it has no cited sources and `grounded = false`. No phrase matching | Phrase lists are brittle: `"not in"` matches "not included", curly apostrophes miss `don't have`. The answer's own fields are what the user sees. |
+| must_abstain | L3 passes when the answer abstains and has no `facts_none` hit; otherwise fails, naming each cause (sources cited, `grounded = true`, forbidden strings) | "Invented specifics" are the case's `facts_none` strings; a judge (L4) covers the rest. |
+| allow_fallback | Facts found: pass. Facts missing and the answer abstains: `fallback`. Otherwise: fail. L2 skips its gold rule for an abstaining answer, so only L3 grades it | An abstention is not graded twice, and L3 alone decides fallback. |
+| Scoring a run | `evaluate [run_dir]`; without an argument, the newest folder under `out_dir` that has a `run.json`. Uses the cases file and split from the run's own `run.json`; fails if the snapshot differs. A case id missing from the cases file, a bad `records.jsonl` line (with its line number) or a missing run file ends in `error: ...` | Crashed runs (no `run.json`) are skipped. A subset run (`--case`, `--type`) is fine. |
+
+**First grading (2026-10-29).** `20261029-102647_baseline`, the 5 `filter-requests` cases x 1 repeat, n=5: 4 pass, 1 fail. `filter-unknown-outlet` (`must_abstain`) fails L3: 2 sources cited and `grounded = true`. The answer has not been read yet, so it is not known whether the agent or the label is wrong.
+
+Tests: 63 in `tests/agent/eval/test_agent_checks.py` (transcripts with planted faults, one per check), 21 in `test_agent_evaluate.py`; no model or network.
+
+- **Known limits:**
+    - L1 is not built: `tools_*`, `tool_args`, `max_tool_calls` and the citation keys `cite_all` and `cite_none` are not graded. L2 checks gold ids, not `cite_any`; today they are the same lists.
+    - Case 9 (`must_abstain`) has no `facts_none`, so an invented answer that cites nothing passes.
+    - Substring checks cannot catch an invented answer that contains the expected string.
+    - Grading uses the cases file as it is now; `run.json` saves `dataset.version`, but it is not compared.
+    - A citation to an id that was never retrieved fails L0 (dropped marker) and L2 (id not retrieved).
+    - `MultipleStructuredOutputsError` (also a structured-output error) is graded `invalid`, not an L0 fail.
+    - `CheckResult.id` is the case id, except for run errors (`format`, `error`). The L2 pass detail says "Output format is correct.".
+- **Revisit when:** the `filter-unknown-outlet` answer is read, L1 is added, or the first case misgrades a hand-read answer.
 
 ## 5. Interfaces and data models
 
@@ -440,7 +470,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
 | Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18); `run_retrieval` and `evaluate` with article-level R@5, R@10, MRR and per-type checks (D19); dev baseline run, test not run. |
 | Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
-| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner `agent/eval/run_case.py` (D21), not graded yet. |
+| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner `agent/eval/run_case.py` (D21); L0, L2 and L3 in `agent/eval/checks.py`, scored by `agent/eval/evaluate.py` (D22); L1 not built. |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |
 | CI gating | Fast eval subset on every PR; full suite nightly; threshold failures block merge. |
 
