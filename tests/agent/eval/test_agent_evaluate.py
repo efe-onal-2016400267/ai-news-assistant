@@ -205,8 +205,9 @@ def test_evaluate_scores_each_transcript_in_file_order(tmp_path: Path, cases_pat
         ("one", 1, "pass"),
         ("one", 0, "fail"),
     ]
-    assert [r.outcome for r in scored[0].results] == ["pass", "fail", "pass"]  # L0, L2, L3
-    assert [r.outcome for r in scored[2].results] == ["fail", "pass", "pass"]
+    # L0, L2, L3, L1
+    assert [r.outcome for r in scored[0].results] == ["pass", "fail", "pass", "pass"]
+    assert [r.outcome for r in scored[2].results] == ["fail", "pass", "pass", "pass"]
 
 
 def test_evaluate_subset_run_is_fine(tmp_path: Path, cases_path: Path) -> None:

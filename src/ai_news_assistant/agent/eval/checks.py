@@ -1,9 +1,9 @@
 import re
 from collections import Counter
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
-from ai_news_assistant.agent.eval.dataset import Case
+from ai_news_assistant.agent.eval.dataset import Case, ToolArgs
 from ai_news_assistant.agent.eval.transcript import RunError, Transcript, TurnResult
 
 # A case can have 4 outcomes:
@@ -180,9 +180,110 @@ def check_correctness(transcript: Transcript, case: Case) -> CheckResult:
     return CheckResult(layer="L3", id=case.id, outcome="fail", detail="; ".join(causes))
 
 
+def check_trajectory(transcript: Transcript, case: Case) -> CheckResult:
+    """L1: Trajectory.
+
+    1. Checks if the right tools were called: tools_all, tools_any, tools_none.
+    Grades the only the last turn.
+    Expected values in case.expect.tools and case.expect.tool_args
+    Transcript values in transcript.turns[n].tool_calls[m].name and
+    transcript.turns[n].tool_calls[m].args.
+
+    2. Checks if the tools were called with the right args.
+    3. If the case sets max_tool_calls, check how many tools were called in
+    the last turn as well.
+    """
+    if not transcript.turns:
+        return CheckResult(
+            layer="L1", id=case.id, outcome="fail", detail="No turns in the transcript."
+        )
+
+    last = transcript.turns[-1]
+    expected_tools = case.expect.tools
+    expected_tool_args = case.expect.tool_args
+    max_tool_calls = case.expect.max_tool_calls
+
+    causes = []
+
+    # 1. Check right tool calls in the last turn
+    called = [c.name for c in last.tool_calls]
+    # 1.1. All
+    missing_all = [tool for tool in expected_tools.all if tool not in called]
+    # 1.2. Any
+    missing_any = bool(expected_tools.any) and not any(
+        tool in expected_tools.any for tool in called
+    )
+    # 1.3. None
+    forbidden_tool = sorted(set(called) & set(expected_tools.none))
+
+    if forbidden_tool:
+        causes.append(f"Following tools are used although FORBIDDEN: {', '.join(forbidden_tool)}")
+
+    if missing_any:
+        causes.append(f"None of the ANY tools are called: {', '.join(expected_tools.any)}")
+
+    if missing_all:
+        causes.append(f"Some of the REQUIRED tools were not called: {', '.join(missing_all)}")
+
+    # 2. Check if the called tools were called with the right arguments.
+    # For now our cases present only one such tool so written accordingly.
+    # Get the expected tool name
+    # Check if it was called in the last run, if so check if the args match.
+
+    if expected_tool_args:
+        if expected_tool_args.tool not in called:
+            causes.append(
+                f"Expected tool to check arguments was not called: {expected_tool_args.tool}"
+            )
+        else:
+            if expected_tool_args is not None:
+                # Get the first call of the expected tool to check the args
+                first = next(
+                    (c for c in last.tool_calls if c.name == expected_tool_args.tool), None
+                )
+                if first is None:
+                    causes.append(
+                        f"Expected tool to check arguments was not called: "
+                        f"{expected_tool_args.tool}"
+                    )
+                else:
+                    causes.extend(_tool_arg_causes(first.args, expected_tool_args))
+
+    # 3. Check if count(tool_calls) exceeds max_tool_calls
+    if max_tool_calls is not None and len(last.tool_calls) > max_tool_calls:
+        causes.append(
+            f"Too many tool calls, max_tool_calls: {max_tool_calls}, called: {len(last.tool_calls)}"
+        )
+
+    if causes:
+        return CheckResult(layer="L1", id=case.id, outcome="fail", detail="; ".join(causes))
+    return CheckResult(
+        layer="L1",
+        id=case.id,
+        outcome="pass",
+        detail="All tools were called correctly with the correct args.",
+    )
+
+
 def abstained(turn: TurnResult) -> bool:
     """The answer abstains: no sources and not grounded (no phrase matching)."""
     return not turn.cited_ids and not turn.grounded
+
+
+def _tool_arg_causes(args: dict[str, Any], expected: ToolArgs) -> list[str]:
+    """Compare one tool call's args with the case's tool_args."""
+    causes: list[str] = []
+    tool = expected.tool
+    if expected.sources is not None and set(args.get("sources") or ()) != set(expected.sources):
+        causes.append(
+            f"{tool} sources: expected {sorted(expected.sources)}, got {args.get('sources')!r}."
+        )
+    if expected.days is not None and args.get("days") != expected.days:
+        causes.append(f"{tool} days: expected {expected.days}, got {args.get('days')!r}.")
+    for arg in sorted(expected.absent):
+        if args.get(arg) is not None:
+            causes.append(f"{tool} {arg}: expected absent, got {args[arg]!r}.")
+    return causes
 
 
 def _norm(text: str) -> str:
@@ -202,8 +303,9 @@ def run_check(transcript: Transcript, case: Case) -> ScoredTranscript:
     l0 = check_format(transcript, case)
     l2 = check_grounding(transcript, case)
     l3 = check_correctness(transcript, case)
+    l1 = check_trajectory(transcript, case)
 
-    return ScoredTranscript(case_id=case.id, run_idx=transcript.run_idx, results=(l0, l2, l3))
+    return ScoredTranscript(case_id=case.id, run_idx=transcript.run_idx, results=(l0, l2, l3, l1))
 
 
 def error_result(error: RunError) -> CheckResult:
