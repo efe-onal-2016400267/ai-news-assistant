@@ -5,6 +5,7 @@ from langchain_core.messages import AIMessage, ToolMessage
 from ai_news_assistant.agent.answer import AskResult
 from ai_news_assistant.agent.citations import retrieved_ids
 from ai_news_assistant.agent.eval.transcript import ToolCall, TurnResult
+from ai_news_assistant.models import ModelAnswer
 
 MAX_ERROR_CHARS = 200
 
@@ -43,6 +44,8 @@ def extract_turn(
             output_tokens += usage.get("output_tokens", 0)
 
         for call in message.tool_calls:
+            if call["name"] == ModelAnswer.__name__:
+                continue
             tool_message = tool_results.get(str(call["id"]))
             tool_calls.append(
                 ToolCall(

@@ -5,6 +5,7 @@ from pathlib import Path
 
 from ai_news_assistant.agent.eval.checks import ScoredTranscript, run_check
 from ai_news_assistant.agent.eval.dataset import CaseDataset, Split, load_cases
+from ai_news_assistant.agent.eval.report import render_report
 from ai_news_assistant.agent.eval.run_config import load_run_config
 from ai_news_assistant.agent.eval.transcript import Transcript
 
@@ -75,8 +76,11 @@ def evaluate(run_dir: Path) -> list[ScoredTranscript]:
     - It's ok if some cases dont have a transcript since we can run
         a subset of the cases in run_case.py.
     """
-    transcripts = load_transcripts(run_dir)
-    dataset = load_dataset_for_run(run_dir)
+    return score(load_transcripts(run_dir), load_dataset_for_run(run_dir))
+
+
+def score(transcripts: Sequence[Transcript], dataset: CaseDataset) -> list[ScoredTranscript]:
+    """Run every check on each transcript, in file order."""
     eval_results: list[ScoredTranscript] = []
     cases_by_id = {case.id: case for case in dataset.cases}
     for transcript in transcripts:
@@ -98,7 +102,11 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     try:
         run_dir = args.run_dir or newest_run(load_run_config(RUN_CONFIG_PATH).out_dir)
-        scored = evaluate(run_dir)
+        transcripts = load_transcripts(run_dir)
+        dataset = load_dataset_for_run(run_dir)
+        scored = score(transcripts, dataset)
+        report = render_report(run_dir.name, transcripts, dataset)
+        (run_dir / "report.md").write_text(report, encoding="utf-8")
     except (ValueError, OSError) as e:  # OSError: run.json or records.jsonl missing
         raise SystemExit(f"error: {e}") from e
 
@@ -107,6 +115,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         for r in s.results:
             if r.outcome != "pass":
                 print(f"    {r.layer}/{r.id}: {r.detail}")
+    print(f"Wrote {run_dir / 'report.md'}")
 
 
 if __name__ == "__main__":

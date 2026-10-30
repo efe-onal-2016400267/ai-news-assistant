@@ -239,7 +239,21 @@ def test_main_prints_outcomes_and_non_pass_details(
         "one#0: pass",
         "two#2: fail",
         "    L2/two: Turn 1, no cited article is gold.",
+        f"Wrote {run_dir / 'report.md'}",
     ]
+
+
+def test_main_writes_report_md_into_the_run_folder(tmp_path: Path, cases_path: Path) -> None:
+    records = [record("one"), record("two", 2, input_tokens=30)]
+    run_dir = write_run(tmp_path / "run", cases_path, records)
+
+    main([str(run_dir)])
+
+    report = (run_dir / "report.md").read_text(encoding="utf-8")
+    assert report.startswith("# Agent eval: `run`\n")
+    assert "## Efficiency" in report
+    # input tokens [10, 30] -> median 20, max 30
+    assert "| single-turn-lookup-and-citation | 2 | 0 / 0 | 20 / 30 | 5 / 5 | 1.0 / 1.0 |" in report
 
 
 def test_main_snapshot_mismatch_exits(tmp_path: Path, cases_path: Path) -> None:
@@ -247,6 +261,7 @@ def test_main_snapshot_mismatch_exits(tmp_path: Path, cases_path: Path) -> None:
 
     with pytest.raises(SystemExit, match="^error: run used snapshot other.db"):
         main([str(run_dir)])
+    assert not (run_dir / "report.md").exists()
 
 
 def test_bug1_main_unknown_case_id_exits_with_message(tmp_path: Path, cases_path: Path) -> None:
