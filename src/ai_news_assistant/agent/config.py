@@ -1,6 +1,7 @@
 from typing import Any
 
 CHAT_MODEL = "anthropic:claude-haiku-5-5"  # "provider:model"; e.g. "openai:gpt-6-luna"
+JUDGE_MODEL = "anthropic:claude-haiku-4-5-20251001"  # LLM as a judge model.
 COMMON_MODEL_KWARGS: dict[str, Any] = {"max_retries": 2, "timeout": 240}
 PROVIDER_MODEL_KWARGS: dict[str, dict[str, Any]] = {
     "openai": {"reasoning": {"effort": "medium"}},

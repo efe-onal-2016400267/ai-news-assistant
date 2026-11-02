@@ -271,7 +271,12 @@ Each item is its own issue, branch and PR.
         - [ ] Re-run it: it was recorded before the `ModelAnswer` fix, so its tool-call counts include 63 `ModelAnswer` calls.
     - [ ] Grow to 25-30 cases.
     - [ ] Injection fixtures and L5 canary check.
-    - [ ] L4 LLM as a judge for faithfulness.
+    - [ ] L4 LLM as a judge for faithfulness (design D24).
+        - `agent/eval/judge/judge.py` (`render_user_message`, `judge_verdict`, `JudgeRecord`, `main`), rubric `judge/rubric_v1.md`, model `JUDGE_MODEL` in `agent/config.py`.
+        - Tests in `tests/agent/eval/test_agent_judge.py`. No model or network.
+        - First run on `evaluate_the_judge` (27 records, 0 errors): 22 faithful, 5 unfaithful. Not read yet.
+        - [ ] Calibrate against a few human-labelled answers.
+        - [ ] Read the 5 unfaithful runs and `filter-unknown-outlet` (judge says faithful, L3 says fail).
     - [ ] Test run and write-up.
 - [ ] Register the chat CLI as a `[project.scripts]` entry.
 - [ ] Shrink `get_latest_articles` output (cap below 100, shorter ids). The cheapest token saving, but a tool change, so its own issue.
