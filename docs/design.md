@@ -394,6 +394,33 @@ Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, firs
     - `cite_all` and `cite_none` are still not graded (D22).
 - **Revisit when:** `161356` is re-run, or a case needs per-turn tool checks.
 
+### D24. LLM judge for faithfulness (L4): rubric v1, verdict from code
+`agent/eval/judge/judge.py` grades the last turn of each run: are the answer's claims supported by the articles it cites? `main` reads `records.jsonl` from `data/agent_eval/evaluate_the_judge/` and writes `judge_v1.jsonl` into the same folder. The rubric text is `judge/rubric_v1.md`.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Scope | Faithfulness only. Relevance, completeness, style and format are not judged | The rubric says those are checked elsewhere (L0, L3). |
+| Input | The question, the answer, and each cited article with marker, title, source, date and text. Title and source are HTML-escaped; `</article>` is removed from the text | Article text is untrusted (D11). Escaping stops a `"` in a title from adding an attribute. |
+| Output | Structured `JudgeOutput`: `reasoning`, `unsupported_claims` (quote, reason, severity `minor` or `major`), `supported_claims` (quote, reason) | Each claim has an exact quote, so code can check it against the answer. |
+| Verdict | Set by code. A claim counts only if its quote appears in the answer (whitespace normalised). Any major claim: `unfaithful`. Only minor: `minor`. None: `faithful`. Quotes not in the answer go to `invalid_claims` and do not change the verdict | The model's verdict is not used. The quote check keeps an invented quote out of the verdict. |
+| Judge model | `JUDGE_MODEL` in `agent/config.py`: `anthropic:claude-haiku-4-5-20251001`. The agent uses `claude-haiku-5-5` | The code comment says "different tier from the agent". The reason is not written down; to confirm. |
+| Errors | If the judge call raises, the run gets an error record. Errored runs and runs with no markers in the last turn are skipped | One failed call does not stop the folder. The JSONL shows what was judged. |
+| Output | `judge_v1.jsonl`: one line per judged run with the verdict, the claims, the markers (marker number to article id) and the error, if any | Same folder as the run's `records.jsonl` (D21). |
+
+**First judge run.** `evaluate_the_judge` folder, rubric v1, judge `claude-haiku-4-5-20251001`. 27 records (9 cases x 3 repeats of the `baseline` run), 0 errors. 22 faithful, 5 unfaithful. The 6 unsupported claims are all major; none minor; no invalid claims. Each unfaithful verdict is one run of `ctx-recall-arxiv-early-detail`, `ctx-topic-switch`, `ctx-name-and-version-survival`, `ctx-unmentioned-follow-up` or `filter-days-only`. Not read yet. Not calibrated against human labels.
+
+- `filter-unknown-outlet`: the judge says faithful in all 3 runs, and L3 fails all 3 (sources cited where the answer should abstain). Only the two checks disagree. Which one is right is not known.
+
+- **Known limits:**
+    - An empty quote is a substring of every answer, so it counts as a claim. Marked `xfail` in `test_agent_judge.py`.
+    - `format_published` labels a naive datetime as UTC.
+    - `supported_claims` whose quote is not in the answer are dropped with no record.
+    - `JudgeConfig` is defined but unused. `main` takes the model and rubric from constants, and `temperature_reasoning` is never passed to the model.
+    - `RUN_DIR` is hard-coded to `evaluate_the_judge`.
+    - Titles are escaped before the judge sees them, so a title with `&` reaches the judge as `&amp;`.
+    - No calibration against human-labelled answers yet.
+- **Revisit when:** the calibration examples are labelled, or the 5 unfaithful runs and the `filter-unknown-outlet` disagreement are read.
+
 ## 5. Interfaces and data models
 
 Sketches, not final code. Models live in `src/ai_news_assistant/models.py`; the `Fetcher` protocol lives in `src/ai_news_assistant/ingestion/base.py`; the `ArticleStore` protocol lives in `src/ai_news_assistant/storage/base.py`, with `SQLiteStore` in `storage/sqlite.py` (dates stored as UTC ISO 8601 text, tags as a JSON array, `extraction_successful` as an INTEGER that is NULL, 0 or 1). The shared capped `download` and `USER_AGENT` live in `src/ai_news_assistant/downloads.py`; `fetch_html` lives in `src/ai_news_assistant/extraction/fetch.py` and `extract_text_from_html` in `extraction/text.py`. The `ingest(fetchers: Mapping[str, Fetcher], store: ArticleStore) -> IngestResult` command lives in `src/ai_news_assistant/ingest.py`; `ingestion/feeds.py` maps feed names (the mapping keys) to `Feed(url, source)`, where `source` is the configured publisher name stored on the feed's articles.
@@ -512,7 +539,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 |-------|-----|
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
 | Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18); `run_retrieval` and `evaluate` with article-level R@5, R@10, MRR and per-type checks (D19); dev baseline run, test not run. |
-| Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
+| Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. As built: L4 judge in `agent/eval/judge/judge.py`, rubric v1, verdict set in code (D24); first run graded, not calibrated. |
 | Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner `agent/eval/run_case.py` (D21); L0, L2 and L3 in `agent/eval/checks.py`, scored by `agent/eval/evaluate.py` (D22); L1 and L6 efficiency; `report.md` with outcomes and efficiency (D23). |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |
 | CI gating | Fast eval subset on every PR; full suite nightly; threshold failures block merge. |
