@@ -256,9 +256,19 @@ Each item is its own issue, branch and PR.
         - Abstention read from the answer (no sources, `grounded = false`), not from `abstain_phrases`.
         - Tests in `tests/agent/eval/`: `test_agent_checks.py`, `test_agent_evaluate.py`.
         - First grading of `20261029-102647_baseline`: 4 of 5 pass; `filter-unknown-outlet` fails L3 (cited 2 sources). Not read yet.
-    - [ ] L1 trajectory, L6 efficiency.
+    - [x] L1 trajectory, L6 efficiency (#71, design D23).
+        - `check_trajectory` in `agent/eval/checks.py`: `tools_*`, `tool_args` (first call of the tool), `max_tool_calls`; last turn only.
+        - `agent/eval/report.py`: `summarize_efficiency` (median and max per case id and per case type, over runs; errored runs left out), `render_efficiency`.
+        - `extract_turn` no longer records the `ModelAnswer` structured-output call as a tool call.
+        - Tests in `tests/agent/eval/`: `test_agent_checks.py` (L1), `test_agent_report.py`.
+        - [ ] Fix the L2 pass detail: it says "Output format is correct." (`check_grounding`).
     - [ ] Report.
+        - [x] `report.md` in the run folder, written by `evaluate`: header and efficiency tables (`render_report`).
+        - [ ] Outcomes section (pass, fallback, fail per case and layer).
+        - [ ] Experiment name and split from `run.json` in the header.
     - [ ] First real run, then read every failure.
+        - `20261030-161356_baseline`: 9 cases x 3 repeats, 15 pass, 12 fail (10 with L0, 3 with L3 on `filter-unknown-outlet`; one run has both). Not read yet.
+        - [ ] Re-run it: it was recorded before the `ModelAnswer` fix, so its tool-call counts include 63 `ModelAnswer` calls.
     - [ ] Grow to 25-30 cases.
     - [ ] Injection fixtures and L5 canary check.
     - [ ] L4 LLM as a judge for faithfulness.

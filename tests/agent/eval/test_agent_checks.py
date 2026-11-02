@@ -15,10 +15,11 @@ from ai_news_assistant.agent.eval.checks import (
     check_correctness,
     check_format,
     check_grounding,
+    check_trajectory,
     run_check,
 )
-from ai_news_assistant.agent.eval.dataset import Case, Expect, FactChecks
-from ai_news_assistant.agent.eval.transcript import RunError, Transcript, TurnResult
+from ai_news_assistant.agent.eval.dataset import Case, Checks, Expect, FactChecks, ToolArgs
+from ai_news_assistant.agent.eval.transcript import RunError, ToolCall, Transcript, TurnResult
 
 CLEAN = TurnResult(
     user_query="What happened?",
@@ -80,6 +81,7 @@ def test_clean_transcript_passes_every_check(turns: tuple[TurnResult, ...]) -> N
         ("L0", "c-1", "pass"),
         ("L2", "c-1", "pass"),
         ("L3", "c-1", "pass"),
+        ("L1", "c-1", "pass"),
     ]
     assert (scored.case_id, scored.run_idx, scored.outcome) == ("c-1", 0, "pass")
 
@@ -317,6 +319,7 @@ def test_abstaining_on_allow_fallback_case_is_graded_fallback() -> None:
         ("L0", "pass"),
         ("L2", "pass"),
         ("L3", "fallback"),
+        ("L1", "pass"),
     ]
     assert scored.outcome == "fallback"
 
@@ -468,6 +471,267 @@ def test_l3_plain_case_abstaining_fails() -> None:
     result = check_correctness(transcript(ABSTAINED), facts_case(any_=("shipped",)))
 
     assert (result.outcome, result.detail) == ("fail", "No facts_any wording found.")
+
+
+# L1 check_trajectory
+
+L1_PASS = "All tools were called correctly with the correct args."
+
+
+def call(name: str, **args: object) -> ToolCall:
+    return ToolCall(name=name, args=dict(args), result_ids=())
+
+
+def l1(*calls: ToolCall, earlier: tuple[TurnResult, ...] = (), **expect: object) -> CheckResult:
+    """Grade a transcript whose last turn made `calls`, against Expect(**expect)."""
+    last = replace(CLEAN, tool_calls=calls)
+    return check_trajectory(transcript(*earlier, last), case(expect=Expect(**expect)))
+
+
+def test_l1_every_expectation_met_passes() -> None:
+    result = l1(
+        call("search_news", query="q", sources=["The Verge"]),
+        call("get_article", article_id="a1"),
+        tools=Checks(all=("search_news",), any=("get_article",), none=("get_latest_articles",)),
+        tool_args=ToolArgs(tool="search_news", sources=("The Verge",)),
+        max_tool_calls=2,
+    )
+
+    assert (result.layer, result.outcome, result.detail) == ("L1", "pass", L1_PASS)
+
+
+def test_l1_no_expectations_and_no_calls_passes() -> None:
+    assert (l1().outcome, l1().detail) == ("pass", L1_PASS)
+
+
+@pytest.mark.parametrize(
+    ("tool_args", "args"),
+    [
+        # agent_cases.toml cases 5-8
+        (ToolArgs(tool="search_news", sources=("The Verge",)), {"sources": ["The Verge"]}),
+        (ToolArgs(tool="search_news", days=3), {"days": 3}),
+        (
+            ToolArgs(tool="search_news", sources=("TechCrunch",), days=7),
+            {"sources": ["TechCrunch"], "days": 7},
+        ),
+        (ToolArgs(tool="search_news", absent=frozenset({"sources", "days"})), {}),
+    ],
+)
+def test_l1_filter_cases_with_matching_args_pass(
+    tool_args: ToolArgs, args: dict[str, object]
+) -> None:
+    result = l1(call("search_news", query="q", **args), tool_args=tool_args)
+
+    assert (result.outcome, result.detail) == ("pass", L1_PASS)
+
+
+# L1 tools_all, tools_any, tools_none
+
+
+def test_l1_missing_tools_all_fails_and_names_only_the_missing_one() -> None:
+    result = l1(call("search_news"), tools=Checks(all=("search_news", "get_article")))
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Some of the REQUIRED tools were not called: get_article",
+    )
+
+
+def test_l1_no_tools_any_called_fails_and_lists_them() -> None:
+    result = l1(call("get_article"), tools=Checks(any=("search_news", "get_latest_articles")))
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "None of the ANY tools are called: search_news, get_latest_articles",
+    )
+
+
+def test_l1_one_tools_any_is_enough() -> None:
+    result = l1(
+        call("get_latest_articles"), tools=Checks(any=("search_news", "get_latest_articles"))
+    )
+
+    assert result.outcome == "pass"
+
+
+def test_l1_forbidden_tool_fails_and_names_it() -> None:
+    result = l1(
+        call("search_news"),
+        call("get_latest_articles"),
+        tools=Checks(none=("get_latest_articles",)),
+    )
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Following tools are used although FORBIDDEN: get_latest_articles",
+    )
+
+
+def test_l1_all_faults_reported_together_in_order() -> None:
+    result = l1(
+        call("get_latest_articles"),
+        call("get_latest_articles"),
+        tools=Checks(all=("get_article",), any=("search_news",), none=("get_latest_articles",)),
+        tool_args=ToolArgs(tool="search_news", days=3),
+        max_tool_calls=1,
+    )
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Following tools are used although FORBIDDEN: get_latest_articles; "
+        "None of the ANY tools are called: search_news; "
+        "Some of the REQUIRED tools were not called: get_article; "
+        "Expected tool to check arguments was not called: search_news; "
+        "Too many tool calls, max_tool_calls: 1, called: 2",
+    )
+
+
+def test_l1_only_the_last_turn_is_graded() -> None:
+    earlier = replace(CLEAN, tool_calls=(call("search_news"),))
+    result = l1(earlier=(earlier,), tools=Checks(all=("search_news",)))
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Some of the REQUIRED tools were not called: search_news",
+    )
+
+
+# L1 tool_args: first call of the tool only
+
+VERGE_ONLY = ToolArgs(tool="search_news", sources=("The Verge",))
+
+
+@pytest.mark.parametrize(
+    ("args", "got"),
+    [
+        ({"sources": ["TechCrunch"]}, "['TechCrunch']"),
+        ({"sources": ["The Verge", "TechCrunch"]}, "['The Verge', 'TechCrunch']"),
+        ({}, "None"),
+    ],
+)
+def test_l1_wrong_sources_fail(args: dict[str, object], got: str) -> None:
+    result = l1(call("search_news", query="q", **args), tool_args=VERGE_ONLY)
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        f"search_news sources: expected ['The Verge'], got {got}.",
+    )
+
+
+def test_l1_sources_order_does_not_matter() -> None:
+    expected = ToolArgs(tool="search_news", sources=("The Verge", "TechCrunch"))
+    result = l1(call("search_news", sources=["TechCrunch", "The Verge"]), tool_args=expected)
+
+    assert result.outcome == "pass"
+
+
+@pytest.mark.parametrize(("args", "got"), [({"days": 7}, "7"), ({}, "None")])
+def test_l1_wrong_days_fail(args: dict[str, object], got: str) -> None:
+    result = l1(call("search_news", **args), tool_args=ToolArgs(tool="search_news", days=3))
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        f"search_news days: expected 3, got {got}.",
+    )
+
+
+def test_l1_absent_arg_passed_fails() -> None:
+    expected = ToolArgs(tool="search_news", absent=frozenset({"days"}))
+    result = l1(call("search_news", days=3), tool_args=expected)
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "search_news days: expected absent, got 3.",
+    )
+
+
+def test_l1_absent_arg_passed_as_null_passes() -> None:
+    expected = ToolArgs(tool="search_news", absent=frozenset({"days"}))
+
+    assert l1(call("search_news", days=None), tool_args=expected).outcome == "pass"
+
+
+def test_l1_tool_args_tool_not_called_fails() -> None:
+    result = l1(call("get_latest_articles"), tool_args=VERGE_ONLY)
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Expected tool to check arguments was not called: search_news",
+    )
+
+
+def test_l1_first_call_wrong_second_right_fails() -> None:
+    result = l1(
+        call("search_news", sources=["TechCrunch"]),
+        call("search_news", sources=["The Verge"]),
+        tool_args=VERGE_ONLY,
+    )
+
+    assert result.outcome == "fail"
+
+
+def test_l1_first_call_right_second_wrong_passes() -> None:
+    result = l1(
+        call("search_news", sources=["The Verge"]),
+        call("search_news", sources=["TechCrunch"]),
+        tool_args=VERGE_ONLY,
+    )
+
+    assert result.outcome == "pass"
+
+
+def test_l1_other_tools_args_are_ignored() -> None:
+    result = l1(
+        call("get_latest_articles", days=30),
+        call("search_news", sources=["The Verge"]),
+        tool_args=VERGE_ONLY,
+    )
+
+    assert result.outcome == "pass"
+
+
+# L1 max_tool_calls
+
+
+def test_l1_calls_equal_to_max_pass() -> None:
+    assert l1(call("search_news"), call("get_article"), max_tool_calls=2).outcome == "pass"
+
+
+def test_l1_one_call_over_max_fails() -> None:
+    # 3 calls made, 2 allowed
+    result = l1(call("search_news"), call("get_article"), call("get_article"), max_tool_calls=2)
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Too many tool calls, max_tool_calls: 2, called: 3",
+    )
+
+
+def test_l1_max_zero_with_a_call_fails() -> None:
+    result = l1(call("search_news"), max_tool_calls=0)
+
+    assert (result.outcome, result.detail) == (
+        "fail",
+        "Too many tool calls, max_tool_calls: 0, called: 1",
+    )
+
+
+def test_l1_max_zero_without_calls_passes() -> None:
+    assert l1(max_tool_calls=0).outcome == "pass"
+
+
+def test_l1_unset_max_has_no_limit() -> None:
+    assert l1(*(call("search_news") for _ in range(5))).outcome == "pass"
+
+
+def test_l1_no_turns_fails_without_raising() -> None:
+    result = check_trajectory(transcript(), case())
+
+    assert (result.layer, result.outcome, result.detail) == (
+        "L1",
+        "fail",
+        "No turns in the transcript.",
+    )
 
 
 # ScoredTranscript.outcome
