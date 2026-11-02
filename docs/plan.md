@@ -264,7 +264,7 @@ Each item is its own issue, branch and PR.
         - [ ] Fix the L2 pass detail: it says "Output format is correct." (`check_grounding`).
     - [ ] Report.
         - [x] `report.md` in the run folder, written by `evaluate`: header and efficiency tables (`render_report`).
-        - [ ] Outcomes section (pass, fallback, fail per case and layer).
+        - [x] Outcomes section (pass, fallback, fail per case and layer): `summarize_outcomes`, `render_outcomes` in `agent/eval/report.py`; tests in `tests/agent/eval/test_agent_report.py`.
         - [ ] Experiment name and split from `run.json` in the header.
     - [ ] First real run, then read every failure.
         - `20261030-161356_baseline`: 9 cases x 3 repeats, 15 pass, 12 fail (10 with L0, 3 with L3 on `filter-unknown-outlet`; one run has both). Not read yet.

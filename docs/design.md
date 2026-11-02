@@ -353,7 +353,7 @@ Tests: in `tests/agent/eval/test_agent_checks.py` (transcripts with planted faul
 - **Revisit when:** the `filter-unknown-outlet` answer is read, or the first case misgrades a hand-read answer.
 
 ### D23. Agent eval L1 trajectory, L6 efficiency, `report.md`
-`check_trajectory` in `agent/eval/checks.py` (#71) adds L1. `agent/eval/report.py` adds L6 (`summarize_efficiency`) and the markdown (`render_efficiency`, `render_report`). `evaluate` now writes `report.md` into the run folder.
+`check_trajectory` in `agent/eval/checks.py` (#71) adds L1. `agent/eval/report.py` adds L6 (`summarize_efficiency`) and the markdown (`render_efficiency`), the outcomes (`summarize_outcomes`, `render_outcomes`), and `render_report`. `evaluate` writes `report.md` into the run folder.
 
 | Decision | Choice | Reason |
 |---|---|---|
@@ -366,7 +366,9 @@ Tests: in `tests/agent/eval/test_agent_checks.py` (transcripts with planted faul
 | L6 unit | One total per run: tool calls, input and output tokens, latency, summed over its turns | A case's cost is the whole conversation. |
 | L6 groups | Median and max over runs, once per case id and once per case type; the type row uses every run of that type, not the case medians | With repeats, the median shows the usual cost and the max the worst run. |
 | L6 errored runs | Left out | Their totals stop at the failing turn and would pull the medians down. |
-| `report.md` | `evaluate` writes it into the run folder after scoring: header (run id, cases file version and snapshot, runs and errors), then `## Efficiency` with a case table and a type table, each cell `median / max` | Same place as the RAG eval report (D19). Any `error: ...` exit writes no report. |
+| Outcome counts | Per case: one count per run, by its worst outcome. Per layer: one count per check result. Plus a totals line and a list of every check that did not pass | A run is one case; a layer is one check. Counting checks per layer shows which layer fails, which run counts cannot. |
+| Outcomes in `report.md` | `## Outcomes` before `## Efficiency`: totals line, case table (runs), layer table (checks), "Not passing" bullets with each check's detail. Errored runs count as `invalid` (or `fail` for a format error) | The grading and the cost sit in one file. Errored runs are kept here (they are graded) but left out of efficiency (below). |
+| `report.md` | `evaluate` writes it into the run folder after scoring: header (run id, cases file version and snapshot, runs and errors), then `## Outcomes`, then `## Efficiency` with a case table and a type table, each cell `median / max`. `render_report` takes the scored results from `score()`, so nothing is scored twice | Same place as the RAG eval report (D19). Any `error: ...` exit writes no report. |
 
 **Runs graded (2026-10-30).** Not comparable with each other: different cases and repeats.
 
@@ -374,21 +376,23 @@ Tests: in `tests/agent/eval/test_agent_checks.py` (transcripts with planted faul
 |---|---|---|---|---|---|
 | `20261030-161356_baseline` | 9 x 3 | 27 | 15 | 12 | 0 |
 | `20261030-172111_baseline` | 2 x 2 | 4 | 2 | 2 | 0 |
+| `20261102-085825_baseline` | 9 x 3 | 27 | 14 | 13 | 0 |
+
+- `085825`: not read yet. Its `report.md` is the first with the outcomes section. Per case, `filter-unknown-outlet` fails 3 of 3 runs; `ctx-recall-arxiv-early-detail` and `ctx-unmentioned-follow-up` fail 3 of 3 too; the other cases pass in at least 1 run.
 
 - `161356`, the first full run: 10 runs fail L0 (duplicate ids in `citations`, a model-written Sources line, dropped markers); all 3 `filter-unknown-outlet` runs fail L3 (run 0 also L0); no L1 failure. None of the answers has been read yet.
 - `172111`: both `ctx-topic-switch` runs fail L0; run 1 also fails L1 (`search_news` not called in the last turn).
 - `161356` was recorded before the `ModelAnswer` call was dropped (D21): its `records.jsonl` holds 63 `ModelAnswer` calls, so its tool-call counts, in L1 and in L6, are too high by that much (about 2.3 per run). Its efficiency table is not used. `172111` has none.
 - Efficiency, `172111` (n=2 per row): `ctx-topic-switch` median 6 tool calls, 92,026.5 input tokens, 25.4 s per run; `filter-days-only` 1 tool call, 10,420 input tokens, 5.4 s.
 
-Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, first call only, `max_tool_calls`), 22 in `test_agent_evaluate.py` (`report.md` written, none on error), 24 in `test_agent_report.py` (hand-checked medians, even counts, type over runs, errored runs, number formats); no model or network.
+Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, first call only, `max_tool_calls`), 22 in `test_agent_evaluate.py` (`report.md` written, none on error), 31 in `test_agent_report.py` (hand-checked medians, even counts, type over runs, errored runs, number formats; outcome counts, worst-outcome rule, layer order, not-passing list); no model or network.
 
 - **Known limits:**
-    - `report.md` has no outcomes section; pass, fallback and fail are only printed.
     - The header does not read `run.json`, so the experiment name and split are not in the report.
     - A type with one case gives a type row equal to its case row.
     - L1 checks only the first call of the `tool_args` tool; a wrong later call passes.
     - `cite_all` and `cite_none` are still not graded (D22).
-- **Revisit when:** the outcomes section is added, `161356` is re-run, or a case needs per-turn tool checks.
+- **Revisit when:** `161356` is re-run, or a case needs per-turn tool checks.
 
 ## 5. Interfaces and data models
 
@@ -509,7 +513,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 | Unit tests | Ingestion, chunking, dedupe and tool functions; LLM mocked; feeds replaced by saved sample files; HTTP mocked with `httpx.MockTransport`. No network in tests. |
 | Retrieval evals | Hand-labeled set of 30-50 questions, labeled with article ids against a frozen corpus; recall@k and MRR. As built: 22 questions in `rag/eval/rag_questions_v1.toml`, 13 dev and 9 test (D18); `run_retrieval` and `evaluate` with article-level R@5, R@10, MRR and per-type checks (D19); dev baseline run, test not run. |
 | Answer evals | Groundedness and citation correctness via LLM judge, calibrated against a few human-labeled examples. |
-| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner `agent/eval/run_case.py` (D21); L0, L2 and L3 in `agent/eval/checks.py`, scored by `agent/eval/evaluate.py` (D22); L1 and L6 efficiency, with `report.md` (D23). |
+| Trajectory evals | Right tools called, no answer without sources, refusal when evidence is missing. As built: case schema and loader for `agent/eval/agent_cases.toml`, 9 dev cases (D20); runner `agent/eval/run_case.py` (D21); L0, L2 and L3 in `agent/eval/checks.py`, scored by `agent/eval/evaluate.py` (D22); L1 and L6 efficiency; `report.md` with outcomes and efficiency (D23). |
 | Adversarial evals | Prompt injection inside article text, conflicting sources, stale news. |
 | CI gating | Fast eval subset on every PR; full suite nightly; threshold failures block merge. |
 
