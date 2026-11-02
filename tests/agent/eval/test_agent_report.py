@@ -4,12 +4,16 @@ from dataclasses import replace
 
 import pytest
 
+from ai_news_assistant.agent.eval.checks import CheckResult, Outcome, ScoredTranscript
 from ai_news_assistant.agent.eval.dataset import Case, CaseDataset, CaseType, Expect
 from ai_news_assistant.agent.eval.report import (
     EfficiencyRow,
+    OutcomeRow,
     render_efficiency,
+    render_outcomes,
     render_report,
     summarize_efficiency,
+    summarize_outcomes,
 )
 from ai_news_assistant.agent.eval.transcript import RunError, ToolCall, Transcript, TurnResult
 
@@ -274,13 +278,15 @@ def test_render_empty_type_list_keeps_case_table() -> None:
 # render_report
 
 
-def test_render_report_header_then_efficiency_section() -> None:
+def test_render_report_header_then_outcomes_then_efficiency() -> None:
     dataset = CaseDataset(version=2, snapshot="news.db", abstain_phrases=(), cases=(case("a"),))
     transcripts = [run("a", 0, turn()), run("a", 1, turn(), error=ERROR)]
+    scored = [scored_run("a", 0, ok_result()), scored_run("a", 1, error_result())]
 
-    report = render_report("20261030-172111_baseline", transcripts, dataset)
+    report = render_report("20261030-172111_baseline", transcripts, scored, dataset)
 
-    header, efficiency = report.split("## Efficiency\n\n")
+    header, rest = report.split("## Outcomes\n\n")
+    outcomes, efficiency = rest.split("## Efficiency\n\n")
     assert header == (
         "# Agent eval: `20261030-172111_baseline`\n"
         "\n"
@@ -288,4 +294,104 @@ def test_render_report_header_then_efficiency_section() -> None:
         "- Runs: 2 (1 ended in an error)\n"
         "\n"
     )
+    assert outcomes == render_outcomes(scored) + "\n"
     assert efficiency == render_efficiency(*summarize_efficiency(transcripts, dataset.cases))
+
+
+# summarize_outcomes and render_outcomes
+
+
+def result(layer: str, outcome: Outcome, detail: str = "detail") -> CheckResult:
+    return CheckResult(layer=layer, id="a", outcome=outcome, detail=detail)
+
+
+def ok_result() -> tuple[CheckResult, ...]:
+    return (result("L0", "pass"), result("L3", "pass"))
+
+
+def error_result() -> tuple[CheckResult, ...]:
+    return (result("run", "invalid", "TimeoutError in turn 1: timed out"),)
+
+
+def scored_run(case_id: str, run_idx: int, results: tuple[CheckResult, ...]) -> ScoredTranscript:
+    return ScoredTranscript(case_id=case_id, run_idx=run_idx, results=results)
+
+
+def test_case_rows_count_each_run_by_its_worst_outcome() -> None:
+    scored = [
+        scored_run("b", 0, (result("L0", "fail"), result("L3", "pass"))),  # fail
+        scored_run("b", 1, (result("L0", "pass"), result("L3", "fallback"))),  # fallback
+        scored_run("a", 0, ok_result()),  # pass
+        scored_run("a", 1, error_result()),  # invalid
+    ]
+
+    case_rows, _ = summarize_outcomes(scored)
+
+    assert case_rows == [
+        OutcomeRow("a", passed=1, fallback=0, failed=0, invalid=1),
+        OutcomeRow("b", passed=0, fallback=1, failed=1, invalid=0),
+    ]
+
+
+def test_layer_rows_count_check_results_sorted_with_run_last() -> None:
+    scored = [
+        scored_run("a", 0, (result("L3", "fail"), result("L0", "pass"))),
+        scored_run("a", 1, error_result()),
+    ]
+
+    _, layer_rows = summarize_outcomes(scored)
+
+    assert layer_rows == [
+        OutcomeRow("L0", passed=1, fallback=0, failed=0, invalid=0),
+        OutcomeRow("L3", passed=0, fallback=0, failed=1, invalid=0),
+        OutcomeRow("run", passed=0, fallback=0, failed=0, invalid=1),
+    ]
+
+
+def test_summarize_outcomes_on_no_runs_is_empty() -> None:
+    assert summarize_outcomes([]) == ([], [])
+
+
+def test_render_outcomes_totals_line_and_tables() -> None:
+    scored = [
+        scored_run("a", 0, ok_result()),
+        scored_run("b", 0, (result("L3", "fallback"),)),
+    ]
+
+    text = render_outcomes(scored)
+
+    assert text.startswith(
+        "Runs by worst outcome: 1 pass, 1 fallback, 0 fail, 0 invalid.\n\n"
+        "### By case\n\n"
+        "| Case | Runs | Pass | Fallback | Fail | Invalid |\n"
+        "|---|---|---|---|---|---|\n"
+        "| a | 1 | 1 | 0 | 0 | 0 |\n"
+        "| b | 1 | 0 | 1 | 0 | 0 |\n"
+        "\n"
+        "### By layer\n"
+        "\n"
+        "Counts every check result, not runs.\n"
+        "\n"
+        "| Layer | Checks | Pass | Fallback | Fail | Invalid |\n"
+    )
+
+
+def test_render_outcomes_lists_every_check_that_did_not_pass() -> None:
+    scored = [
+        scored_run("a", 0, (result("L0", "pass"), result("L3", "fail", "No wording found."))),
+        scored_run("a", 1, ok_result()),
+    ]
+
+    text = render_outcomes(scored)
+
+    assert text.endswith("### Not passing\n\n- `a#0` `L3`: No wording found.\n")
+
+
+def test_render_outcomes_all_passing_says_so() -> None:
+    assert render_outcomes([scored_run("a", 0, ok_result())]).endswith(
+        "### Not passing\n\nAll runs passed.\n"
+    )
+
+
+def test_render_outcomes_no_runs() -> None:
+    assert render_outcomes([]) == "No runs.\n"

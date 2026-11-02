@@ -251,6 +251,10 @@ def test_main_writes_report_md_into_the_run_folder(tmp_path: Path, cases_path: P
 
     report = (run_dir / "report.md").read_text(encoding="utf-8")
     assert report.startswith("# Agent eval: `run`\n")
+    assert "## Outcomes" in report
+    # "two" has an L2 fail (cited a1, gold is a2), so its one run is a fail
+    assert "| two | 1 | 0 | 0 | 1 | 0 |" in report
+    assert "- `two#2` `L2`: Turn 1, no cited article is gold." in report
     assert "## Efficiency" in report
     # input tokens [10, 30] -> median 20, max 30
     assert "| single-turn-lookup-and-citation | 2 | 0 / 0 | 20 / 30 | 5 / 5 | 1.0 / 1.0 |" in report

@@ -1,10 +1,26 @@
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 from statistics import median
 
+from ai_news_assistant.agent.eval.checks import Outcome, ScoredTranscript
 from ai_news_assistant.agent.eval.dataset import Case, CaseDataset
 from ai_news_assistant.agent.eval.transcript import Transcript
+
+OUTCOMES: tuple[Outcome, ...] = ("pass", "fallback", "fail", "invalid")
+
+
+@dataclass(frozen=True)
+class OutcomeRow:
+    group: str  # a case id, or a layer.
+    passed: int
+    fallback: int
+    failed: int
+    invalid: int
+
+    @property
+    def total(self) -> int:
+        return self.passed + self.fallback + self.failed + self.invalid
 
 
 @dataclass(frozen=True)
@@ -94,20 +110,115 @@ def summarize_efficiency(
     return case_rows, type_rows
 
 
-def render_report(run_id: str, transcripts: Sequence[Transcript], dataset: CaseDataset) -> str:
+def summarize_outcomes(
+    scored: Sequence[ScoredTranscript],
+) -> tuple[list[OutcomeRow], list[OutcomeRow]]:
+    """Create rows for the outcomes report: (case id rows, layer rows).
+
+    - Case id rows: one count per run, by that run's worst outcome, sorted by case id.
+    - Layer rows: one count per check result, sorted by layer; `run` (errored runs) last.
+    """
+    by_case: dict[str, Counter[Outcome]] = defaultdict(Counter)
+    by_layer: dict[str, Counter[Outcome]] = defaultdict(Counter)
+
+    for s in scored:
+        by_case[s.case_id][s.outcome] += 1
+        for r in s.results:
+            by_layer[r.layer][r.outcome] += 1
+
+    case_rows = [_outcome_row(case_id, by_case[case_id]) for case_id in sorted(by_case)]
+    layers = sorted(by_layer, key=lambda layer: (layer == "run", layer))
+    layer_rows = [_outcome_row(layer, by_layer[layer]) for layer in layers]
+    return case_rows, layer_rows
+
+
+def _outcome_row(group: str, counts: Counter[Outcome]) -> OutcomeRow:
+    return OutcomeRow(
+        group=group,
+        passed=counts["pass"],
+        fallback=counts["fallback"],
+        failed=counts["fail"],
+        invalid=counts["invalid"],
+    )
+
+
+def render_report(
+    run_id: str,
+    transcripts: Sequence[Transcript],
+    scored: Sequence[ScoredTranscript],
+    dataset: CaseDataset,
+) -> str:
     """`report.md` for one run folder."""
     errors = sum(transcript.error is not None for transcript in transcripts)
-    lines = [
+    header = [
         f"# Agent eval: `{run_id}`",
         "",
         f"- Cases file: v{dataset.version}, snapshot `{dataset.snapshot}`",
         f"- Runs: {len(transcripts)} ({errors} ended in an error)",
         "",
-        "## Efficiency",
-        "",
     ]
     efficiency = render_efficiency(*summarize_efficiency(transcripts, dataset.cases))
-    return "\n".join(lines) + "\n" + efficiency
+    return (
+        "\n".join(header)
+        + "\n"
+        + "## Outcomes\n\n"
+        + render_outcomes(scored)
+        + "\n"
+        + "## Efficiency\n\n"
+        + efficiency
+    )
+
+
+def render_outcomes(scored: Sequence[ScoredTranscript]) -> str:
+    """Markdown for the outcomes section: totals, one table per case id and per layer, and
+    the detail of every check that did not pass."""
+    if not scored:
+        return "No runs.\n"
+
+    totals = Counter(s.outcome for s in scored)
+    case_rows, layer_rows = summarize_outcomes(scored)
+    lines = [
+        "Runs by worst outcome: " + ", ".join(f"{totals[o]} {o}" for o in OUTCOMES) + ".",
+        "",
+        "### By case",
+        "",
+        *_outcome_table("Case", "Runs", case_rows),
+        "",
+        "### By layer",
+        "",
+        "Counts every check result, not runs.",
+        "",
+        *_outcome_table("Layer", "Checks", layer_rows),
+        "",
+        "### Not passing",
+        "",
+        *_not_passing(scored),
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def _outcome_table(first_column: str, count_column: str, rows: Sequence[OutcomeRow]) -> list[str]:
+    if not rows:
+        return ["No completed runs."]
+    lines = [
+        f"| {first_column} | {count_column} | Pass | Fallback | Fail | Invalid |",
+        "|---|---|---|---|---|---|",
+    ]
+    for r in rows:
+        lines.append(
+            f"| {r.group} | {r.total} | {r.passed} | {r.fallback} | {r.failed} | {r.invalid} |"
+        )
+    return lines
+
+
+def _not_passing(scored: Sequence[ScoredTranscript]) -> list[str]:
+    bullets = [
+        f"- `{s.case_id}#{s.run_idx}` `{r.layer}`: {r.detail}"
+        for s in scored
+        for r in s.results
+        if r.outcome != "pass"
+    ]
+    return bullets or ["All runs passed."]
 
 
 def render_efficiency(

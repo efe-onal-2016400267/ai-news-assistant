@@ -105,7 +105,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         transcripts = load_transcripts(run_dir)
         dataset = load_dataset_for_run(run_dir)
         scored = score(transcripts, dataset)
-        report = render_report(run_dir.name, transcripts, dataset)
+        report = render_report(run_dir.name, transcripts, scored, dataset)
         (run_dir / "report.md").write_text(report, encoding="utf-8")
     except (ValueError, OSError) as e:  # OSError: run.json or records.jsonl missing
         raise SystemExit(f"error: {e}") from e
