@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from dataclasses import dataclass
 from pathlib import Path
@@ -45,15 +46,10 @@ def render(answer: Answer) -> str:
     return text
 
 
-def ask_detailed(
-    agent: CompiledStateGraph[Any, None, Any, Any],
-    question: str,
-    config: RunnableConfig,
-    store_path: Path,
-) -> AskResult:
-    """Return the trace to a question, orchestrate citation logic.
+def _finish(result: dict[str, Any], config: RunnableConfig, store_path: Path) -> AskResult:
+    """Finish answer processing after agent invocation.
 
-    1. invoke the agent to get the initial ModelAnswer with structured output.
+    Get result and perform everything after that:
     2. Call `retrieve_ids` to get the article_ids from tool calls.
     3. Call `check_citation` to get cleaned text and valid citations.
     4. Call `resolve_sources` to get the proper metadata for each cited article.
@@ -61,9 +57,7 @@ def ask_detailed(
 
     Errors propagate.
     """
-    # Ids, markers and counts only: answer and article text are untrusted and stay out of logs.
     thread_id = config.get("configurable", {}).get("thread_id")
-    result = agent.invoke({"messages": [HumanMessage(content=question)]}, config=config)
     structured_response = result.get("structured_response")
     messages = result["messages"]
     if not isinstance(structured_response, ModelAnswer):
@@ -118,6 +112,28 @@ def ask_detailed(
         messages=messages,
     )
     return ask_result
+
+
+def ask_detailed(
+    agent: CompiledStateGraph[Any, None, Any, Any],
+    question: str,
+    config: RunnableConfig,
+    store_path: Path,
+) -> AskResult:
+    """Invoke the agent and call _finish."""
+    result = agent.invoke({"messages": [HumanMessage(content=question)]}, config=config)
+    return _finish(result, config, store_path)
+
+
+async def aask(
+    agent: CompiledStateGraph[Any, None, Any, Any],
+    question: str,
+    config: RunnableConfig,
+    store_path: Path,
+) -> Answer:
+    result = await agent.ainvoke({"messages": [HumanMessage(content=question)]}, config=config)
+    finished = await asyncio.to_thread(_finish, result=result, config=config, store_path=store_path)
+    return finished.answer
 
 
 def ask(
