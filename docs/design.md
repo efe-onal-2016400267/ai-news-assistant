@@ -422,7 +422,7 @@ Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, firs
 - **Revisit when:** the calibration examples are labelled, or the 5 unfaithful runs and the `filter-unknown-outlet` disagreement are read.
 
 ### D25. API: `/chat` stays JSON; `/chat/stream` sends status events over SSE
-Status: `GET /health` and `POST /chat` are built (#78); `/chat` is async since #80 and awaits `aask`. The streaming endpoint is decided, not built yet. Streaming is for progress only: the answer text is sent once, after the citation check.
+Status: `GET /health`, `POST /chat` (#78) and `POST /chat/stream` are built. `/chat` is async since #80 and awaits `aask`. Streaming is for progress only: the answer text is sent once, after the citation check.
 
 | Decision | Choice | Reason |
 |---|---|---|
@@ -430,14 +430,13 @@ Status: `GET /health` and `POST /chat` are built (#78); `/chat` is async since #
 | Events | `status` with `{"message"}`, once per tool call; `answer` with the `ChatResponse` JSON; `error` with `{"detail"}` | Status is what the user waits for. The answer event has the same shape as `/chat`. |
 | Status text | Fixed per tool: `search_news` "Searching the news archive...", `get_article` "Reading an article...", `get_latest_articles` "Checking the latest articles...". Other tools: "Working on your question..." | Tool names and article ids stay internal. Proposed wording; not reviewed yet. |
 | Answer timing | One `answer` event, after `check_citations` and `resolve_sources`. No token streaming | The answer is a `ModelAnswer` schema, so its markers are not checked until the run ends (D15). Text sent early could contain dropped markers. |
-| Event source | `agent.stream(..., stream_mode="values")` with the same thread config. New messages are those after the thread's length before the call (`get_state`) | Same agent and memory as `/chat`. Full state after each step gives the final `structured_response` for the check. |
-| Shared post-processing | `_finish(result, config, store_path)` in `agent/answer.py`, called by `ask_detailed` and by `aask` (run with `asyncio.to_thread`, so the event loop is not blocked). The stream will call it too. | `/chat` and `/chat/stream` return the same answer for the same run. |
+| Event source | `agent.astream_events(..., version="v3")` with the same thread config, in `aask_stream` (`agent/answer.py`). Tool calls come from `stream.tool_calls`; the final state from `stream.output()` | Same agent and memory as `/chat`. The final state gives `structured_response` for the check. LangChain's v3 API is beta. |
+| Shared post-processing | `_finish(result, config, store_path)` in `agent/answer.py`, called by `ask_detailed`, `aask` (run with `asyncio.to_thread`, so the event loop is not blocked) and `aask_stream`. | `/chat` and `/chat/stream` return the same answer for the same run. |
 | Errors | Before streaming starts: none. After it starts, a `500` cannot be sent, so an `error` event carries the same generic detail. Both log the traceback with the thread id | The status events may already have been sent. |
 
 - **Known limits:**
     - No token streaming. The user sees status lines, then the full answer at once.
     - Status text is fixed English text in code, not configurable.
-    - Counting new messages by length assumes the thread only grows. Context editing (D16) changes the model request only, so this holds.
     - `build_retriever()` ignores `store_path` (see D21), so the API retrieves from `DEFAULT_DB` even when started with another db.
 - **Revisit when:** token streaming is needed, or the status wording is reviewed.
 
