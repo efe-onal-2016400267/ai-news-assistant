@@ -68,7 +68,7 @@ Keep the layers separate so each one can be tested alone:
 | 1 | Skeleton + CI | Repo, uv, CLAUDE.md, CI green, branch protection | Done |
 | 2 | Ingestion + retrieval with evals | Searchable news store, retrieval metrics baseline | Mostly done (eval gaps below) |
 | 3 | Agent + tools | Tool-calling agent, trajectory evals | In progress |
-| 4 | API + UI | Streaming chat endpoint and front end | Not started |
+| 4 | API + UI | Streaming chat endpoint and front end | In progress |
 | 5 | Deploy + monitoring | Staging/prod pipeline, tracing, scheduled ingestion | Not started |
 | 6 | Hardening + write-up | Adversarial tests, README with eval results and architecture diagram | Not started |
 
@@ -84,6 +84,7 @@ Keep the layers separate so each one can be tested alone:
 | Extraction | Extraction fields in the store, shared capped `download`, `fetch_html`, `extract_text_from_html`, robots.txt and per-host throttle, `ai-news-extract` | #18, #23, #24, #25 |
 | RAG | Snapshot and corpus, two chunkers, retrieval interface, Chroma index, vector, BM25 and hybrid retrievers, eval runner | #27-#41 |
 | Agent | LangChain agent with `search_news`, `get_article` and `get_latest_articles`, conversation memory, CLI chat loop, checked citations, clearing of old tool results, source and date filters on `search_news` | #44, #45, #46, #47, #48, #49 |
+| API | `create_app`, `GET /health`, `POST /chat` (non-streaming), startup preflight. Streaming in progress | #78 |
 
 ### Ingestion (#8-#17)
 - `Fetcher` protocol in `ingestion/base.py`; `RSSFetcher` downloads a feed (size-capped) and returns typed `Article`s with `text=None`.
@@ -283,6 +284,23 @@ Each item is its own issue, branch and PR.
 - [ ] New issue for citation findings from the #49 M0 runs: a duplicate id in `citations`, and a model-written Sources line in the text.
 - [ ] Optional: summarize old messages if long threads still pass the trigger after clearing (design D16).
 - Design question to settle: `design.md` §9 names Anthropic as the default LLM provider; the code uses `ChatOpenAI`.
+
+---
+
+## Next: API milestone (#78)
+
+Milestone 4. Design in `design.md` D25.
+
+- [x] `api/app.py`: `create_app(agent=None, store_path=DEFAULT_DB)`. Lifespan runs preflight and builds the agent once, or uses an injected agent (#78, commit 26f628e).
+- [x] `api/settings.py`: `preflight` checks `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` and that the db file exists.
+- [x] `api/schemas.py`: `ChatRequest` (question 1-2000 characters after strip, optional `thread_id` of 1-64 letters, digits, `_`, `-`) and `ChatResponse`.
+- [x] `GET /health` and `POST /chat`. A failure returns 500 with a generic detail; the traceback is logged with the thread id, not the question.
+- [x] Tests in `tests/api/test_app.py` and `tests/api/test_settings.py`: fake agent, `rag_db` fixture, no model or network.
+- [ ] `agent/answer.py`: split the post-invoke part of `ask_detailed` into `finish_answer(result, store_path, thread_id)`, so `/chat` and the stream share it. Existing `tests/agent/test_answer.py` must still pass.
+- [ ] `api/streaming.py`: `stream_answer(agent, question, config, store_path)` yields `status` events from `agent.stream(..., stream_mode="values")`, one per tool call, then one `answer` event after the citation check.
+- [ ] `POST /chat/stream` (SSE): `text/event-stream`, events `status`, `answer` and `error`. An error after streaming starts sends an `error` event with the generic detail.
+- [ ] Tests in `tests/api/test_stream.py`: event order, status text per tool, unknown tool gets the default text, no status for a plain answer, prior thread messages are not announced again, agent error gives an `error` event with no internal text, invalid question is 422 and the agent is not called.
+- [ ] Known limit, not in this issue: `build_retriever()` ignores `store_path` (D21 has the same limit for the eval runner).
 
 ---
 
