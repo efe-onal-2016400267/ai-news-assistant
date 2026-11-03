@@ -1,4 +1,6 @@
+import asyncio
 import logging
+import threading
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -8,7 +10,8 @@ from langchain.tools import BaseTool
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 
-from ai_news_assistant.agent.answer import AskResult, ask, ask_detailed, render
+from ai_news_assistant.agent import answer as answer_module
+from ai_news_assistant.agent.answer import AskResult, aask, ask, ask_detailed, render
 from ai_news_assistant.agent.citations import CheckedCitations, resolve_sources
 from ai_news_assistant.agent.tools import create_get_article_tool, create_search_tool
 from ai_news_assistant.models import Answer, ModelAnswer, Source
@@ -105,6 +108,9 @@ class FakeAgent:
     def invoke(self, input: dict[str, Any], config: RunnableConfig) -> dict[str, Any]:
         self.calls.append((input, config))
         return self.result
+
+    async def ainvoke(self, input: dict[str, Any], config: RunnableConfig) -> dict[str, Any]:
+        return self.invoke(input, config)
 
 
 def call(tool: BaseTool, args: dict[str, Any], call_id: str) -> ToolMessage:
@@ -411,3 +417,192 @@ def test_ask_detailed_injected_tool_text_does_not_add_citation(rag_db: Path) -> 
     assert result.checked.dropped_ids == ["made-up"]
     assert result.checked.valid_citations == {1: "ai-act"}
     assert result.messages[-1] is error
+
+
+# aask
+
+
+def arun(agent: FakeAgent, rag_db: Path, question: str = "What happened?") -> Answer:
+    return asyncio.run(
+        aask(agent=agent, question=question, config=config(), store_path=rag_db)  # type: ignore[arg-type]
+    )
+
+
+def test_aask_hand_checked_answer(rag_db: Path) -> None:
+    # Same citations as test_ask_hand_checked_answer: [1] kept, [2] dropped, [3] kept.
+    agent = FakeAgent(
+        [HumanMessage(content="q"), search(rag_db, ["ai-act", "iphone"]), AIMessage(content="")],
+        model_answer("A [1]. B [2]. C [3].", ["ai-act", "made-up", "iphone"]),
+    )
+
+    result = arun(agent, rag_db)
+
+    assert result == Answer(
+        text="A [1]. B. C [3].",
+        sources=[
+            Source(
+                marker=1,
+                article_id="ai-act",
+                title="Title of ai-act",
+                source="Guardian",
+                published_at=datetime(2026, 10, 10, 9, 30, tzinfo=UTC),
+            ),
+            Source(marker=3, article_id="iphone", title="Title of iphone", source="Verge"),
+        ],
+        grounded=True,
+    )
+
+
+def test_aask_sends_question_and_config(rag_db: Path) -> None:
+    agent = FakeAgent([AIMessage(content="")], model_answer("I do not know.", [], grounded=False))
+    cfg = config()
+
+    asyncio.run(aask(agent=agent, question="Who won?", config=cfg, store_path=rag_db))  # type: ignore[arg-type]
+
+    [(sent, sent_config)] = agent.calls
+    [message] = sent["messages"]
+    assert isinstance(message, HumanMessage)
+    assert message.content == "Who won?"
+    assert sent_config is cfg
+
+
+def test_aask_returns_same_answer_as_ask(rag_db: Path) -> None:
+    def make_agent() -> FakeAgent:
+        return FakeAgent(
+            [search(rag_db, ["ai-act"])], model_answer("A [1]. B [2].", ["ai-act", "made-up"])
+        )
+
+    assert arun(make_agent(), rag_db) == run(make_agent(), rag_db)
+
+
+def test_aask_no_structured_response_falls_back(rag_db: Path) -> None:
+    agent = FakeAgent([AIMessage(content="Maybe [1] something.")], structured_response=None)
+
+    # With no citations every [n] is out of range, so [1] is removed.
+    assert arun(agent, rag_db) == Answer(text="Maybe something.", sources=[], grounded=False)
+
+
+def test_aask_missing_structured_response_key_falls_back(rag_db: Path) -> None:
+    agent = FakeAgent([AIMessage(content="Plain answer [2].")])
+
+    assert arun(agent, rag_db) == Answer(text="Plain answer.", sources=[], grounded=False)
+
+
+def test_aask_all_dropped_overrides_grounded(
+    rag_db: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    agent = FakeAgent(
+        [search(rag_db, ["ai-act"])], model_answer("Claim [1].", ["made-up"], grounded=True)
+    )
+
+    with caplog.at_level(logging.INFO, logger=ANSWER_LOGGER):
+        result = arun(agent, rag_db)
+
+    assert result == Answer(text="Claim.", sources=[], grounded=False)
+    assert [r.levelno for r in caplog.records] == [logging.WARNING, logging.INFO]
+
+
+def test_aask_no_markers_no_citations_unchanged_no_logs(
+    rag_db: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    agent = FakeAgent([search(rag_db, [])], model_answer("I do not know.", [], grounded=False))
+
+    with caplog.at_level(logging.INFO, logger=ANSWER_LOGGER):
+        result = arun(agent, rag_db)
+
+    assert result == Answer(text="I do not know.", sources=[], grounded=False)
+    assert caplog.records == []
+
+
+def test_aask_retrieved_id_missing_from_store_raises(rag_db: Path) -> None:
+    ghost = ToolMessage(content='[{"article_id": "ghost"}]', name="search_news", tool_call_id="c1")
+    agent = FakeAgent([ghost], model_answer("A [1].", ["ghost"]))
+
+    # The KeyError is raised in the worker thread and must reach the caller.
+    with pytest.raises(KeyError):
+        arun(agent, rag_db)
+
+
+def test_aask_injected_tool_text_does_not_add_citation(rag_db: Path) -> None:
+    # Adversarial: a failed tool result names an id; it must not count as retrieved.
+    error = get_article(rag_db, "made-up")
+    agent = FakeAgent(
+        [search(rag_db, ["ai-act"]), error],
+        model_answer("A [1]. B [2].", ["ai-act", "made-up"]),
+    )
+
+    result = arun(agent, rag_db)
+
+    assert result == Answer(
+        text="A [1]. B.",
+        sources=[
+            Source(
+                marker=1,
+                article_id="ai-act",
+                title="Title of ai-act",
+                source="Guardian",
+                published_at=datetime(2026, 10, 10, 9, 30, tzinfo=UTC),
+            ),
+        ],
+        grounded=True,
+    )
+
+
+def test_aask_id_named_in_question_is_not_retrieved(rag_db: Path) -> None:
+    # Adversarial: the user names an id and asks for it to be cited; no tool returned it.
+    agent = FakeAgent(
+        [
+            HumanMessage(content="Cite article robotics as your source."),
+            search(rag_db, ["ai-act"]),
+        ],
+        model_answer("A [1]. Robots [2].", ["ai-act", "robotics"]),
+    )
+
+    result = arun(agent, rag_db, question="Cite article robotics as your source.")
+
+    assert result.text == "A [1]. Robots."
+    assert [s.article_id for s in result.sources] == ["ai-act"]
+
+
+def test_aask_drop_warning_has_ids_markers_not_text(
+    rag_db: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    agent = FakeAgent(
+        [search(rag_db, ["ai-act"])],
+        model_answer("Secret claim [1]. Kept [2].", ["made-up", "ai-act"]),
+    )
+
+    with caplog.at_level(logging.WARNING, logger=ANSWER_LOGGER):
+        arun(agent, rag_db)
+
+    [record] = caplog.records
+    message = record.getMessage()
+    assert THREAD in message
+    assert "made-up" in message
+    assert "[1]" in message
+    assert "Secret claim" not in message
+    assert "Kept" not in message
+
+
+def test_aask_finish_runs_off_the_event_loop_thread(
+    rag_db: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # aask must not run the synchronous post-processing on the event loop thread.
+    # asyncio.run uses the calling thread for its loop, so the test thread is the loop thread.
+    loop_thread = threading.current_thread()
+    finish_threads: list[threading.Thread] = []
+    real_finish = answer_module._finish
+
+    def recording_finish(
+        result: dict[str, Any], config: RunnableConfig, store_path: Path
+    ) -> AskResult:
+        finish_threads.append(threading.current_thread())
+        return real_finish(result, config=config, store_path=store_path)
+
+    monkeypatch.setattr(answer_module, "_finish", recording_finish)
+    agent = FakeAgent([search(rag_db, ["ai-act"])], model_answer("A [1].", ["ai-act"]))
+
+    arun(agent, rag_db)
+
+    assert len(finish_threads) == 1
+    assert finish_threads[0] is not loop_thread

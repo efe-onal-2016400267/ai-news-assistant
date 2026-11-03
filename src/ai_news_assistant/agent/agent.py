@@ -3,7 +3,12 @@ from typing import Any
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from langchain.agents.middleware import ClearToolUsesEdit, ContextEditingMiddleware
+from langchain.agents.middleware import (
+    AgentMiddleware,
+    ClearToolUsesEdit,
+    ContextEditingMiddleware,
+    ToolCallLimitMiddleware,
+)
 from langchain.chat_models import init_chat_model
 from langchain.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
@@ -62,23 +67,35 @@ def build_agent(
         create_get_latest_articles_tool(store_path=store_path),
     ]
 
+    middleware: list[AgentMiddleware[Any, Any, Any]] = [
+        ContextEditingMiddleware(
+            edits=[
+                ClearToolUsesEdit(
+                    trigger=trigger_tokens,
+                    keep=KEEP_TOOL_RESULTS,
+                    placeholder=CLEARED_PLACEHOLDER,
+                )
+            ]
+        ),
+        ToolCallLimitMiddleware(
+            tool_name="get_article",
+            run_limit=25,
+            exit_behavior="continue",
+        ),
+        ToolCallLimitMiddleware(
+            tool_name="search_news",
+            run_limit=25,
+            exit_behavior="continue",
+        ),
+    ]
+
     return create_agent(
         model=init_chat_model(model, **kwargs),
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
         checkpointer=InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])),
         response_format=ModelAnswer,
-        middleware=[
-            ContextEditingMiddleware(
-                edits=[
-                    ClearToolUsesEdit(
-                        trigger=trigger_tokens,
-                        keep=KEEP_TOOL_RESULTS,
-                        placeholder=CLEARED_PLACEHOLDER,
-                    )
-                ]
-            )
-        ],
+        middleware=middleware,
     )
 
 

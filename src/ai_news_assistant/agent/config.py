@@ -18,5 +18,6 @@ CITATION_TOOLS = ["search_news", "get_article", "get_latest_articles"]
 KEEP_TOOL_RESULTS = 3
 CONTEXT_TRIGGER_TOKENS = 10000
 CLEARED_PLACEHOLDER = (
-    "The tool result was removed to save context. Call the tool again if you need it."
+    "The tool result was removed to save context. Do not fetch it again."
+    "Try to answer with what you learned so far."
 )

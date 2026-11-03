@@ -28,7 +28,7 @@ class FakeAgent:
         self.error = error
         self.calls: list[tuple[dict[str, Any], dict[str, Any]]] = []
 
-    def invoke(self, payload: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
+    async def ainvoke(self, payload: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
         self.calls.append((payload, config))
         if self.error is not None:
             raise self.error

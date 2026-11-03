@@ -422,7 +422,7 @@ Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, firs
 - **Revisit when:** the calibration examples are labelled, or the 5 unfaithful runs and the `filter-unknown-outlet` disagreement are read.
 
 ### D25. API: `/chat` stays JSON; `/chat/stream` sends status events over SSE
-Status: `GET /health` and `POST /chat` are built (#78). The streaming endpoint is decided, not built yet. Streaming is for progress only: the answer text is sent once, after the citation check.
+Status: `GET /health` and `POST /chat` are built (#78); `/chat` is async since #80 and awaits `aask`. The streaming endpoint is decided, not built yet. Streaming is for progress only: the answer text is sent once, after the citation check.
 
 | Decision | Choice | Reason |
 |---|---|---|
@@ -431,7 +431,7 @@ Status: `GET /health` and `POST /chat` are built (#78). The streaming endpoint i
 | Status text | Fixed per tool: `search_news` "Searching the news archive...", `get_article` "Reading an article...", `get_latest_articles` "Checking the latest articles...". Other tools: "Working on your question..." | Tool names and article ids stay internal. Proposed wording; not reviewed yet. |
 | Answer timing | One `answer` event, after `check_citations` and `resolve_sources`. No token streaming | The answer is a `ModelAnswer` schema, so its markers are not checked until the run ends (D15). Text sent early could contain dropped markers. |
 | Event source | `agent.stream(..., stream_mode="values")` with the same thread config. New messages are those after the thread's length before the call (`get_state`) | Same agent and memory as `/chat`. Full state after each step gives the final `structured_response` for the check. |
-| Shared post-processing | `finish_answer(result, store_path, thread_id)` in `agent/answer.py`, called by `ask_detailed` and by the stream | `/chat` and `/chat/stream` return the same answer for the same run. |
+| Shared post-processing | `_finish(result, config, store_path)` in `agent/answer.py`, called by `ask_detailed` and by `aask` (run with `asyncio.to_thread`, so the event loop is not blocked). The stream will call it too. | `/chat` and `/chat/stream` return the same answer for the same run. |
 | Errors | Before streaming starts: none. After it starts, a `500` cannot be sent, so an `error` event carries the same generic detail. Both log the traceback with the thread id | The status events may already have been sent. |
 
 - **Known limits:**
@@ -539,7 +539,7 @@ class Agent(Protocol):
     def answer(self, question: str, history: list[dict] | None = None) -> Answer: ...
 ```
 
-`Agent.answer` is the only entry point the CLI, API, tests and evals use. As built (#48) that entry point is `ask(agent, question, config, store_path) -> Answer` in `agent/answer.py`, over the LangGraph agent from `build_agent`; there is no `Agent` class. A `quote` field on citations was left out: nothing verifies it yet (D15).
+`Agent.answer` is the entry point. As built (#48) that entry point is `ask(agent, question, config, store_path) -> Answer` in `agent/answer.py`, over the LangGraph agent from `build_agent`. The CLI and tests use `ask`; the evals use `ask_detailed`, which returns the full `AskResult`. `aask` is the async version of `ask`, with the same signature and return type, and the API `/chat` endpoint uses it. There is no `Agent` class. A `quote` field on citations was left out: nothing verifies it yet (D15).
 
 ## 6. Agent behavior rules (system prompt contract)
 

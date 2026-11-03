@@ -296,7 +296,7 @@ Milestone 4. Design in `design.md` D25.
 - [x] `api/schemas.py`: `ChatRequest` (question 1-2000 characters after strip, optional `thread_id` of 1-64 letters, digits, `_`, `-`) and `ChatResponse`.
 - [x] `GET /health` and `POST /chat`. A failure returns 500 with a generic detail; the traceback is logged with the thread id, not the question.
 - [x] Tests in `tests/api/test_app.py` and `tests/api/test_settings.py`: fake agent, `rag_db` fixture, no model or network.
-- [ ] `agent/answer.py`: split the post-invoke part of `ask_detailed` into `finish_answer(result, store_path, thread_id)`, so `/chat` and the stream share it. Existing `tests/agent/test_answer.py` must still pass.
+- [ ] `agent/answer.py`: split the post-invoke part of `ask_detailed` into `_finish(result, config, store_path)`, so `/chat` and the stream share it. Existing `tests/agent/test_answer.py` must still pass.
 - [ ] `api/streaming.py`: `stream_answer(agent, question, config, store_path)` yields `status` events from `agent.stream(..., stream_mode="values")`, one per tool call, then one `answer` event after the citation check.
 - [ ] `POST /chat/stream` (SSE): `text/event-stream`, events `status`, `answer` and `error`. An error after streaming starts sends an `error` event with the generic detail.
 - [ ] Tests in `tests/api/test_stream.py`: event order, status text per tool, unknown tool gets the default text, no status for a plain answer, prior thread messages are not announced again, agent error gives an `error` event with no internal text, invalid question is 422 and the agent is not called.
