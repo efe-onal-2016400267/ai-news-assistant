@@ -145,7 +145,7 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 | Logging | Thread id, dropped ids and markers only; never answer or article text | Text is untrusted (D11). |
 | Checkpoint loading | `InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer]))` | `structured_response` is stored in the checkpoint. LangGraph warns on unregistered types and will block them; an explicit list allows only `ModelAnswer` beyond its safe types. |
 
-- **Known limits:** this checks that a cited article was retrieved, not that it says what the sentence claims. Numbers can skip after a drop. "Retrieved" means anywhere in the stored thread. Context editing (D16) clears tool results only in the model request, so their ids still validate, even when the model can no longer see the article text. Grouped markers (`[1, 2]`, `[1-3]`) are not parsed. `render` does not show a note when something was dropped: `Answer` has no field for it. Structured output makes the final answer a schema, so token streaming needs thought later.
+- **Known limits:** this checks that a cited article was retrieved, not that it says what the sentence claims. Numbers can skip after a drop. "Retrieved" means anywhere in the stored thread. Context editing (D16) clears tool results only in the model request, so their ids still validate, even when the model can no longer see the article text. Grouped markers (`[1, 2]`, `[1-3]`) are not parsed. `render` does not show a note when something was dropped: `Answer` has no field for it. Structured output makes the final answer a schema, so the streamed answer is sent once, after the check (D25).
 - **Revisit when:** evals show wrong numbering or frequent drops (renumber, or re-ask), something starts removing messages from the stored thread (keep a per-thread record of retrieved ids), or the API needs the dropped information (add it to `Answer`).
 
 ### D16. Context management: clear old tool results in the model request
@@ -420,6 +420,26 @@ Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, firs
     - Titles are escaped before the judge sees them, so a title with `&` reaches the judge as `&amp;`.
     - No calibration against human-labelled answers yet.
 - **Revisit when:** the calibration examples are labelled, or the 5 unfaithful runs and the `filter-unknown-outlet` disagreement are read.
+
+### D25. API: `/chat` stays JSON; `/chat/stream` sends status events over SSE
+Status: `GET /health` and `POST /chat` are built (#78). The streaming endpoint is decided, not built yet. Streaming is for progress only: the answer text is sent once, after the citation check.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Endpoints | `POST /chat` unchanged (one JSON response). New `POST /chat/stream` returns `text/event-stream` | Existing clients keep working; streaming is added without changing the JSON contract. |
+| Events | `status` with `{"message"}`, once per tool call; `answer` with the `ChatResponse` JSON; `error` with `{"detail"}` | Status is what the user waits for. The answer event has the same shape as `/chat`. |
+| Status text | Fixed per tool: `search_news` "Searching the news archive...", `get_article` "Reading an article...", `get_latest_articles` "Checking the latest articles...". Other tools: "Working on your question..." | Tool names and article ids stay internal. Proposed wording; not reviewed yet. |
+| Answer timing | One `answer` event, after `check_citations` and `resolve_sources`. No token streaming | The answer is a `ModelAnswer` schema, so its markers are not checked until the run ends (D15). Text sent early could contain dropped markers. |
+| Event source | `agent.stream(..., stream_mode="values")` with the same thread config. New messages are those after the thread's length before the call (`get_state`) | Same agent and memory as `/chat`. Full state after each step gives the final `structured_response` for the check. |
+| Shared post-processing | `finish_answer(result, store_path, thread_id)` in `agent/answer.py`, called by `ask_detailed` and by the stream | `/chat` and `/chat/stream` return the same answer for the same run. |
+| Errors | Before streaming starts: none. After it starts, a `500` cannot be sent, so an `error` event carries the same generic detail. Both log the traceback with the thread id | The status events may already have been sent. |
+
+- **Known limits:**
+    - No token streaming. The user sees status lines, then the full answer at once.
+    - Status text is fixed English text in code, not configurable.
+    - Counting new messages by length assumes the thread only grows. Context editing (D16) changes the model request only, so this holds.
+    - `build_retriever()` ignores `store_path` (see D21), so the API retrieves from `DEFAULT_DB` even when started with another db.
+- **Revisit when:** token streaming is needed, or the status wording is reviewed.
 
 ## 5. Interfaces and data models
 
