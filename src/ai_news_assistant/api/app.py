@@ -1,5 +1,6 @@
+import json
 import logging
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -7,16 +8,21 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.agent import build_agent, build_retriever
-from ai_news_assistant.agent.answer import aask
+from ai_news_assistant.agent.answer import StatusEvent, aask, aask_stream
 from ai_news_assistant.api.schemas import ChatRequest, ChatResponse
 from ai_news_assistant.api.settings import preflight
 from ai_news_assistant.rag.config import DEFAULT_DB
 
 logger = logging.getLogger(__name__)
+
+
+def sse(event: str, data: str) -> str:
+    return f"event: {event}\ndata: {data}\n\n"
 
 
 # App
@@ -36,6 +42,7 @@ def create_app(
     app = FastAPI(lifespan=lifespan)
 
     # Endpoints
+    # Regular chat endpoint
     @app.post("/chat", response_model=ChatResponse)
     async def chat(req: ChatRequest, request: Request) -> ChatResponse:
         thread_id = req.thread_id or uuid4().hex
@@ -51,6 +58,35 @@ def create_app(
             logger.error("chat failed", extra={"thread_id": thread_id}, exc_info=True)
             raise HTTPException(status_code=500, detail="The assistant could not answer.") from None
         return ChatResponse(thread_id=thread_id, answer=answer)
+
+    # event streaming endpoint
+    @app.post("/chat/stream")
+    async def chat_stream(req: ChatRequest, request: Request) -> StreamingResponse:
+        thread_id = req.thread_id or uuid4().hex
+        config: RunnableConfig = {"configurable": {"thread_id": thread_id}}
+
+        async def events() -> AsyncIterator[str]:
+            try:
+                async for event in aask_stream(
+                    agent=request.app.state.agent,
+                    question=req.question,
+                    config=config,
+                    store_path=store_path,
+                ):
+                    if isinstance(event, StatusEvent):
+                        yield sse("status", json.dumps({"tool": event.tool}))
+                    else:
+                        payload = ChatResponse(thread_id=thread_id, answer=event.answer)
+                        yield sse("answer", payload.model_dump_json())
+            except Exception as exc:
+                logger.error(
+                    "chat stream failed: %s", type(exc).__name__, extra={"thread_id": thread_id}
+                )
+                yield sse("error", json.dumps({"detail": "FAILED"}))
+
+        return StreamingResponse(
+            events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache"}
+        )
 
     @app.get("/health")
     def health() -> dict[str, str]:

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -16,7 +17,19 @@ from ai_news_assistant.agent.citations import (
 )
 from ai_news_assistant.models import Answer, ModelAnswer
 
+STATUS_TOOLS = frozenset({"search_news", "get_article", "get_latest_articles"})
+
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class StatusEvent:
+    tool: str
+
+
+@dataclass(frozen=True)
+class AnswerEvent:
+    answer: Answer
 
 
 @dataclass(frozen=True)
@@ -134,6 +147,25 @@ async def aask(
     result = await agent.ainvoke({"messages": [HumanMessage(content=question)]}, config=config)
     finished = await asyncio.to_thread(_finish, result=result, config=config, store_path=store_path)
     return finished.answer
+
+
+async def aask_stream(
+    agent: CompiledStateGraph[Any, None, Any, Any],
+    question: str,
+    config: RunnableConfig,
+    store_path: Path,
+) -> AsyncIterator[StatusEvent | AnswerEvent]:
+    stream = await agent.astream_events(
+        {"messages": [HumanMessage(content=question)]}, config=config, version="v3"
+    )
+    async for call in stream.tool_calls:
+        if call.tool_name in STATUS_TOOLS:
+            yield StatusEvent(tool=call.tool_name)
+    final = await stream.output()
+    if final is None:
+        raise RuntimeError("Agent run finished without a final state")
+    finished = await asyncio.to_thread(_finish, result=final, config=config, store_path=store_path)
+    yield AnswerEvent(finished.answer)
 
 
 def ask(
