@@ -422,7 +422,7 @@ Tests: 93 in `tests/agent/eval/test_agent_checks.py` (L1: tools, arguments, firs
 - **Revisit when:** the calibration examples are labelled, or the 5 unfaithful runs and the `filter-unknown-outlet` disagreement are read.
 
 ### D25. API: `/chat` stays JSON; `/chat/stream` sends status events over SSE
-Status: `GET /health` and `POST /chat` are built (#78). The streaming endpoint is decided, not built yet. Streaming is for progress only: the answer text is sent once, after the citation check.
+Status: `GET /health` and `POST /chat` are built (#78); `/chat` is async since #80 and awaits `aask`. The streaming endpoint is decided, not built yet. Streaming is for progress only: the answer text is sent once, after the citation check.
 
 | Decision | Choice | Reason |
 |---|---|---|
@@ -539,7 +539,7 @@ class Agent(Protocol):
     def answer(self, question: str, history: list[dict] | None = None) -> Answer: ...
 ```
 
-`Agent.answer` is the only entry point the CLI, API, tests and evals use. As built (#48) that entry point is `ask(agent, question, config, store_path) -> Answer` in `agent/answer.py`, over the LangGraph agent from `build_agent`; `aask` is the async version of `ask`, with the same signature and return type. There is no `Agent` class. A `quote` field on citations was left out: nothing verifies it yet (D15).
+`Agent.answer` is the entry point. As built (#48) that entry point is `ask(agent, question, config, store_path) -> Answer` in `agent/answer.py`, over the LangGraph agent from `build_agent`. The CLI and tests use `ask`; the evals use `ask_detailed`, which returns the full `AskResult`. `aask` is the async version of `ask`, with the same signature and return type, and the API `/chat` endpoint uses it. There is no `Agent` class. A `quote` field on citations was left out: nothing verifies it yet (D15).
 
 ## 6. Agent behavior rules (system prompt contract)
 
