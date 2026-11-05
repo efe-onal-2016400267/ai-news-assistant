@@ -15,6 +15,21 @@ services:
       timeout: 3s
       retries: 10
     ports: ["127.0.0.1:5432:5432"]
+  api:
+    build: .
+    image: ai-news-api
+    env_file: .env
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data/snapshots/news-2026-10-12.db:/app/data/snapshots/news-2026-10-12.db:ro
+      - ./data/runtime/chroma-2026-10-12:/app/data/snapshots/chroma-2026-10-12
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
 
 volumes:
   pgdata:
