@@ -49,7 +49,7 @@ A scheduler (launchd or cron locally, a scheduled cloud job when deployed) runs 
 | 8 | Tools | Typed, read-only functions: `search_news`, `get_article`, `get_headlines`, `get_story_timeline`, `compare_sources`, `summarize_topic`. Built: `search_news` (with `sources` and `days` filters, #47, D17), `get_article`, `get_latest_articles` (#46, fills the `get_headlines` role) (D14). |
 | 9 | Agent | Tool-calling loop (LangChain/LangGraph) with a system prompt enforcing grounding rules. |
 | 10 | Answer layer | Structured answer with citations. Post-generation check that every cited ID was actually retrieved. Built in #48: `agent/citations.py`, `agent/answer.py` (D15). |
-| 11 | Memory | Conversation history in the checkpointer so follow-ups work. Old tool results are cleared in the request sent to the model once the messages pass a token trigger; the stored thread is unchanged. Built in #49 (D16). Summarization is not built. |
+| 11 | Memory | Conversation history in the checkpointer so follow-ups work. Old tool results are cleared in the request sent to the model once the messages pass a token trigger; the stored thread is unchanged. Built in #49 (D16). Summarization is not built. The API stores threads in Postgres (D25); the CLI and evals keep them in memory. |
 | 12 | LLM client | Thin interface over the model provider: one place for mocking, swapping models, token and cost tracking. |
 | 13 | Guardrails | Article text is untrusted data, never instructions. |
 | 14 | Interfaces | CLI first, then FastAPI with streaming, then an optional minimal UI. |
@@ -89,6 +89,8 @@ Start simple and local (default: Chroma, local embedding model) so CI can run re
 
 ### D9. SQLite first, Postgres at deployment
 SQLite needs no server and works in CI. A deployed container's disk is not durable and the ingestion job and the API are separate processes, so deployment needs a managed database or a mounted volume. Keep the storage interface small and the SQL plain so the swap is cheap.
+
+Update (#87): the API stores conversation threads in Postgres (compose service `postgres`, D25). Articles stay in the SQLite snapshot; moving them is not decided.
 
 ### D10. Evals run on a frozen corpus
 The live database keeps growing; metrics must not move for reasons unrelated to the retriever. Accumulate articles, export a snapshot after extraction, label questions against article ids in that snapshot, and run all retrieval and chunking experiments against it.
@@ -143,7 +145,7 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 | `grounded` | Model's flag and at least one source survived | Cross-check only, not a refusal policy. |
 | No structured response | Last message text with every `[n]` removed, no sources, `grounded=False`, warning logged | The answer still reaches the user, without unchecked markers. |
 | Logging | Thread id, dropped ids and markers only; never answer or article text | Text is untrusted (D11). |
-| Checkpoint loading | `InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer]))` | `structured_response` is stored in the checkpoint. LangGraph warns on unregistered types and will block them; an explicit list allows only `ModelAnswer` beyond its safe types. |
+| Checkpoint loading | `build_agent(checkpointer=...)`. Default `InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer]))` (CLI, evals). The API passes `AsyncPostgresSaver.from_conn_string(db_uri(), serde=<same serde>)`, with `setup()` run once at startup (D25) | `structured_response` is stored in the checkpoint. LangGraph warns on unregistered types and will block them; an explicit list allows only `ModelAnswer` beyond its safe types. Both savers must use the same serde, or stored answers do not reload the same way. |
 
 - **Known limits:** this checks that a cited article was retrieved, not that it says what the sentence claims. Numbers can skip after a drop. "Retrieved" means anywhere in the stored thread. Context editing (D16) clears tool results only in the model request, so their ids still validate, even when the model can no longer see the article text. Grouped markers (`[1, 2]`, `[1-3]`) are not parsed. `render` does not show a note when something was dropped: `Answer` has no field for it. Structured output makes the final answer a schema, so the streamed answer is sent once, after the check (D25).
 - **Revisit when:** evals show wrong numbering or frequent drops (renumber, or re-ask), something starts removing messages from the stored thread (keep a per-thread record of retrieved ids), or the API needs the dropped information (add it to `Answer`).
@@ -184,7 +186,7 @@ The model returns a `ModelAnswer` through structured output (`response_format=Mo
 
 **Eval cases** (M4): written as data in `agent/eval/agent_cases.toml` (schema in D20) with `trigger = 3000` so 4 turns are enough: early-detail recall, topic switch, name and version survival, follow-up on an unmentioned article. The re-cite-after-clearing case is not written. None has been run; the runner is eval part D.
 
-- **Known limits:** clearing loses article details the answer did not use; the model must notice and re-fetch, which depends on model behavior and is checked only by the eval cases. `check_citations` accepts ids retrieved earlier in the thread even when their text is cleared, so a citation can pass without the model seeing the article. The trigger is an approximate count and a hand-picked constant; it does not adapt to the model. The stored thread is never shortened, which matters for storage once `InMemorySaver` is replaced by SQLite.
+- **Known limits:** clearing loses article details the answer did not use; the model must notice and re-fetch, which depends on model behavior and is checked only by the eval cases. `check_citations` accepts ids retrieved earlier in the thread even when their text is cleared, so a citation can pass without the model seeing the article. The trigger is an approximate count and a hand-picked constant; it does not adapt to the model. The stored thread is never shortened. In the API it lives in Postgres and grows without a limit (D25).
 - **Revisit when:** long threads still grow past the trigger after clearing (add summarization), the eval cases show invented details after clearing, or `get_latest_articles` output is shrunk (the trigger and `keep` were chosen around its 10k result).
 
 ### D17. Metadata filters on `search_news`: pre-filter in both retrievers
@@ -433,8 +435,11 @@ Status: `GET /health`, `POST /chat` (#78) and `POST /chat/stream` are built. `/c
 | Event source | `agent.astream_events(..., version="v3")` with the same thread config, in `aask_stream` (`agent/answer.py`). Tool calls come from `stream.tool_calls`; the final state from `stream.output()` | Same agent and memory as `/chat`. The final state gives `structured_response` for the check. LangChain's v3 API is beta. |
 | Shared post-processing | `_finish(result, config, store_path)` in `agent/answer.py`, called by `ask_detailed`, `aask` (run with `asyncio.to_thread`, so the event loop is not blocked) and `aask_stream`. | `/chat` and `/chat/stream` return the same answer for the same run. |
 | Errors | Before streaming starts: none. After it starts, a `500` cannot be sent, so an `error` event carries the same generic detail. Both log the traceback with the thread id | The status events may already have been sent. |
+| Thread memory | Postgres (compose service `postgres`, Postgres 17). `lifespan` opens `AsyncPostgresSaver.from_conn_string(db_uri(), serde=...)`, runs `setup()` once, and passes it to `build_agent(checkpointer=...)`. The saver closes on shutdown. `db_uri()` reads `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and optional `POSTGRES_HOST` (default `localhost`) and `POSTGRES_PORT` (default `5432`); user and password are percent-encoded. `preflight` checks the three `POSTGRES_*` variables with the API keys | Conversations survive a restart, and the store is not tied to one process (not tested with several workers). Compose sets `POSTGRES_HOST=postgres` for the `api` service and waits for the database health check. An injected agent (tests) never opens a database. |
 
 - **Known limits:**
+    - Anyone who knows a `thread_id` can read that conversation and add to it. There is no auth yet, and `thread_id` is client-supplied (1-64 characters).
+    - Threads are never deleted or expired. Storage grows with every turn.
     - No token streaming. The user sees status lines, then the full answer at once.
     - Status text is fixed English text in code, not configurable.
     - `build_retriever()` ignores `store_path` (see D21), so the API retrieves from `DEFAULT_DB` even when started with another db.

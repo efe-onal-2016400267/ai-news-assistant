@@ -10,12 +10,15 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from langchain_core.runnables import RunnableConfig
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.agent import build_agent, build_retriever
 from ai_news_assistant.agent.answer import StatusEvent, aask, aask_stream
 from ai_news_assistant.api.schemas import ChatRequest, ChatResponse
-from ai_news_assistant.api.settings import preflight
+from ai_news_assistant.api.settings import db_uri, preflight
+from ai_news_assistant.models import ModelAnswer
 from ai_news_assistant.rag.config import DEFAULT_DB
 
 logger = logging.getLogger(__name__)
@@ -31,13 +34,20 @@ def create_app(
 ) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-        if agent is None:
-            load_dotenv()
-            preflight(store_path)
-            app.state.agent = build_agent(retriever=build_retriever(), store_path=store_path)
-        else:
+        if agent is not None:
             app.state.agent = agent
-        yield
+            yield
+            return
+        load_dotenv()
+        preflight(store_path)
+        async with AsyncPostgresSaver.from_conn_string(
+            db_uri(), serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])
+        ) as checkpointer:
+            await checkpointer.setup()
+            app.state.agent = build_agent(
+                retriever=build_retriever(), store_path=store_path, checkpointer=checkpointer
+            )
+            yield
 
     app = FastAPI(lifespan=lifespan)
 

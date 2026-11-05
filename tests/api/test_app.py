@@ -1,7 +1,8 @@
 import json
 import logging
 import re
-from collections.abc import Iterator
+from collections.abc import AsyncIterator, Iterator
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
@@ -10,10 +11,12 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, ToolMessage
+from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph.state import CompiledStateGraph
 
 import ai_news_assistant.api.app as app_module
 from ai_news_assistant.api.app import create_app
+from ai_news_assistant.api.settings import REQUIRED_ENV
 from ai_news_assistant.models import ModelAnswer
 
 APP_LOGGER = "ai_news_assistant.api.app"
@@ -284,31 +287,147 @@ def test_injected_agent_is_used_without_building_one(
         assert app.state.agent is agent
 
 
-def test_startup_builds_the_agent_from_preflight_checked_settings(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+class FakeSaver:
+    """Stands in for AsyncPostgresSaver: records setup and reports it to the spy."""
+
+    def __init__(self, spy: "SaverSpy") -> None:
+        self.spy = spy
+
+    async def setup(self) -> None:
+        self.spy.events.append("setup")
+        if self.spy.setup_error is not None:
+            raise self.spy.setup_error
+
+
+class SaverSpy:
+    """Replaces the AsyncPostgresSaver class in app.py; records open, setup and close in order."""
+
+    def __init__(self) -> None:
+        self.events: list[str] = []
+        self.conn_strings: list[str] = []
+        self.serdes: list[Any] = []
+        self.setup_error: Exception | None = None
+        self.saver: FakeSaver | None = None
+
+    def from_conn_string(
+        self, conn_string: str, *, serde: Any = None
+    ) -> AbstractAsyncContextManager[FakeSaver]:
+        self.conn_strings.append(conn_string)
+        self.serdes.append(serde)
+        return self._open()
+
+    @asynccontextmanager
+    async def _open(self) -> AsyncIterator[FakeSaver]:
+        self.saver = FakeSaver(self)
+        self.events.append("open")
+        try:
+            yield self.saver
+        finally:
+            self.events.append("close")
+
+
+@pytest.fixture
+def saver_spy(monkeypatch: pytest.MonkeyPatch) -> SaverSpy:
+    spy = SaverSpy()
+    monkeypatch.setattr(app_module, "AsyncPostgresSaver", spy)
+    return spy
+
+
+@pytest.fixture
+def startup_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Valid settings and an existing db file; the real .env and retriever stay out of the test."""
     db = tmp_path / "news.db"
     db.touch()
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-value")
-    monkeypatch.setenv("OPENAI_API_KEY", "test-value")
-    # Keep the developer's real .env out of the test.
+    for name in REQUIRED_ENV:
+        monkeypatch.setenv(name, "test-value")
+    monkeypatch.setenv("POSTGRES_USER", "efe")
+    monkeypatch.setenv("POSTGRES_PASSWORD", "p@ss")
+    monkeypatch.setenv("POSTGRES_DB", "news")
+    monkeypatch.delenv("POSTGRES_HOST", raising=False)
+    monkeypatch.delenv("POSTGRES_PORT", raising=False)
     monkeypatch.setattr(app_module, "load_dotenv", lambda: None)
-    built_agent = object()
-    sentinel_retriever = object()
+    monkeypatch.setattr(app_module, "build_retriever", lambda: object())
+    return db
+
+
+@pytest.fixture
+def build_calls(monkeypatch: pytest.MonkeyPatch, saver_spy: SaverSpy) -> list[dict[str, Any]]:
+    """Replaces build_agent; records its kwargs and the event order, returns a sentinel agent."""
     calls: list[dict[str, Any]] = []
 
     def record_build_agent(**kwargs: Any) -> object:
         calls.append(kwargs)
+        saver_spy.events.append("build")
         return built_agent
 
-    monkeypatch.setattr(app_module, "build_retriever", lambda: sentinel_retriever)
+    built_agent = object()
     monkeypatch.setattr(app_module, "build_agent", record_build_agent)
+    return calls
 
-    app = create_app(store_path=db)
+
+def test_startup_builds_the_agent_with_the_postgres_checkpointer(
+    startup_env: Path,
+    saver_spy: SaverSpy,
+    build_calls: list[dict[str, Any]],
+) -> None:
+    app = create_app(store_path=startup_env)
+
     with TestClient(app):
-        assert app.state.agent is built_agent
+        assert app.state.agent is not None
+        assert saver_spy.events == ["open", "setup", "build"]
 
-    assert calls == [{"retriever": sentinel_retriever, "store_path": db}]
+    assert len(build_calls) == 1
+    assert build_calls[0]["store_path"] == startup_env
+    assert build_calls[0]["checkpointer"] is saver_spy.saver
+    assert saver_spy.conn_strings == ["postgresql://efe:p%40ss@localhost:5432/news"]
+
+
+def test_startup_closes_the_saver_on_shutdown(
+    startup_env: Path, saver_spy: SaverSpy, build_calls: list[dict[str, Any]]
+) -> None:
+    with TestClient(create_app(store_path=startup_env)):
+        assert saver_spy.events == ["open", "setup", "build"]
+
+    assert saver_spy.events == ["open", "setup", "build", "close"]
+
+
+def test_startup_fails_and_builds_nothing_when_setup_fails(
+    startup_env: Path,
+    saver_spy: SaverSpy,
+    build_calls: list[dict[str, Any]],
+) -> None:
+    saver_spy.setup_error = RuntimeError("tables could not be created")
+
+    with pytest.raises(RuntimeError, match="tables could not be created"):
+        with TestClient(create_app(store_path=startup_env)):
+            pass
+
+    assert build_calls == []
+    assert saver_spy.events == ["open", "setup", "close"]
+
+
+def test_checkpointer_serializer_round_trips_a_model_answer(
+    startup_env: Path,
+    saver_spy: SaverSpy,
+    build_calls: list[dict[str, Any]],
+) -> None:
+    # The serde given to the saver must rebuild ModelAnswer, or stored answers come back as dicts.
+    with TestClient(create_app(store_path=startup_env)):
+        serde = saver_spy.serdes[0]
+        answer = ModelAnswer(text="A [1].", citations=["ai-act"], grounded=True)
+
+        restored = serde.loads_typed(serde.dumps_typed(answer))
+
+    assert isinstance(serde, JsonPlusSerializer)
+    assert restored == answer
+
+
+def test_injected_agent_does_not_open_the_postgres_saver(rag_db: Path, saver_spy: SaverSpy) -> None:
+    with make_client(FakeAgent(), rag_db):
+        pass
+
+    assert saver_spy.conn_strings == []
+    assert saver_spy.events == []
 
 
 def test_startup_fails_when_keys_are_missing(
@@ -330,11 +449,11 @@ def test_startup_fails_when_keys_are_missing(
             pass
 
 
-def test_startup_fails_when_db_is_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-value")
-    monkeypatch.setenv("OPENAI_API_KEY", "test-value")
-    monkeypatch.setattr(app_module, "load_dotenv", lambda: None)
-
+def test_startup_fails_when_db_is_missing(
+    startup_env: Path, saver_spy: SaverSpy, tmp_path: Path
+) -> None:
     with pytest.raises(RuntimeError, match="News db not found"):
         with TestClient(create_app(store_path=tmp_path / "absent.db")):
             pass
+
+    assert saver_spy.conn_strings == []
