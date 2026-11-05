@@ -112,7 +112,7 @@ Keep the layers separate so each one can be tested alone:
 - #57, #59: eval set `rag/eval/rag_questions_v1.toml` (`dataset.py` loads and checks it, design D18); `run_retrieval.py` saves raw hits per (retriever, config) into a run folder, and `evaluate.py` scores it (`metrics.py`, `scoring.py`, `report.py`) into `report.md` and `metrics.json`; settings in `rag/eval/rag_run.toml` (design D19).
 
 ### Agent (#44, #45, #46, #47, #48, #49)
-- `agent/agent.py`: `create_agent` (LangChain) with `ChatOpenAI`, `InMemorySaver` for thread memory, system prompt in `agent/prompts.py`.
+- `agent/agent.py`: `create_agent` (LangChain) with `ChatOpenAI`, thread memory via a `checkpointer` argument (default `InMemorySaver`; the API passes Postgres, see #87), system prompt in `agent/prompts.py`.
 - `agent/tools.py`: `create_search_tool(retriever, store_path)` builds `search_news` over the hybrid retriever; search logic in `rag/article_search.py`.
 - `agent/cli.py`: interactive chat loop with one thread per session.
 - `tests/test_search_news_tool.py`: tool tests with fakes.
@@ -301,6 +301,22 @@ Milestone 4. Design in `design.md` D25.
 - [ ] `POST /chat/stream` (SSE): `text/event-stream`, events `status`, `answer` and `error`. An error after streaming starts sends an `error` event with the generic detail.
 - [ ] Tests in `tests/api/test_stream.py`: event order, status text per tool, unknown tool gets the default text, no status for a plain answer, prior thread messages are not announced again, agent error gives an `error` event with no internal text, invalid question is 422 and the agent is not called.
 - [ ] Known limit, not in this issue: `build_retriever()` ignores `store_path` (D21 has the same limit for the eval runner).
+
+---
+
+## Postgres thread memory (#87)
+
+Design in `design.md` D25 ("Thread memory").
+
+- [x] `agent/agent.py`: `build_agent(checkpointer=None)`; default is `InMemorySaver` with the same serde, so CLI and evals are unchanged.
+- [x] `api/settings.py`: `preflight` also checks `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`; `db_uri()` builds the connection URL.
+- [x] `api/app.py`: `lifespan` opens `AsyncPostgresSaver`, runs `setup()`, builds the agent with it and closes it on shutdown.
+- [x] `pyproject.toml` / `uv.lock`: `langgraph-checkpoint-postgres`, `psycopg[binary,pool]`.
+- [x] `compose.yaml`: `api` gets `POSTGRES_HOST=postgres` and waits for the healthy database.
+- [x] Tests: `tests/agent/test_agent.py`, `tests/api/test_settings.py`, `tests/api/test_app.py` (fake saver, no database), `tests/api/test_postgres_checkpoint.py` (real Postgres, skipped unless `POSTGRES_*` is set).
+- [x] Checked in containers: the chat works end to end with Postgres.
+- [ ] Decide how `thread_id` is protected (anyone with an id can read the thread today).
+- [ ] Decide when threads expire or are deleted.
 
 ---
 

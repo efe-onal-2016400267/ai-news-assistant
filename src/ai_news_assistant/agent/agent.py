@@ -12,6 +12,7 @@ from langchain.agents.middleware import (
 from langchain.chat_models import init_chat_model
 from langchain.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
+from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph.state import CompiledStateGraph
@@ -58,8 +59,14 @@ def build_agent(
     model_kwargs: dict[str, Any] | None = None,
     trigger_tokens: int = CONTEXT_TRIGGER_TOKENS,
     store_path: Path = DEFAULT_DB,
+    checkpointer: BaseCheckpointSaver[Any] | None = None,
 ) -> CompiledStateGraph[Any, None, Any, Any]:
     """Build the agent using the tool factories."""
+    if checkpointer is None:
+        checkpointer = InMemorySaver(
+            serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])
+        )
+
     kwargs = {**default_model_kwargs(model), **(model_kwargs or {})}
     tools = [
         create_search_tool(retriever=retriever, store_path=store_path),
@@ -93,7 +100,7 @@ def build_agent(
         model=init_chat_model(model, **kwargs),
         tools=tools,
         system_prompt=SYSTEM_PROMPT,
-        checkpointer=InMemorySaver(serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])),
+        checkpointer=checkpointer,
         response_format=ModelAnswer,
         middleware=middleware,
     )

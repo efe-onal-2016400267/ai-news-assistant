@@ -19,6 +19,11 @@ services:
     build: .
     image: ai-news-api
     env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "127.0.0.1:8000:8000"
     volumes:
