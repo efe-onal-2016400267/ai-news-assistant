@@ -16,6 +16,8 @@ from langgraph.graph.state import CompiledStateGraph
 
 from ai_news_assistant.agent.agent import build_agent, build_retriever
 from ai_news_assistant.agent.answer import StatusEvent, aask, aask_stream
+from ai_news_assistant.agent.config import TOOLS_URL
+from ai_news_assistant.agent.tools import load_mcp_tools
 from ai_news_assistant.api.schemas import ChatRequest, ChatResponse
 from ai_news_assistant.api.settings import db_uri, preflight
 from ai_news_assistant.models import ModelAnswer
@@ -44,8 +46,11 @@ def create_app(
             db_uri(), serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])
         ) as checkpointer:
             await checkpointer.setup()
+            tools = await load_mcp_tools(url=TOOLS_URL)
             app.state.agent = build_agent(
-                retriever=build_retriever(), store_path=store_path, checkpointer=checkpointer
+                tools=tools,
+                store_path=store_path,
+                checkpointer=checkpointer,
             )
             yield
 

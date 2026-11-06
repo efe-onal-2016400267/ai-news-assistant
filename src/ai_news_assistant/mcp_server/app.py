@@ -1,9 +1,11 @@
 import asyncio
 import json
+import os
 from pathlib import Path
 
 from fastmcp import FastMCP
 
+from ai_news_assistant.agent.agent import build_retriever
 from ai_news_assistant.agent.tools import (
     GET_LATEST_ARTICLES_DESCRIPTION,
     GET_SINGLE_ARTICLE_DESCRIPTION,
@@ -13,6 +15,7 @@ from ai_news_assistant.agent.tools import (
     search_news_articles,
 )
 from ai_news_assistant.rag.base import Retriever
+from ai_news_assistant.rag.config import DEFAULT_DB
 from ai_news_assistant.rag.store import RagStore
 
 
@@ -77,3 +80,15 @@ def create_mcp_server(retriever: Retriever, store_path: Path) -> FastMCP:
         return _dump(result)
 
     return mcp
+
+
+def main() -> None:
+    server = create_mcp_server(
+        retriever=build_retriever(),
+        store_path=DEFAULT_DB,
+    )
+    server.run(transport="http", host=os.environ.get("TOOLS_HOST", "127.0.0.1"), port=9000)
+
+
+if __name__ == "__main__":
+    main()

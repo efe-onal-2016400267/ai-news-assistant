@@ -21,3 +21,5 @@ CLEARED_PLACEHOLDER = (
     "The tool result was removed to save context. Do not fetch it again."
     "Try to answer with what you learned so far."
 )
+
+TOOLS_URL = "http://127.0.0.1:9000/mcp"
