@@ -99,47 +99,68 @@ def create_search_tool(retriever: Retriever, store_path: Path) -> BaseTool:
     def search_news(
         query: str, k: int = 5, sources: list[str] | None = None, days: int | None = None
     ) -> list[dict[str, Any]] | dict[str, Any]:
-        """Search the news archive for articles relevant to a question.
-
-        This is the main search tool when the user mentions a model, event, person...
-        Can filter on sources ('From Wired, Hugging Face...') and days (last week...)
-        """
-        unknown_sources: str = "Unknown source(s): "
-        valid_sources: str = f"Valid source(s): {', '.join(gold_source_list)}"
-        unknown_found = False
-        if sources is not None:
-            for source in sources:
-                if source not in gold_source_list:
-                    unknown_sources += f" {source}"
-                    unknown_found = True
-
-        if unknown_found:
-            return {"error": f"{unknown_sources}, {valid_sources}"}
-
-        k = max(5, min(k, MAX_K))
-        cutoff: datetime | None = None
-        if days is not None:
-            days = max(1, days)
-            with RagStore(store_path) as store:
-                cutoff = store.date_cutoff(days=days)
-        source_set = frozenset(sources) if sources else None
-        search_filter: SearchFilter | None = (
-            SearchFilter(sources=source_set, since=cutoff)
-            if source_set is not None or cutoff is not None
-            else None
+        return search_news_articles(
+            retriever=retriever,
+            store_path=store_path,
+            gold_source_list=gold_source_list,
+            query=query,
+            k=k,
+            sources=sources,
+            days=days,
         )
-        return [
-            asdict(s)
-            for s in search_articles(
-                retriever=retriever,
-                store_path=store_path,
-                query=query,
-                k=k,
-                search_filter=search_filter,
-            )
-        ]
 
     return search_news
+
+
+# Plain search news function for MCP
+def search_news_articles(
+    retriever: Retriever,
+    store_path: Path,
+    gold_source_list: list[str],
+    query: str,
+    k: int = 5,
+    sources: list[str] | None = None,
+    days: int | None = None,
+) -> list[dict[str, Any]] | dict[str, Any]:
+    """Search the news archive for articles relevant to a question.
+
+    This is the main search tool when the user mentions a model, event, person...
+    Can filter on sources ('From Wired, Hugging Face...') and days (last week...)
+    """
+    unknown_sources: str = "Unknown source(s): "
+    valid_sources: str = f"Valid source(s): {', '.join(gold_source_list)}"
+    unknown_found = False
+    if sources is not None:
+        for source in sources:
+            if source not in gold_source_list:
+                unknown_sources += f" {source}"
+                unknown_found = True
+
+    if unknown_found:
+        return {"error": f"{unknown_sources}, {valid_sources}"}
+
+    k = max(5, min(k, MAX_K))
+    cutoff: datetime | None = None
+    if days is not None:
+        days = max(1, days)
+        with RagStore(store_path) as store:
+            cutoff = store.date_cutoff(days=days)
+    source_set = frozenset(sources) if sources else None
+    search_filter: SearchFilter | None = (
+        SearchFilter(sources=source_set, since=cutoff)
+        if source_set is not None or cutoff is not None
+        else None
+    )
+    return [
+        asdict(s)
+        for s in search_articles(
+            retriever=retriever,
+            store_path=store_path,
+            query=query,
+            k=k,
+            search_filter=search_filter,
+        )
+    ]
 
 
 # Get single article tool
