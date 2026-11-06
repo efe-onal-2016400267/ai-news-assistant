@@ -85,6 +85,8 @@ Keep the layers separate so each one can be tested alone:
 | RAG | Snapshot and corpus, two chunkers, retrieval interface, Chroma index, vector, BM25 and hybrid retrievers, eval runner | #27-#41 |
 | Agent | LangChain agent with `search_news`, `get_article` and `get_latest_articles`, conversation memory, CLI chat loop, checked citations, clearing of old tool results, source and date filters on `search_news` | #44, #45, #46, #47, #48, #49 |
 | API | `create_app`, `GET /health`, `POST /chat` (non-streaming), startup preflight. Streaming in progress | #78 |
+| MCP tools | `mcp_server/app.py` (FastMCP, port 9000); the API loads the tools at startup from `TOOLS_URL`; `build_agent(tools=...)` | #89 |
+| Docker | One image (`Dockerfile`), `compose.yaml` with `postgres`, `api` and `tools` | #89 |
 
 ### Ingestion (#8-#17)
 - `Fetcher` protocol in `ingestion/base.py`; `RSSFetcher` downloads a feed (size-capped) and returns typed `Article`s with `text=None`.
@@ -317,6 +319,24 @@ Design in `design.md` D25 ("Thread memory").
 - [x] Checked in containers: the chat works end to end with Postgres.
 - [ ] Decide how `thread_id` is protected (anyone with an id can read the thread today).
 - [ ] Decide when threads expire or are deleted.
+
+---
+
+## MCP tools and Docker (#89)
+
+Design in `design.md` D26.
+
+- [x] `mcp_server/app.py`: FastMCP server with `search_news`, `get_article` and `get_latest_articles`, over HTTP on port 9000. `TOOLS_HOST` sets the bind address (default `127.0.0.1`).
+- [x] `agent/agent.py`: `build_agent(tools=...)` takes tools from outside; `retriever=` still builds them in-process for the CLI and evals.
+- [x] `api/app.py`: lifespan calls `load_mcp_tools(url=tools_url())` after the Postgres setup and before `build_agent`.
+- [x] Tests in `tests/api/test_app.py`: startup stubs `load_mcp_tools`; the tools reach `build_agent`; the configured URL is used; startup fails and builds nothing when MCP is unreachable.
+- [x] `Dockerfile`: one image for `api` and `tools`; the embedding model is downloaded at build time; runs as uid 1000.
+- [x] `compose.yaml`: `tools` service; `api` waits for it and gets `TOOLS_URL`; the Chroma index is mounted into `tools`, not `api`.
+- [ ] Run `docker compose up --build`, then check `GET /health` and one `POST /chat` answer with sources. Not run yet.
+- [ ] Decide whether `TOOLS_URL` belongs in `REQUIRED_ENV`, so `preflight` reports it by name (today a missing value is a bare `KeyError`).
+- [ ] `config.TOOLS_URL` in `agent/config.py` is unused by `src`. Delete it or use it as the fallback in `tools_url()`.
+- [ ] Add `TOOLS_URL` to `.env.example` for local runs (compose's `environment` overrides `env_file`, so compose is unaffected).
+- [ ] Check the `tools` health check: it only opens a TCP connection to port 9000, so it passes before the MCP handshake works.
 
 ---
 
