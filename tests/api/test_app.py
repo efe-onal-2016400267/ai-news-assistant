@@ -21,6 +21,7 @@ from ai_news_assistant.models import ModelAnswer
 
 APP_LOGGER = "ai_news_assistant.api.app"
 FAILED_DETAIL = "The assistant could not answer."
+STARTUP_TOOLS_URL = "http://mcp.test/mcp"
 
 
 class FakeAgent:
@@ -334,8 +335,20 @@ def saver_spy(monkeypatch: pytest.MonkeyPatch) -> SaverSpy:
 
 
 @pytest.fixture
-def startup_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """Valid settings and an existing db file; the real .env and retriever stay out of the test."""
+def mcp_tools(monkeypatch: pytest.MonkeyPatch) -> list[Any]:
+    """Replaces load_mcp_tools so startup never connects to a real MCP server; returns the tools."""
+    tools: list[Any] = [object()]
+
+    async def fake_load_mcp_tools(**_: Any) -> list[Any]:
+        return tools
+
+    monkeypatch.setattr(app_module, "load_mcp_tools", fake_load_mcp_tools)
+    return tools
+
+
+@pytest.fixture
+def startup_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mcp_tools: list[Any]) -> Path:
+    """Valid settings and an existing db file; the real .env and MCP server stay out."""
     db = tmp_path / "news.db"
     db.touch()
     for name in REQUIRED_ENV:
@@ -343,10 +356,10 @@ def startup_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("POSTGRES_USER", "efe")
     monkeypatch.setenv("POSTGRES_PASSWORD", "p@ss")
     monkeypatch.setenv("POSTGRES_DB", "news")
+    monkeypatch.setenv("TOOLS_URL", STARTUP_TOOLS_URL)
     monkeypatch.delenv("POSTGRES_HOST", raising=False)
     monkeypatch.delenv("POSTGRES_PORT", raising=False)
     monkeypatch.setattr(app_module, "load_dotenv", lambda: None)
-    monkeypatch.setattr(app_module, "build_retriever", lambda: object())
     return db
 
 
@@ -380,6 +393,56 @@ def test_startup_builds_the_agent_with_the_postgres_checkpointer(
     assert build_calls[0]["store_path"] == startup_env
     assert build_calls[0]["checkpointer"] is saver_spy.saver
     assert saver_spy.conn_strings == ["postgresql://efe:p%40ss@localhost:5432/news"]
+
+
+def test_startup_passes_the_mcp_tools_to_the_agent(
+    startup_env: Path,
+    saver_spy: SaverSpy,
+    build_calls: list[dict[str, Any]],
+    mcp_tools: list[Any],
+) -> None:
+    with TestClient(create_app(store_path=startup_env)):
+        pass
+
+    assert build_calls[0]["tools"] is mcp_tools
+
+
+def test_startup_loads_tools_from_the_configured_mcp_url(
+    startup_env: Path,
+    saver_spy: SaverSpy,
+    build_calls: list[dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    urls: list[str] = []
+
+    async def record_url(**kwargs: Any) -> list[Any]:
+        urls.append(kwargs["url"])
+        return []
+
+    monkeypatch.setattr(app_module, "load_mcp_tools", record_url)
+
+    with TestClient(create_app(store_path=startup_env)):
+        pass
+
+    assert urls == [STARTUP_TOOLS_URL]
+
+
+def test_startup_fails_and_builds_nothing_when_mcp_is_unreachable(
+    startup_env: Path,
+    saver_spy: SaverSpy,
+    build_calls: list[dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    async def unreachable(**_: Any) -> list[Any]:
+        raise RuntimeError("MCP tools server unreachable")
+
+    monkeypatch.setattr(app_module, "load_mcp_tools", unreachable)
+
+    with pytest.raises(RuntimeError, match="MCP tools server unreachable"):
+        with TestClient(create_app(store_path=startup_env)):
+            pass
+
+    assert build_calls == []
 
 
 def test_startup_closes_the_saver_on_shutdown(

@@ -28,6 +28,8 @@ A chatbot agent that answers questions about current **AI news**, grounded in ar
 
 Two halves share one store. The offline pipeline keeps the news fresh. The online agent only reads from the store.
 
+Online, the tools run in their own process as an MCP server, and the API connects to it at startup (D26). The API itself does not read the store for retrieval.
+
 A scheduler (launchd or cron locally, a scheduled cloud job when deployed) runs one `ingest` command every 30-60 minutes. Feeds only keep about the latest 20 items, so a daily poll would miss articles. Fetchers only fetch; they know nothing about time or storage.
 
 ## 3. Components
@@ -46,7 +48,7 @@ A scheduler (launchd or cron locally, a scheduled cloud job when deployed) runs 
 | # | Component | Responsibility |
 |---|-----------|----------------|
 | 7 | Retrieval | Hybrid search (keyword + embeddings), date and source filters, recency boost, source diversity. Built: hybrid RRF; date and source filters in both retrievers (#47, D17). Not built: recency boost, source diversity. |
-| 8 | Tools | Typed, read-only functions: `search_news`, `get_article`, `get_headlines`, `get_story_timeline`, `compare_sources`, `summarize_topic`. Built: `search_news` (with `sources` and `days` filters, #47, D17), `get_article`, `get_latest_articles` (#46, fills the `get_headlines` role) (D14). |
+| 8 | Tools | Typed, read-only functions: `search_news`, `get_article`, `get_headlines`, `get_story_timeline`, `compare_sources`, `summarize_topic`. Built: `search_news` (with `sources` and `days` filters, #47, D17), `get_article`, `get_latest_articles` (#46, fills the `get_headlines` role) (D14). Served over MCP by `mcp_server/app.py` (D26). |
 | 9 | Agent | Tool-calling loop (LangChain/LangGraph) with a system prompt enforcing grounding rules. |
 | 10 | Answer layer | Structured answer with citations. Post-generation check that every cited ID was actually retrieved. Built in #48: `agent/citations.py`, `agent/answer.py` (D15). |
 | 11 | Memory | Conversation history in the checkpointer so follow-ups work. Old tool results are cleared in the request sent to the model once the messages pass a token trigger; the stored thread is unchanged. Built in #49 (D16). Summarization is not built. The API stores threads in Postgres (D25); the CLI and evals keep them in memory. |
@@ -442,8 +444,33 @@ Status: `GET /health`, `POST /chat` (#78) and `POST /chat/stream` are built. `/c
     - Threads are never deleted or expired. Storage grows with every turn.
     - No token streaming. The user sees status lines, then the full answer at once.
     - Status text is fixed English text in code, not configurable.
-    - `build_retriever()` ignores `store_path` (see D21), so the API retrieves from `DEFAULT_DB` even when started with another db.
+    - `build_retriever()` ignores `store_path` (see D21). The tools server (D26) builds its retriever from `DEFAULT_DB` and `DEFAULT_VECTOR_STORE`, so it searches those paths even when started with another db.
 - **Revisit when:** token streaming is needed, or the status wording is reviewed.
+
+### D26. Tools run in a separate MCP server; the API loads them at startup
+Status: built in #89. The MCP server (`mcp_server/app.py`, FastMCP over HTTP) exposes `search_news`, `get_article` and `get_latest_articles`. The API's lifespan calls `load_mcp_tools(url=tools_url())` and passes the result to `build_agent(tools=...)`. The CLI and the evals keep building the tools in-process with `build_agent(retriever=...)`.
+
+| Decision | Choice | Reason |
+|---|---|---|
+| Process split | Tools in their own process, reached over MCP HTTP. The retriever (embedding model, Chroma, BM25 index) loads in the tools process only | The API does not load the retrieval stack. |
+| Address | `TOOLS_URL` environment variable, read by `tools_url()` with no default. Compose sets `http://tools:9000/mcp` | Config comes from the environment (CLAUDE.md). |
+| Startup order | After the Postgres `setup()`, before `build_agent`. If the MCP server is unreachable, startup fails and no agent is built | Fail at startup, not on the first request (same reason as `preflight`). |
+| Bind address | `TOOLS_HOST` (default `127.0.0.1`); the port is fixed at 9000. Compose sets `TOOLS_HOST=0.0.0.0` | Local runs stay on loopback. The container must listen on all interfaces to be reached from `api`. |
+| Tool sources | `build_agent(tools=None, retriever=None, ...)`: pass `tools` or `retriever`, not both | The CLI and evals are unchanged. Every caller passes keyword arguments. |
+
+Docker layout (`Dockerfile`, `compose.yaml`):
+- **Image:** one image, `python:3.12-slim` with uv. `uv sync --frozen --no-dev`. The `BAAI/bge-small-en-v1.5` model is downloaded at build time into `/opt/hf`; `HF_HUB_OFFLINE=1` at run time. Runs as uid 1000.
+- **`postgres`:** Postgres 17, port 5432 on `127.0.0.1`, data in the `pgdata` volume.
+- **`api`:** the same image, uvicorn on port 8000 (`127.0.0.1:8000`). Reads `.env`, sets `POSTGRES_HOST=postgres` and `TOOLS_URL=http://tools:9000/mcp`. Waits for `postgres` and `tools` to be healthy. Mounts the news snapshot read-only. Health check: `GET /health`.
+- **`tools`:** the same image, command `python -m ai_news_assistant.mcp_server.app`. Mounts the news snapshot and the Chroma index (`./data/runtime/chroma-2026-10-12`) read-only. Health check: a TCP connect to port 9000.
+- **Run:** `docker compose up --build`. `.env` must hold `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` and the `POSTGRES_*` variables, since `preflight` checks them. The snapshot and the Chroma index must exist on the host. Not yet run end to end: see the open items in `plan.md`.
+
+- **Known limits:**
+    - `TOOLS_URL` is not checked by `preflight`. A missing value fails at startup with a bare `KeyError`.
+    - `config.TOOLS_URL` in `agent/config.py` is no longer used by `src`; `tools_url()` reads the environment.
+    - The tools server has no authentication. Compose does not publish its port to the host, but any container on the compose network can call it.
+    - The MCP server reads `DEFAULT_DB` and `DEFAULT_VECTOR_STORE`. The compose mounts bind these host paths in; nothing chooses the snapshot at run time.
+- **Revisit when:** the tools run on a host other than the API, or the snapshot changes.
 
 ## 5. Interfaces and data models
 
@@ -577,7 +604,7 @@ Status: `SYSTEM_PROMPT` (`agent/prompts.py`) covers grounding, "I do not know", 
 5. **First agent slice:** `search_news` + `get_article`, agent loop with validated citations, CLI; evals for groundedness.
 6. **Optional, cut if time is short:** near-duplicate detection, story clustering, timelines, source comparison; one issue and PR each.
 7. FastAPI with streaming, tracing, cost budget per request.
-8. Dockerfile, staging deploy, scheduled ingestion job, monitoring.
+8. Dockerfile and compose (built, D26; not yet run end to end), staging deploy, scheduled ingestion job, monitoring.
 9. Optional minimal UI, hardening, README with eval results and architecture diagram.
 
 ## 9. Open questions

@@ -15,22 +15,41 @@ services:
       timeout: 3s
       retries: 10
     ports: ["127.0.0.1:5432:5432"]
+
   api:
     build: .
     image: ai-news-api
     env_file: .env
     environment:
       POSTGRES_HOST: postgres
+      TOOLS_URL: http://tools:9000/mcp
     depends_on:
       postgres:
+        condition: service_healthy
+      tools:
         condition: service_healthy
     ports:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./data/snapshots/news-2026-10-12.db:/app/data/snapshots/news-2026-10-12.db:ro
-      - ./data/runtime/chroma-2026-10-12:/app/data/snapshots/chroma-2026-10-12
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  tools:
+    build: .
+    image: ai-news-api
+    command: ["python", "-m", "ai_news_assistant.mcp_server.app"]
+    environment:
+      TOOLS_HOST: 0.0.0.0
+    volumes:
+      - ./data/snapshots/news-2026-10-12.db:/app/data/snapshots/news-2026-10-12.db:ro
+      - ./data/runtime/chroma-2026-10-12:/app/data/snapshots/chroma-2026-10-12
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 9000), timeout=3)"]
       interval: 10s
       timeout: 5s
       retries: 5

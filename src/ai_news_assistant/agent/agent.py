@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,7 @@ from langchain.agents.middleware import (
 )
 from langchain.chat_models import init_chat_model
 from langchain.messages import HumanMessage
+from langchain.tools import BaseTool
 from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.memory import InMemorySaver
@@ -54,7 +56,8 @@ def build_retriever() -> Retriever:
 
 
 def build_agent(
-    retriever: Retriever,
+    retriever: Retriever | None = None,
+    tools: Sequence[BaseTool] | None = None,
     model: str = CHAT_MODEL,
     model_kwargs: dict[str, Any] | None = None,
     trigger_tokens: int = CONTEXT_TRIGGER_TOKENS,
@@ -68,11 +71,16 @@ def build_agent(
         )
 
     kwargs = {**default_model_kwargs(model), **(model_kwargs or {})}
-    tools = [
-        create_search_tool(retriever=retriever, store_path=store_path),
-        create_get_article_tool(store_path=store_path),
-        create_get_latest_articles_tool(store_path=store_path),
-    ]
+    if tools is None:
+        if retriever is None:
+            raise ValueError("build_agent needs either `tools` or a `retriever`.")
+        tools = [
+            create_search_tool(retriever=retriever, store_path=store_path),
+            create_get_article_tool(store_path=store_path),
+            create_get_latest_articles_tool(store_path=store_path),
+        ]
+    elif retriever is not None:
+        raise ValueError("Pass either `tools` or a `retriever`, not both.")
 
     middleware: list[AgentMiddleware[Any, Any, Any]] = [
         ContextEditingMiddleware(

@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -14,8 +15,9 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph.state import CompiledStateGraph
 
-from ai_news_assistant.agent.agent import build_agent, build_retriever
+from ai_news_assistant.agent.agent import build_agent
 from ai_news_assistant.agent.answer import StatusEvent, aask, aask_stream
+from ai_news_assistant.agent.tools import load_mcp_tools
 from ai_news_assistant.api.schemas import ChatRequest, ChatResponse
 from ai_news_assistant.api.settings import db_uri, preflight
 from ai_news_assistant.models import ModelAnswer
@@ -26,6 +28,10 @@ logger = logging.getLogger(__name__)
 
 def sse(event: str, data: str) -> str:
     return f"event: {event}\ndata: {data}\n\n"
+
+
+def tools_url() -> str:
+    return os.environ["TOOLS_URL"]
 
 
 # App
@@ -44,8 +50,11 @@ def create_app(
             db_uri(), serde=JsonPlusSerializer(allowed_msgpack_modules=[ModelAnswer])
         ) as checkpointer:
             await checkpointer.setup()
+            tools = await load_mcp_tools(url=tools_url())
             app.state.agent = build_agent(
-                retriever=build_retriever(), store_path=store_path, checkpointer=checkpointer
+                tools=tools,
+                store_path=store_path,
+                checkpointer=checkpointer,
             )
             yield
 
