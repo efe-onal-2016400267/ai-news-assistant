@@ -43,6 +43,21 @@ to read the full text. Cite the title and source of what you use.
 """
 
 
+GET_LATEST_ARTICLES_DESCRIPTION = """\
+List the newest articles from the last `days` days, newest first.
+
+Use this when the user asks what is new or recent without naming a topic,
+for example "what's new in AI" or "AI news from last week". If the user
+names a topic, company or model, use search_news instead.
+
+days: how far back to look. Convert the user's period to days: a week is 7,
+a month is 30. Values are limited to 1-30.
+
+Returns title, source, published date and a short teaser for each article.
+Returns an empty list if nothing was published in that period.
+"""
+
+
 def frame_article_text(text: str) -> str:
     """Wrap untrusted article text in delimiters the article itself cannot fake.
 
@@ -152,38 +167,32 @@ def create_get_article_tool(store_path: Path) -> BaseTool:
 
 # Get latest articles tool
 def create_get_latest_articles_tool(store_path: Path) -> BaseTool:
-    @tool
+    @tool(description=GET_LATEST_ARTICLES_DESCRIPTION)
     def get_latest_articles(days: int = 7) -> list[dict[str, Any]]:
-        """List the newest articles from the last `days` days, newest first.
-
-        Use this when the user asks what is new or recent without naming a topic,
-        for example "what's new in AI" or "AI news from last week". If the user
-        names a topic, company or model, use search_news instead.
-
-        days: how far back to look. Convert the user's period to days: a week is 7,
-        a month is 30. Values are limited to 1-30.
-
-        Returns title, source, published date and a short teaser for each article.
-        Returns an empty list if nothing was published in that period.
-        """
-        days = max(1, min(days, MAX_DAYS))
-        with RagStore(store_path) as store:
-            cutoff = store.date_cutoff(days)
-            if cutoff is None:
-                return []
-            articles = store.get_articles_since(cutoff, 100)
-        return [
-            {
-                "article_id": a.id,
-                "title": a.title,
-                "source": a.source,
-                "published_at": a.published_at,
-                "date": format_date(a.published_at),
-            }
-            for a in articles
-        ]
+        return list_latest_articles(store_path=store_path, days=days)
 
     return get_latest_articles
+
+
+# The plain latest articles function for MCP
+def list_latest_articles(store_path: Path, days: int = 7) -> list[dict[str, Any]]:
+    """List latest articles since last `days` days."""
+    days = max(1, min(days, MAX_DAYS))
+    with RagStore(store_path) as store:
+        cutoff = store.date_cutoff(days)
+        if cutoff is None:
+            return []
+        articles = store.get_articles_since(cutoff, 100)
+    return [
+        {
+            "article_id": a.id,
+            "title": a.title,
+            "source": a.source,
+            "published_at": a.published_at,
+            "date": format_date(a.published_at),
+        }
+        for a in articles
+    ]
 
 
 def main() -> list[dict[str, Any]]:
