@@ -15,13 +15,13 @@ from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.graph.state import CompiledStateGraph
 
 import ai_news_assistant.api.app as app_module
-from ai_news_assistant.agent.config import TOOLS_URL
 from ai_news_assistant.api.app import create_app
 from ai_news_assistant.api.settings import REQUIRED_ENV
 from ai_news_assistant.models import ModelAnswer
 
 APP_LOGGER = "ai_news_assistant.api.app"
 FAILED_DETAIL = "The assistant could not answer."
+STARTUP_TOOLS_URL = "http://mcp.test/mcp"
 
 
 class FakeAgent:
@@ -348,7 +348,7 @@ def mcp_tools(monkeypatch: pytest.MonkeyPatch) -> list[Any]:
 
 @pytest.fixture
 def startup_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mcp_tools: list[Any]) -> Path:
-    """Valid settings and an existing db file; the real .env, retriever and MCP server stay out."""
+    """Valid settings and an existing db file; the real .env and MCP server stay out."""
     db = tmp_path / "news.db"
     db.touch()
     for name in REQUIRED_ENV:
@@ -356,10 +356,10 @@ def startup_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mcp_tools: list
     monkeypatch.setenv("POSTGRES_USER", "efe")
     monkeypatch.setenv("POSTGRES_PASSWORD", "p@ss")
     monkeypatch.setenv("POSTGRES_DB", "news")
+    monkeypatch.setenv("TOOLS_URL", STARTUP_TOOLS_URL)
     monkeypatch.delenv("POSTGRES_HOST", raising=False)
     monkeypatch.delenv("POSTGRES_PORT", raising=False)
     monkeypatch.setattr(app_module, "load_dotenv", lambda: None)
-    monkeypatch.setattr(app_module, "build_retriever", lambda: object())
     return db
 
 
@@ -424,7 +424,7 @@ def test_startup_loads_tools_from_the_configured_mcp_url(
     with TestClient(create_app(store_path=startup_env)):
         pass
 
-    assert urls == [TOOLS_URL]
+    assert urls == [STARTUP_TOOLS_URL]
 
 
 def test_startup_fails_and_builds_nothing_when_mcp_is_unreachable(
